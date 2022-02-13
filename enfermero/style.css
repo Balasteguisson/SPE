@@ -1,0 +1,20 @@
+.seccion{display: none;}
+.visible {display: block;}
+table{
+    border: 1;
+}
+.card{
+    border-width: 0.2em;
+    border-style: solid;
+    float: left;
+    width: 20em;
+    height: 25em;
+    text-align: center;
+    
+}
+.cardHeader{
+    border-bottom: solid;
+    border-bottom-width: 0.2em;
+    padding: 1;
+    background-color: red;
+}

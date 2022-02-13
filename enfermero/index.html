@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang='es'>
+    <head>
+        <meta charset="utf-8">
+        <title>App SPE</title>
+        <link rel="stylesheet" href="style.css" rel='stylesheet' type="text/css">
+    </head>
+    <body>
+        
+        <div id = 'login' class='seccion visible'><!--LOGIN-->
+            <h1>Login</h1>
+            <p><strong>Usuario:</strong><input type="text" class='inputLog' id='user' placeholder="Usuario"/></p>
+            <p><strong>Contraseña:</strong><input type="password" class='inputLog' id='password' placeholder="Contraseña"></p>
+            <p><button onclick="log()">Entrar</button></p>
+        </div>
+        <div id = 'menuEleccion' class = 'seccion'>
+            <h2 id = 'bienvenidaEleccion'></h2>
+            <button type="submit" onclick="cambiarPantalla('menuEnfermero')">Menu enfermero</button>
+            <button type='submit' onclick="cambiarPantalla('menuAdmin')">Menu Administrador</button>
+        </div>
+        <div id= 'menuEnfermero' class = 'seccion'><!--MENU ENFERMERO-->
+            <h1>Menú Principal</h1>
+            <h2 id = "bienvenida"></h2>
+            <button class="botonMenu" onclick="logout()">Cerrar sesión</button>
+            <section id = 'formacion'>
+                <h3>Formación</h3>
+                <div id = 'testPropios'>
+                    <table>
+                        <tr><th>Tus test en este ciclo</th></tr>
+                        <tbody>
+                            <tr id = 'test1E'><td><button>test 1  <progress max='100' value='70'>50%</progress></button></td></tr>
+                            <tr id = 'test1E'><td><button>test 1  <progress max='100' value='50'>50%</progress></button></td></tr>
+                            <tr id = 'test1E'><td><button>test 1  <progress max='100' value='28'>50%</progress></button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id = 'testGeneral'>
+                    <table>
+                        <tr><th>Progreso general</th></tr>
+                        <tbody>
+                            <tr id = 'test1G'><td>Info test 1</td></tr>
+                            <tr id = 'test1G'><td>Info test 2</td></tr>
+                            <tr id = 'test1G'><td>Info test 3</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section id = 'citas'>
+                <h3>Citas</h3>
+                <table id = 'horarioCitas'>
+                    <th>
+                        <td>Hora</td>
+                        <td id = 'dia0'>D1</td>
+                        <td id = 'dia1'>D2</td>
+                        <td id = 'dia2'>D3</td>
+                    </th>
+                </table>
+            </section>
+        </div>
+        <div id = 'menuAdmin' class = 'seccion'><!--MENU ADMIN-->
+            <p><h2 id = 'bienvenidaAdmin'></h2><button class='botonMenu' onclick='logout()'>Cerrar sesión</button></p>
+            <div id='gestionEnf' class='card'>
+                <h4 class='cardHeader'>Enfermería</h4>
+                <p><button onclick=''>Nuevo Enfermero</button></p>
+                <p><button onclick=''>Lista de Enfermeros</button></p>
+                <p><button onclick=''>Dar Cita</button></p>
+            </div>
+            <div id='gestionPac' class='card'>
+                <h4 class='cardHeader'>Pacientes</h4>
+                <p><button onclick=''>Nuevo Paciente</button></p>
+                <p><button onclick=''>Lista de Pacientes</button></p>
+            </div>
+            <div id='gestionAdmin' class='card'>
+                <h4 class='cardHeader'>Administración</h4>
+                <p><button>Nuevo Administrador</button></p>
+                <p><button>Lista de Administradores</button></p>
+            </div>
+            <div id='gestionForm' class='card'>
+                <h4 class='cardHeader'>Formación</h4>
+                <p><button onclick="cambiarPantalla('menuCrearPregunta')">Nueva Pregunta</button></p>
+                <p><button onclick="fillBanco()">Banco de Preguntas</button></p>
+                <p><button onclick="cambiarPantalla('menuMonitorRendimiento')">Monitor de Rendimiento</button></p>
+                <p><button onclick="verMenuTest()">Crear test</button></p>
+                <!-- <p><button onclick=''>Ajustes de formación</button></p> MAS ADELANTE -->
+            </div>
+        </div>
+        <div id = 'menuCrearPregunta' class='seccion'> <!--CREACION DE PREGUNTAS-->
+            <p><h1>Nueva Pregunta</h1><button onclick="cambiarPantalla('menuAdmin')">Volver</button></p>
+            <form id="crearPregunta">
+                <p>
+                    <label for="tipoPregunta">Escoge la modalidad</label>
+                    <select id='tipoPregunta'>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="RV" selected='yes'>Riesgo Vascular</option>
+                        <option value="ACOs">ACOs</option>
+                    </select>
+                    <label for="respuestaCorrecta">Marca la respuesta correcta</label>
+                    <select id='respuestaCorrecta'>
+                        <option value=1>a)</option>
+                        <option value=2>b)</option>
+                        <option value=3>c)</option>
+                        <option value=4>d)</option>
+                    </select>
+                </p>
+                <label for="enunciado"><h2>Pregunta</h2></label>
+                <p><textarea id='enunciado' type="text" placeholder="Escribe la pregunta"></textarea></p>
+                <label for="respuesta1"><h3>Respuesta 1</h3></label>
+                <p><textarea class='inputPregunta' id='respuesta1' type="text" placeholder="Respuesta 1"></textarea></p>
+                <label for="respuesta2"><h3>Respuesta 2</h3></label>
+                <p><textarea class='inputPregunta' id='respuesta2' type="text" placeholder="Respuesta 2"></textarea></p>
+                <label for="respuesta3"><h3>Respuesta 3</h3></label>
+                <p><textarea class='inputPregunta' id='respuesta3' type="text" placeholder="Respuesta 3"></textarea></p>
+                <label for="respuesta4"><h3>Respuesta 4</h3></label>
+                <p><textarea class='inputPregunta' id='respuesta4' type="text" placeholder="Respuesta 4"></textarea></p>
+                <p><button type="reset">Borrar todo</button></p>
+            </form>
+            <p><button onclick="guardarPregunta()">Submit</button></p>
+        </div>
+        <div id = 'menuEditarPregunta' class='seccion'> <!--EDICION DE PREGUNTAS-->
+            <p><h1>Editar Pregunta</h1><button onclick="cambiarPantalla('menuBancoPreguntas')">Volver</button></p>
+            <form id="editarPregunta">
+                <p>
+                    <label for="tipoPreguntaE">Escoge la modalidad</label>
+                    <select id='tipoPreguntaE'>
+                        <option id="ODiabetes" value="Diabetes">Diabetes</option>
+                        <option id="ORV" value="RV">Riesgo Vascular</option>
+                        <option id="OACOs" value="ACOs">ACOs</option>
+                    </select>
+                    <label for="respuestaCorrectaE">Marca la respuesta correcta</label>
+                    <select id='respuestaCorrectaE'>
+                        <option id="O1" value=1>a)</option>
+                        <option id="O2" value=2>b)</option>
+                        <option id="O3" value=3>c)</option>
+                        <option id="O4" value=4>d)</option>
+                    </select>
+                </p>
+                <label for="enunciadoE"><h2>Pregunta</h2></label>
+                <p><textarea id='enunciadoE' type="text" placeholder="Escribe la pregunta"></textarea></p>
+
+                <label for="respuesta1E"><h3>Respuesta 1</h3></label>
+                <p><textarea class='inputPregunta' id='respuesta1E' type="text" placeholder="Respuesta 1"></textarea></p>
+
+                <label for="respuesta2E"><h3>Respuesta 2</h3></label>
+                <p><textarea class='inputPregunta' id='respuesta2E' type="text" placeholder="Respuesta 2"></textarea></p>
+
+                <label for="respuesta3E"><h3>Respuesta 3</h3></label>
+                <p><textarea class='inputPregunta' id='respuesta3E' type="text" placeholder="Respuesta 3"></textarea></p>
+
+                <label for="respuesta4E"><h3>Respuesta 4</h3></label>
+                <p><textarea class='inputPregunta' id='respuesta4E' type="text" placeholder="Respuesta 4"></textarea></p>
+
+                <p><button type="reset">Borrar todo</button></p>
+            </form>
+            <p><button id = 'botonEditar' onclick="editarPregunta()">Guardar cambios</button></p>
+        </div>
+        <div id = 'menuBancoPreguntas' class='seccion'> <!--BANCO DE PREGUNTAS-->
+            <h1>Banco de preguntas</h1>
+            <select name="cicloText" id="cicloTest" onchange="getCicloSeleccionado()"></select> <!--Se rellena desde JS con info de la bbdd-->
+            <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            <table id="listadoPreguntas">
+                <thead>
+                    <th>Número</th>
+                    <th>Categoría</th>
+                    <th>Enunciado</th>
+                    <th>Editar</th>
+                    <th>Borrar</th>
+                </thead>
+                <tbody id="cuerpoListadoPreguntas"></tbody>
+            </table>
+            <p id='avisosBanco'></p>
+        </div>
+        <div id = 'menuMonitorRendimiento' class='seccion'> <!--MONITOR RENDIMIENTO-->
+            <h1>Resultados de los enfermeros</h1>
+            <p>
+                Selecciona el ciclo que quieres ver:
+                <select name="cicloVisible" id="cicloVisible">
+                    <option value=""></option><!--Se debe rellenar desde JS-->
+                </select>
+            </p>
+            <table>
+                <thead>
+                    <th>Enfermero</th>
+                    <th>Test Diabetes</th>
+                    <th>Test ACOs</th>
+                    <th>Test Riesgo Vascular</th>
+                </thead>
+                <tbody>
+                    <tr> <!-- Borrar este TR entero!!!-->
+                        <td>Enfermero 1</td>
+                        <td><progress max='100' value='70'>50%</progress></td>
+                        <td><progress max='100' value='70'>30%</progress></td>
+                        <td><progress max='100' value='70'>60%</progress></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
+        </div>
+        <div id='menuCrearTest' class='seccion'>
+            <h1>Nuevo Test</h1>
+            <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            <button onclick="crearTest()">Generar test</button>
+            <p>Escoge la modalidad a la que pertenece el test</p>
+            <select id='tipoTest' onchange="fillSurtidor()">
+                <option id ='placeholderCrearTest' hidden selected value="prueba">Escoge modalidad</option>
+                <option value="Diabetes">Diabetes</option>
+                <option value="RV">Riesgo Vascular</option>
+                <option value="ACOs">ACOs</option>
+            </select>
+            <section id='depositoPreguntas'>
+                <h2>Preguntas para el test</h2>
+                <table>
+                    <thead>
+                        <th>Numero Pregunta</th>
+                        <th>Enunciado</th>
+                    </thead>
+                    <tbody id = 'cuerpoDepositoPreguntas'></tbody>
+                </table>
+            </section>
+            <section id='surtidorPreguntas'>
+                <h2>Todas las preguntas</h2>
+                <table>
+                    <thead>
+                        <th>Pregunta</th>
+                        <th>Enunciado</th>
+                    </thead>
+                    <tbody id = 'cuerpoSurtidorPreguntas'></tbody>
+                </table>
+            </section>
+            
+        </div>
+        <script src="main.js"></script>
+    </body>
+</html>
