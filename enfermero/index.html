@@ -6,7 +6,6 @@
         <link rel="stylesheet" href="style.css" rel='stylesheet' type="text/css">
     </head>
     <body>
-        
         <div id = 'login' class='seccion visible'><!--LOGIN-->
             <h1>Login</h1>
             <p><strong>Usuario:</strong><input type="text" class='inputLog' id='user' placeholder="Usuario"/></p>
@@ -61,7 +60,7 @@
             <p><h2 id = 'bienvenidaAdmin'></h2><button class='botonMenu' onclick='logout()'>Cerrar sesión</button></p>
             <div id='gestionEnf' class='card'>
                 <h4 class='cardHeader'>Enfermería</h4>
-                <p><button onclick=''>Nuevo Enfermero</button></p>
+                <p><button onclick='pantallaRegistrarEnfermero()'>Nuevo Enfermero</button></p>
                 <p><button onclick=''>Lista de Enfermeros</button></p>
                 <p><button onclick=''>Dar Cita</button></p>
             </div>
@@ -229,6 +228,21 @@
                 </table>
             </section>
             
+        </div>
+        <div id='menuRegistrarEnfermero' class='seccion'> <!--REGISTRO DE ENFERMERO-->
+            <p><h1>Nuevo perfil de Enfermero</h1><button onclick="cambiarPantalla('menuAdmin')">Volver</button></p>
+            <form>
+                <p>
+                    <label for="nombreEnfermero">Nombre: </label>
+                    <input type="text" name="nombreEnfermero" id="nombreEnfermero" placeholder="Nombre">
+                    <label for="apellidosEnfermero">Apellidos: </label>
+                    <input type="text" name="apellidosEnfermero" id="apellidosEnfermero" placeholder="Apellidos">
+                    <label for="dniEnfermero">DNI:</label>
+                    <input type="text" name="dniEnfermero" id="dniEnfermero" placeholder="11111111A">
+                </p>
+                <p><label for="fechaNacimientoEnfermero">Fecha Nacimiento:</label><input type="date" id="fechaNacimientoEnfermero"></p>
+                <p><label for="emailEnfermero">Email:</label><input type="email" name="emailEnfermero" id="emailEnfermero" placeholder="ejemplo@grupohla.es"></p>
+            </form>
         </div>
         <script src="main.js"></script>
     </body>

@@ -332,6 +332,11 @@ async function crearTest(){
 }
 
 
+//REGISTRO DE ENFERMERO
+function pantallaRegistrarEnfermero(){
+    cambiarPantalla('menuRegistrarEnfermero');
+}
+
 
 
 //RELLENAR MONITOR RENDIMIENTO
