@@ -110,6 +110,17 @@ function getResultados(dni) {
 
 
 //FUNCIONES ADMIN
+function pantallaCrearPregunta(){
+    document.getElementById('tipoPregunta').value = "placeholderModalidad";
+    document.getElementById('respuestaCorrecta').value = "placeholderRespuesta";
+    document.getElementById('enunciado').value = "";
+    document.getElementById('respuesta1').value = "";
+    document.getElementById('respuesta2').value = "";
+    document.getElementById('respuesta3').value = "";
+    document.getElementById('respuesta4').value = "";
+    cambiarPantalla('menuCrearPregunta');
+}
+
 async function guardarPregunta() {
     // falta crear algo que indique la fecha
     let datosPregunta = {
@@ -227,7 +238,7 @@ async function borrarPregunta(IDPregunta){ //BORRAR PREGUNTA
 }
 
 //FUNCIONES PARA CREAR TEST
-function verMenuTest(){
+function verMenuCrearTest(){
     document.getElementById('tipoTest').value='prueba';
     document.getElementById('cuerpoSurtidorPreguntas').innerHTML = '';
     document.getElementById('cuerpoDepositoPreguntas').innerHTML = '';
@@ -303,7 +314,6 @@ async function crearTest(){
     }
 
     let idTestCreado = await peticionREST(urlPost, petPost);
-    console.log(idTestCreado);
 
     let urlPost2 = "/api/admin/:id/addPreguntas"
     let relaciones = {
@@ -318,8 +328,9 @@ async function crearTest(){
         }
     }
     let crearRelaciones = await peticionREST(urlPost2, petPost2);
-    console.log(crearRelaciones);
+    alert(crearRelaciones)
 }
+
 
 
 

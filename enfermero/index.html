@@ -77,10 +77,10 @@
             </div>
             <div id='gestionForm' class='card'>
                 <h4 class='cardHeader'>Formación</h4>
-                <p><button onclick="cambiarPantalla('menuCrearPregunta')">Nueva Pregunta</button></p>
+                <p><button onclick="pantallaCrearPregunta()">Nueva Pregunta</button></p>
                 <p><button onclick="fillBanco()">Banco de Preguntas</button></p>
                 <p><button onclick="cambiarPantalla('menuMonitorRendimiento')">Monitor de Rendimiento</button></p>
-                <p><button onclick="verMenuTest()">Crear test</button></p>
+                <p><button onclick="verMenuCrearTest()">Crear test</button></p>
                 <!-- <p><button onclick=''>Ajustes de formación</button></p> MAS ADELANTE -->
             </div>
         </div>
@@ -88,14 +88,16 @@
             <p><h1>Nueva Pregunta</h1><button onclick="cambiarPantalla('menuAdmin')">Volver</button></p>
             <form id="crearPregunta">
                 <p>
-                    <label for="tipoPregunta">Escoge la modalidad</label>
+                    <label for="tipoPregunta">Modalidad:</label>
                     <select id='tipoPregunta'>
+                        <option hidden selected value="placeholderModalidad">Escoge modalidad</option>
                         <option value="Diabetes">Diabetes</option>
                         <option value="RV" selected='yes'>Riesgo Vascular</option>
                         <option value="ACOs">ACOs</option>
                     </select>
-                    <label for="respuestaCorrecta">Marca la respuesta correcta</label>
+                    <label for="respuestaCorrecta">Respuesta correcta: </label>
                     <select id='respuestaCorrecta'>
+                        <option hidden selected value="placeholderRespuesta">Escoge respuesta correcta</option>
                         <option value=1>a)</option>
                         <option value=2>b)</option>
                         <option value=3>c)</option>
