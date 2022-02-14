@@ -280,12 +280,20 @@ async function crearTest(){
         let fila = filas[a].id;
         idsPreguntas.push(parseInt(fila.slice(4)));
     }
+    
+    let urlPost = '/api/admin/:id/crearTest'
+    let urlGet = '/api/admin/:id/getIdTest'
+
+    let petGet = {
+        method : 'GET'
+    }
+
+    let IDTest = await peticionREST(urlGet,petGet);
     let datosTest = {
+        idTest : IDTest,
         tipo : modalidad,
         fechaCreacion : fechaCreacion,
-        preguntas : idsPreguntas
     }
-    let url = '/api/admin/:id/crearTest'
     let petPost = {
         method: 'POST',
         body: JSON.stringify(datosTest),
@@ -293,8 +301,24 @@ async function crearTest(){
             'Content-Type': 'application/json'
         }
     }
-    let IDTest = await peticionREST(url,petPost);
-    console.log(IDTest);
+
+    let idTestCreado = await peticionREST(urlPost, petPost);
+    console.log(idTestCreado);
+
+    let urlPost2 = "/api/admin/:id/addPreguntas"
+    let relaciones = {
+        IDTest: idTestCreado,
+        preguntas : idsPreguntas
+    }
+    let petPost2 = {
+        method: 'POST',
+        body : JSON.stringify(relaciones),
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let crearRelaciones = await peticionREST(urlPost2, petPost2);
+    console.log(crearRelaciones);
 }
 
 
@@ -307,7 +331,7 @@ async function insertCiclos(){
 //Obtener ciclo seleccionado
 const getCicloSeleccionado = () => {
     let selector = document.getElementById('cicloTest');
-    let ciclo = selector.value;
+    let ciclo = selector.value; 
 }
 function debugg(paso) {
     console.log(`Paso realizado ${paso}`);

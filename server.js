@@ -200,50 +200,59 @@ app.get("/api/admin/:id/getPreguntas/:modalidad", (req,res) => {
     })
 })
 
-async function getIDTest(){
+
+app.get("/api/admin/:id/getIdTest", (req,res) => {
     let pet1 = `SELECT * FROM Test`
     baseDatos.query(pet1, (err,respuesta) => {
         if(err){
             res.status(502).json('Fallo con la base de datos.'+ err)
             return;
         }
-        let IDPush;
+        let IDtest;
         if(respuesta.length == 0){
-            IDPush = 1;
+            IDtest = 1;
         }else{
-            IDPush = respuesta[respuesta.length-1].IDTest + 1;
+            IDtest = respuesta[respuesta.length-1].IDTest + 1;
         }
-        return IDPush;
+        res.status(201).json(IDtest);
     })
-}
-
+})
 
 app.post("/api/admin/:id/crearTest", (req,res) => {
     let datosTest = req.body;
-    let tipo = datosTest.tipo; let fechaCreacion = datosTest.fechaCreacion; let preguntas = datosTest.preguntas;
-    let IDPush = await getIDTest();
-    console.log(IDPush);
-    // let petPush1 = `INSERT INTO Test (IDTest, Tipo, FechaCreacion) VALUES (${IDPush}, ${tipo}, ${fechaCreacion})`;
-    // baseDatos.query(petPush1, (err,respuesta) => {
-    //     if(err){
-    //         res.status(502).json('Fallo con la base de datos.'+ err)
-    //         return;
-    //     }
-    //     console.log('Test insertado');
-    // })
-    // console.log('Se van a insertar las preguntas');
-    // for(let a = 0; a < preguntas.length; a++){
-    //     let petPush2 = `INSERT INTO PreguntasTest (IDTest, IDPregunta) VALUES (${IDPush},${preguntas[a]})`
-    //     baseDatos.query(petPush2, (err,respuesta) => {
-    //         if(err){
-    //             res.status(502).json('Fallo con la base de datos');
-    //             return;
-    //         }else{
-    //             console.log('Pregunta asignada al test');
-    //         }
-    //     })
-    // }
-    // res.status(200).json('Test creado con exito');
+    let IDTest = datosTest.idTest;
+    console.log(IDTest);
+    let tipo = datosTest.tipo; let fechaCreacion = datosTest.fechaCreacion;
+    let petPush1 = `INSERT INTO Test (IDTest, Tipo, FechaCreacion) VALUES (${IDTest}, "${tipo}", "${fechaCreacion}")`;
+    console.log(petPush1);
+    baseDatos.query(petPush1, (err,respuesta) => {
+        if(err){
+            res.status(502).json('Fallo con la base de datos.'+ err)
+            return;
+        }
+        res.status(201).json(IDTest);
+    })
+})
+
+app.post("/api/admin/:id/addPreguntas", (req,res) => {
+    let datos = req.body;
+    let IDTest = datos.IDTest;
+    let preguntas = datos.preguntas;
+    for(let a = 0; a < preguntas.length; a++){
+        //el bucle inserta pregunta a pregunta en la tabla que relaciona el test con las preguntas
+        let petPush2 = `INSERT INTO PreguntasTest (IDTest, IDPregunta) VALUES ("${IDTest}", "${preguntas[a]}")`
+        console.log(petPush2)
+        baseDatos.query(petPush2, (err,respuesta) => {
+            if(err){
+                console.log('Entrando a error');
+                console.log(err);
+                res.status(502).json('Fallo con la base de datos');
+                return;
+            }
+        })
+    }
+    console.log("Test bien creado");
+    res.status(201).json(`Test creado con exito, tiene ${preguntas.length} preguntas`);
 })
 
 
