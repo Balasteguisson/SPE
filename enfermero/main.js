@@ -334,7 +334,32 @@ async function crearTest(){
 
 //REGISTRO DE ENFERMERO
 function pantallaRegistrarEnfermero(){
+    document.getElementById('nombreEnfermero').value = "";
+    document.getElementById('apellidosEnfermero').value = "";
+    document.getElementById('dniEnfermero').value = "";
+    document.getElementById('fechaNacimientoEnfermero').value = "";
+    document.getElementById('emailEnfermero').value = "";
     cambiarPantalla('menuRegistrarEnfermero');
+}
+
+async function registrarEnfermero(){
+    let datosEnfermero = {
+        nombre : document.getElementById('nombreEnfermero').value,
+        apellidos : document.getElementById('apellidosEnfermero').value,
+        dni : document.getElementById('dniEnfermero').value,
+        fechaNacimiento : document.getElementById('fechaNacimiento').value,
+        email : document.getElementById('emailEnfermero').value
+    }
+    let url = '/api/admin/:id/registrarEnfermero';
+    let petPost = {
+        method : 'POST',
+        body : JSON.stringify(datosEnfermero),
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let respuestaServidor = await peticionREST(url,petPost);
+    console.log(respuestaServidor);
 }
 
 

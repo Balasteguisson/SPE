@@ -255,6 +255,22 @@ app.post("/api/admin/:id/addPreguntas", (req,res) => {
     res.status(201).json(`Test creado con exito, tiene ${preguntas.length} preguntas`);
 })
 
+//REGISTRO DE ENFERMERO
+app.post("/api/admin/:id/registrarEnfermero", (req,res) => {
+    let datos = req.body;
+    let petBBDD = `INSERT INTO`
+    baseDatos.query()
+})
+
+//REGISTRO ADMINISTRADOR
+app.post("/api/admin/:id/registrarAdmin", (req,res) => {
+    let datos = req.body;
+    let petBBDD1 = `INSERT INTO Usuarios ("ID", "Usuario", "Password", "Tipo") VALUES (NULL, 'admin2', 'admin2', 'administrador')`;
+    
+})
+
+//REGISTRO PACIENTE
+
 
 //RELLENADO MONITOR RENDIMIENTO
 //Obtencion de ciclos de test
