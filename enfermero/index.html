@@ -280,8 +280,28 @@
                     <ul id="alergiasPaciente">
                     </ul>
                 </section>
+                <section id="formularioEmbarazo">
+                    <p>¿Está embarazada?</p>
+                    <select name="embarazo" id="embarazo">
+                        <option value="SI">Sí</option>
+                        <option value="NO">No</option>
+                    </select>
+                    <p>¿Ha estado embarazada?</p>
+                    <p>Desde: <input type="date" name="inicioEmbarazo" id="inicioEmbarazo"> Hasta: <input type="date" name="finEmbarazo" id="finEmbarazo"> <button type="button" onclick="addEmbarazo()" id ="botonAddEmbarazo">Añadir</button></p>
+                    <ul id="listaEmbarazos"></ul>
+                </section>
+                <section id="formularioLactancia">
+                    <p>¿Está dando lactancia?</p>
+                    <select name="lactancia" id="lactancia">
+                        <option value="SI">Sí</option>
+                        <option value="NO">No</option>
+                    </select>
+                    <p>Desde: <input type="date" name="inicioLactancia" id="inicioLactancia"> Hasta: <input type="date" name="finLactancia" id="finLactancia"> <button type="button" onclick="addLactancia()" id ="botonAddLactancia">Añadir</button></p>
+                </section>
+                <section id="formularioPatologiasPrevias">
+                    
+                </section>
             </form>
-            
         </div>
         <script src="main.js"></script>
     </body>

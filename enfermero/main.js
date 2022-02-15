@@ -367,6 +367,34 @@ async function registrarEnfermero(){
 let evento = document.getElementById('submitAlergeno').addEventListener('click', function(event){
     event.preventDefault();
 }) 
+let formSexoPaciente = document.getElementById('sexoPaciente')
+formSexoPaciente.addEventListener('change',() => {
+    
+    let formEmbarazo = document.getElementById('formularioEmbarazo');
+    if (formSexoPaciente.value == "M"){
+        document.getElementById('embarazo').disabled = true;
+        document.getElementById('embarazo').value = "NO";
+        document.getElementById('inicioEmbarazo').disabled = true;
+        document.getElementById('finEmbarazo').disabled = true;
+        document.getElementById('botonAddEmbarazo').disabled = true;
+        document.getElementById('lactancia').disabled = true;
+        document.getElementById('lactancia').value = "NO";
+        document.getElementById('inicioLactancia').disabled = true;
+        document.getElementById('finLactancia').disabled = true;
+        document.getElementById('botonAddLactancia').disabled = true;
+    }else{
+        document.getElementById('embarazo').disabled = false;
+        document.getElementById('embarazo').value = "NO";
+        document.getElementById('inicioEmbarazo').disabled = false;
+        document.getElementById('finEmbarazo').disabled = false;
+        document.getElementById('botonAddEmbarazo').disabled = false;
+        document.getElementById('lactancia').disabled = false;
+        document.getElementById('lactancia').value = "NO";
+        document.getElementById('inicioLactancia').disabled = false;
+        document.getElementById('finLactancia').disabled = false;
+        document.getElementById('botonAddLactancia').disabled = false;
+    }
+})
 
 function addAlergia(){
     let alergeno = document.getElementById('alergenoPaciente').value;
