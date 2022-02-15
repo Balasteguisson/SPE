@@ -367,11 +367,9 @@ function verMenuRegistroPaciente(){
     document.getElementById('formularioRegistroPaciente').reset();
     cambiarPantalla('menuRegistrarPaciente');
 }
-//evita que los botones del formulario recarguen la pagina
-let evento = document.getElementById('submitAlergeno').addEventListener('click', function(event){
-    event.preventDefault();
-}) 
-let formSexoPaciente = document.getElementById('sexoPaciente')
+
+//ajusta las entradas de lactancia y embarazo segun sexo del paciente
+let formSexoPaciente = document.getElementById('sexoPaciente');
 formSexoPaciente.addEventListener('change',() => {
     
     let formEmbarazo = document.getElementById('formularioEmbarazo');
@@ -404,6 +402,7 @@ function addAlergia(){
     let alergeno = document.getElementById('alergenoPaciente').value;
     let listaAlergenos = document.getElementById('alergiasPaciente');
     listaAlergenos.innerHTML += `<li id="LI${alergeno}">${alergeno}<button type="button" onclick ="deleteAlergia('${alergeno}')">❌</li>`;
+    document.getElementById('alergenoPaciente').value="";
 }
 function deleteAlergia(idFila){
     let lista = document.getElementById('alergiasPaciente');
@@ -411,6 +410,23 @@ function deleteAlergia(idFila){
     let fila = document.getElementById(IDFila);
     lista.removeChild(fila);
 }
+
+function extraerAlergias(){ //permite extraer el contenido de la lista de alergias para el post de la bbdd
+    let listaInput = document.getElementById('alergiasPaciente');
+    let alergias = listaInput.childNodes;
+    let listaAlergias = [];
+    for(let a = 0; a<alergias.length; a++){
+        listaAlergias.push(alergias[a].childNodes[0].data);
+    }
+    return listaAlergias;
+}
+
+function registrarPaciente(){
+    console.log(extraerAlergias());
+}
+
+
+
 
 //RELLENAR MONITOR RENDIMIENTO
 //Insertar ciclos en el select
@@ -422,6 +438,7 @@ const getCicloSeleccionado = () => {
     let selector = document.getElementById('cicloTest');
     let ciclo = selector.value; 
 }
+
 function debugg(paso) {
     console.log(`Paso realizado ${paso}`);
 }
