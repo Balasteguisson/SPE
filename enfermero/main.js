@@ -411,7 +411,7 @@ function deleteAlergia(idFila){
     lista.removeChild(fila);
 }
 
-function extraerAlergias(){ //permite extraer el contenido de la lista de alergias para el post de la bbdd
+function extraerAlergias(){ //permite extraer el contenido de la lista de alergias para el post hacia el server
     let listaInput = document.getElementById('alergiasPaciente');
     let alergias = listaInput.childNodes;
     let listaAlergias = [];
@@ -420,9 +420,20 @@ function extraerAlergias(){ //permite extraer el contenido de la lista de alergi
     }
     return listaAlergias;
 }
-
+function extraerDatosTablaPaciente(){
+    let nombre = document.getElementById('nombrePaciente').value;
+    let apellidos = document.getElementById('apellidosPaciente').value;
+    let SIP = document.getElementById('SIPPaciente').value;
+    let fechaNacimiento = document.getElementById('fechaNacimientoPaciente').value;
+    let sexo = document.getElementById('sexoPaciente').value;
+    let peso = document.getElementById('pesoPaciente').value;
+    let talla = document.getElementById('tallaPaciente').value;
+    let datos = [nombre,apellidos,SIP,fechaNacimiento,sexo,peso,talla];
+    return datos;
+}
 function registrarPaciente(){
     console.log(extraerAlergias());
+    console.log(extraerDatosTablaPaciente())
 }
 
 
