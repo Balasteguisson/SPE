@@ -66,7 +66,7 @@
             </div>
             <div id='gestionPac' class='card'>
                 <h4 class='cardHeader'>Pacientes</h4>
-                <p><button onclick="cambiarPantalla('menuRegistrarPaciente')">Nuevo Paciente</button></p>
+                <p><button onclick="verMenuRegistroPaciente()">Nuevo Paciente</button></p>
                 <p><button onclick=''>Lista de Pacientes</button></p>
             </div>
             <div id='gestionAdmin' class='card'>
@@ -249,8 +249,12 @@
             </p>
         </div>
         <div id='menuRegistrarPaciente' class='seccion'><!--REGISTRO DE PACIENTE-->
-            <p><h1>Registrar paciente</h1><button onclick="cambiarPantalla('menuAdmin')">Volver</button></p>
-            <form>
+            <p><h1>Registrar paciente</h1></p>
+            <p>
+                <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
+                <button type="submit" onclick="registrarPaciente()">Registrar paciente</button>
+            </p>
+            <form id="formularioRegistroPaciente">
                 <section id="datosTablaPaciente">
                     <p>
                         <label for="nombrePaciente">Nombre</label>
@@ -261,7 +265,7 @@
                         <input type="text" name="SIPPaciente" id="SIPPaciente">
                     </p>
                     <p>
-                        <label for="fechaNacimientoPaciente">Fecha de nacimiento:</label>
+                        <label for="fechaNacimientoPaciente">Fecha de nacimiento</label>
                         <input type="date" name="fechaNacimientoPaciente" id="fechaNacimientoPaciente">
                         <label for="sexoPaciente">Sexo</label>
                         <select name="sexoPaciente" id="sexoPaciente">
@@ -269,10 +273,10 @@
                             <option value="M">Masculino</option>
                             <option value="F">Femenino</option>
                         </select>
-                        <label for="pesoPaciente">Peso:</label>
-                        <input type="text" name="pesoPaciente" id="pesoPaciente" placeholder="70">
+                        <label for="pesoPaciente">Peso</label>
+                        <input type="text" name="pesoPaciente" id="pesoPaciente" placeholder="Kilogramos">
                         <label for="tallaPaciente">Talla</label>
-                        <input type="text" name="pesoPaciente" id="pesoPaciente">
+                        <input type="text" name="tallaPaciente" id="tallaPaciente" placeholder="Centímetros">
                     </p>
                 </section>
                 <section id="formularioAlergiasPaciente">
@@ -299,7 +303,25 @@
                     <p>Desde: <input type="date" name="inicioLactancia" id="inicioLactancia"> Hasta: <input type="date" name="finLactancia" id="finLactancia"> <button type="button" onclick="addLactancia()" id ="botonAddLactancia">Añadir</button></p>
                 </section>
                 <section id="formularioPatologiasPrevias">
-                    
+                    <p><h3>¿Sufre o ha sufrido alguna enfermedad antes?</h3></p>
+                    <label for="enfermedadPrevia">¿Qué enfermedad?</label>
+                    <input type="text" name="enfermedadPrevia" id="enfermedadPrevia" placeholder="Enfermedad">
+                    <p>
+                        <label for="enfermedadActiva">¿Está activa ahora?</label>
+                        <select name="enfermedadActiva" id="enfermedadActiva">
+                            <option value="SI">Sí</option>    
+                            <option value="NO">No</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="fechaInicioEnfermdad">Inicio de la enfermedad: </label>
+                        <input type="date" name="fechaInicioEnfermedad" id="fechaInicioEnfermedad">
+                        <label for="fechaFinEnfermdad">Fin de la enfermedad: </label>
+                        <input type="date" name="fechaFinEnfermedad" id="fechaFinEnfermedad">
+                    </p>
+                    <p><textarea name="descripcionEnfermedad" id="descripcionEnfermedad" cols="30" rows="5" placeholder="Pequeña descripción"></textarea></p>
+                    <button type="button" onclick="addEnfermedad()">Añadir enfermedad</button>
+                    <ul id="listaPatologiasPrevias"></ul>
                 </section>
             </form>
         </div>

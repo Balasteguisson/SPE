@@ -18,3 +18,8 @@ table{
     padding: 1;
     background-color: red;
 }
+#formularioRegistroPaciente>section{
+    border-width: 0.2em;
+    border-style: solid;
+    box-sizing: border-box;
+}

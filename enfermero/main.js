@@ -363,6 +363,10 @@ async function registrarEnfermero(){
 }
 
 //REGISTRO DE PACIENTE
+function verMenuRegistroPaciente(){
+    document.getElementById('formularioRegistroPaciente').reset();
+    cambiarPantalla('menuRegistrarPaciente');
+}
 //evita que los botones del formulario recarguen la pagina
 let evento = document.getElementById('submitAlergeno').addEventListener('click', function(event){
     event.preventDefault();
