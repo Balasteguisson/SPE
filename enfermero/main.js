@@ -362,7 +362,23 @@ async function registrarEnfermero(){
     console.log(respuestaServidor);
 }
 
+//REGISTRO DE PACIENTE
+//evita que los botones del formulario recarguen la pagina
+let evento = document.getElementById('submitAlergeno').addEventListener('click', function(event){
+    event.preventDefault();
+}) 
 
+function addAlergia(){
+    let alergeno = document.getElementById('alergenoPaciente').value;
+    let listaAlergenos = document.getElementById('alergiasPaciente');
+    listaAlergenos.innerHTML += `<li id="LI${alergeno}">${alergeno}<button type="button" onclick ="deleteAlergia('${alergeno}')">❌</li>`;
+}
+function deleteAlergia(idFila){
+    let lista = document.getElementById('alergiasPaciente');
+    let IDFila = `LI${idFila}`
+    let fila = document.getElementById(IDFila);
+    lista.removeChild(fila);
+}
 
 //RELLENAR MONITOR RENDIMIENTO
 //Insertar ciclos en el select

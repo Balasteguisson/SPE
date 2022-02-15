@@ -248,7 +248,7 @@
                 <button type="submit" id="botonRegistrarEnfermero" onclick="registrarEnfermero()">Guardar usuario</button>
             </p>
         </div>
-        <div id='menuRegistrarPaciente' class='seccion'> <!--REGISTRO DE PACIENTE-->
+        <div id='menuRegistrarPaciente' class='seccion'><!--REGISTRO DE PACIENTE-->
             <p><h1>Registrar paciente</h1><button onclick="cambiarPantalla('menuAdmin')">Volver</button></p>
             <form>
                 <section id="datosTablaPaciente">
@@ -275,11 +275,13 @@
                         <input type="text" name="pesoPaciente" id="pesoPaciente">
                     </p>
                 </section>
-                <section id="alergiasPaciente">
-
+                <section id="formularioAlergiasPaciente">
+                    <p><label for="alergenoPaciente">Alérgeno</label><input type="text" name="alergenoPaciente" id="alergenoPaciente" placeholder="Alérgeno"><button id="submitAlergeno" onclick="addAlergia()">Añadir</button></p>
+                    <ul id="alergiasPaciente">
+                    </ul>
                 </section>
-                
             </form>
+            
         </div>
         <script src="main.js"></script>
     </body>
