@@ -364,6 +364,8 @@ async function registrarEnfermero(){
 
 //REGISTRO DE PACIENTE
 function verMenuRegistroPaciente(){
+    //limpia formulario y lo muestra
+    document.getElementById('embarazoDesde').disabled = true;
     document.getElementById('formularioRegistroPaciente').reset();
     cambiarPantalla('menuRegistrarPaciente');
 }
@@ -397,7 +399,7 @@ formSexoPaciente.addEventListener('change',() => {
         document.getElementById('botonAddLactancia').disabled = false;
     }
 })
-
+//ALERGIAS
 function addAlergia(){
     let alergeno = document.getElementById('alergenoPaciente').value;
     let listaAlergenos = document.getElementById('alergiasPaciente');
@@ -420,6 +422,7 @@ function extraerAlergias(){ //permite extraer el contenido de la lista de alergi
     }
     return listaAlergias;
 }
+//DATOS TABLA PACIENTE
 function extraerDatosTablaPaciente(){
     let nombre = document.getElementById('nombrePaciente').value;
     let apellidos = document.getElementById('apellidosPaciente').value;
@@ -431,6 +434,40 @@ function extraerDatosTablaPaciente(){
     let datos = [nombre,apellidos,SIP,fechaNacimiento,sexo,peso,talla];
     return datos;
 }
+
+//EMBARAZO
+document.getElementById('embarazo').addEventListener('change', ()=>{
+    let valor = document.getElementById('embarazo').value;
+    if (valor == 'ACTIVO'){
+        document.getElementById('embarazoDesde').disabled = false;
+    }else if(valor == 'NOACTIVO'){
+        document.getElementById('embarazoDesde').disabled = true;
+    }
+})
+function addEmbarazo(){
+    let activo = document.getElementById('embarazo').value;
+    let listaEmbarazos = document.getElementById('listaEmbarazos');
+
+    if (activo == "ACTIVO"){
+        let embDesde = document.getElementById('embarazoDesde').value;
+        fechaFin = "Desconocida";
+        listaEmbarazos.innerHTML += `<li id="LI${embDesde}">${embDesde} ${activo} <button type="button" onclick ="deleteEmbarazo('${embDesde}')">❌</li>`;
+    }else{
+        let fechaInicio = document.getElementById('inicioEmbarazo').value;
+        let fechaFin = document.getElementById('finEmbarazo').value;
+        listaEmbarazos.innerHTML += `<li id="LI${fechaInicio}">${fechaInicio} a ${fechaFin}<button type="button" onclick ="deleteEmbarazo('${fechaInicio}')">❌</li>`;
+    }
+    document.getElementById('formularioEmbarazo').reset();
+}
+function deleteEmbarazo(idFila){
+    let lista = document.getElementById('listaEmbarazos');
+    let IDFila = `LI${idFila}`
+    let fila = document.getElementById(IDFila);
+    lista.removeChild(fila);
+}
+
+
+
 function registrarPaciente(){
     console.log(extraerAlergias());
     console.log(extraerDatosTablaPaciente())

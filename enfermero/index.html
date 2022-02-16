@@ -287,9 +287,10 @@
                     <p>¿Está embarazada?</p>
                     <select name="embarazo" id="embarazo">
                         <option hidden selected value="placeholderSexo">Escoge una opción</option>
-                        <option value="SI">Sí</option>
-                        <option value="NO">No</option>
+                        <option value="ACTIVO">Sí</option>
+                        <option value="NOACTIVO">No</option>
                     </select>
+                    <p><label for="embarazoDesde">¿Desde cuándo?</label><input disabled type="date" name="embarazoDesde" id="embarazoDesde"></p>
                     <p>¿Ha estado embarazada?</p>
                     <p>Desde: <input type="date" name="inicioEmbarazo" id="inicioEmbarazo"> Hasta: <input type="date" name="finEmbarazo" id="finEmbarazo"> <button type="button" onclick="addEmbarazo()" id ="botonAddEmbarazo">Añadir</button></p>
                     <ul id="listaEmbarazos"></ul>
