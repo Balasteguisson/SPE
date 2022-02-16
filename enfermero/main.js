@@ -519,6 +519,8 @@ function registrarPaciente(){
         console.log(lactancia);
     }
     console.log(transferPatologias())
+
+    
 }
 
 
