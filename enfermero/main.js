@@ -332,7 +332,7 @@ async function crearTest(){
 }
 
 
-//REGISTRO DE ENFERMERO
+//  ----------REGISTRO DE ENFERMERO----------
 function pantallaRegistrarEnfermero(){
     document.getElementById('nombreEnfermero').value = "";
     document.getElementById('apellidosEnfermero').value = "";
@@ -362,7 +362,7 @@ async function registrarEnfermero(){
     console.log(respuestaServidor);
 }
 
-//REGISTRO DE PACIENTE
+//      ----------REGISTRO DE PACIENTE----------
 function verMenuRegistroPaciente(){
     //limpia formulario y lo muestra
     document.getElementById('embarazoDesde').disabled = true;
