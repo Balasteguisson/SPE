@@ -383,9 +383,6 @@ formSexoPaciente.addEventListener('change',() => {
         document.getElementById('botonAddEmbarazo').disabled = true;
         document.getElementById('lactancia').disabled = true;
         document.getElementById('lactancia').value = "NO";
-        document.getElementById('inicioLactancia').disabled = true;
-        document.getElementById('finLactancia').disabled = true;
-        document.getElementById('botonAddLactancia').disabled = true;
     }else{
         document.getElementById('embarazo').disabled = false;
         document.getElementById('embarazo').value = "NO";
@@ -394,9 +391,6 @@ formSexoPaciente.addEventListener('change',() => {
         document.getElementById('botonAddEmbarazo').disabled = false;
         document.getElementById('lactancia').disabled = false;
         document.getElementById('lactancia').value = "NO";
-        document.getElementById('inicioLactancia').disabled = false;
-        document.getElementById('finLactancia').disabled = false;
-        document.getElementById('botonAddLactancia').disabled = false;
     }
 })
 //ALERGIAS
@@ -414,8 +408,8 @@ function deleteAlergia(idFila){
 }
 
 function extraerAlergias(){ //permite extraer el contenido de la lista de alergias para el post hacia el server
-    let listaInput = document.getElementById('alergiasPaciente');
-    let alergias = listaInput.childNodes;
+    let listaInputAl = document.getElementById('alergiasPaciente');
+    let alergias = listaInputAl.childNodes;
     let listaAlergias = [];
     for(let a = 0; a<alergias.length; a++){
         listaAlergias.push(alergias[a].childNodes[0].data);
@@ -457,7 +451,9 @@ function addEmbarazo(){
         let fechaFin = document.getElementById('finEmbarazo').value;
         listaEmbarazos.innerHTML += `<li id="LI${fechaInicio}">${fechaInicio} a ${fechaFin}<button type="button" onclick ="deleteEmbarazo('${fechaInicio}')">❌</li>`;
     }
-    document.getElementById('formularioEmbarazo').reset();
+    document.getElementById('embarazoDesde').value="";
+    document.getElementById('inicioEmbarazo').value="";
+    document.getElementById('finEmbarazo').value="";
 }
 function deleteEmbarazo(idFila){
     let lista = document.getElementById('listaEmbarazos');
@@ -465,12 +461,64 @@ function deleteEmbarazo(idFila){
     let fila = document.getElementById(IDFila);
     lista.removeChild(fila);
 }
+function extraerEmbarazos(){
+    let listaInputEmb = document.getElementById('listaEmbarazos');
+    let embarazos = listaInputEmb.childNodes;
+    let listaEmbarazos = [];
+    for (let a = 0; a < embarazos.length; a++) {
+        listaEmbarazos.push(embarazos[a].childNodes[0].data);
+    }
+    return listaEmbarazos;
+}
+//PATOLOGIAS PREVIAS
+var metaListaPatologias = []; //se usa mas tarde para el formulario de patologias previas
+function addPatologia(){
+    let listaPatologias = document.getElementById('listaPatologiasPrevias');
+    //get datos
+    let patologia = document.getElementById('enfermedadPrevia').value;
+    let activa = document.getElementById('enfermedadActiva').value;
+    let fechaInicio = document.getElementById('fechaInicioEnfermedad').value;
+    let fechaFin = document.getElementById('fechaFinEnfermedad').value;
+    let descripcion = document.getElementById('descripcionEnfermedad').value;
+    let pushLista;
+    activa == "ACTIVA" ? (
+        pushLista = `<li id="LI${patologia}">${patologia} - Desde ${fechaInicio} ${activa}<button type="button" onclick ="deletePatologia('${patologia}')">❌</li>`
+    ):(
+        pushLista = `<li id="LI${patologia}">${patologia} - Desde ${fechaInicio} hasta ${fechaFin}<button type="button" onclick ="deletePatologia('${patologia}')">❌</li>`
+    );
+    listaPatologias.innerHTML += pushLista;
+    var pushPat = [patologia,activa,fechaInicio,fechaFin,descripcion];
+    metaListaPatologias.push(pushPat);
+    document.getElementById('enfermedadPrevia').value = "";
+    document.getElementById('enfermedadActiva').value = "placeholderPatAct";
+    document.getElementById('fechaInicioEnfermedad').value = "";
+    document.getElementById('fechaFinEnfermedad').value = "";
+    document.getElementById('descripcionEnfermedad').value = "";
+}
+function transferPatologias(){
+    let longitud = metaListaPatologias.length;
+    let array = metaListaPatologias.splice(0,longitud);
+    return array;
+}
 
-
+function deletePatologia(idFila){
+    let lista = document.getElementById('listaPatologiasPrevias');
+    let IDFila = `LI${idFila}`
+    let fila = document.getElementById(IDFila);
+    lista.removeChild(fila);
+}
 
 function registrarPaciente(){
     console.log(extraerAlergias());
-    console.log(extraerDatosTablaPaciente())
+    console.log(extraerDatosTablaPaciente());
+    let formSexoPaciente = document.getElementById('sexoPaciente');
+    if(formSexoPaciente =='F'){
+        //si es femenino, se lee la parte de embarazo y lactancia
+        console.log(extraerEmbarazos());
+        let lactancia = document.getElementById('lactancia').value;
+        console.log(lactancia);
+    }
+    console.log(transferPatologias())
 }
 
 

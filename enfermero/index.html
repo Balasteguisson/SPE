@@ -286,7 +286,7 @@
                 <section id="formularioEmbarazo">
                     <p>¿Está embarazada?</p>
                     <select name="embarazo" id="embarazo">
-                        <option hidden selected value="placeholderSexo">Escoge una opción</option>
+                        <option hidden selected value="">Escoge una opción</option>
                         <option value="ACTIVO">Sí</option>
                         <option value="NOACTIVO">No</option>
                     </select>
@@ -302,7 +302,6 @@
                         <option value="SI">Sí</option>
                         <option value="NO">No</option>
                     </select>
-                    <p>Desde: <input type="date" name="inicioLactancia" id="inicioLactancia"> Hasta: <input type="date" name="finLactancia" id="finLactancia"> <button type="button" onclick="addLactancia()" id ="botonAddLactancia">Añadir</button></p>
                 </section>
                 <section id="formularioPatologiasPrevias">
                     <p><h3>¿Sufre o ha sufrido alguna enfermedad antes?</h3></p>
@@ -311,9 +310,9 @@
                     <p>
                         <label for="enfermedadActiva">¿Está activa ahora?</label>
                         <select name="enfermedadActiva" id="enfermedadActiva">
-                            <option hidden selected value="placeholderSexo">Escoge una opción</option>
-                            <option value="SI">Sí</option>    
-                            <option value="NO">No</option>
+                            <option hidden selected value="placeholderPatAct">Escoge una opción</option>
+                            <option value="ACTIVA">Sí</option>    
+                            <option value="NOACTIVA">No</option>
                         </select>
                     </p>
                     <p>
@@ -323,7 +322,7 @@
                         <input type="date" name="fechaFinEnfermedad" id="fechaFinEnfermedad">
                     </p>
                     <p><textarea name="descripcionEnfermedad" id="descripcionEnfermedad" cols="30" rows="5" placeholder="Pequeña descripción"></textarea></p>
-                    <button type="button" onclick="addEnfermedad()">Añadir enfermedad</button>
+                    <button type="button" onclick="addPatologia()">Añadir enfermedad</button>
                     <ul id="listaPatologiasPrevias"></ul>
                 </section>
             </form>
