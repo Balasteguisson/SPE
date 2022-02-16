@@ -506,6 +506,46 @@ function deletePatologia(idFila){
     let IDFila = `LI${idFila}`
     let fila = document.getElementById(IDFila);
     lista.removeChild(fila);
+    for(let a = 0; a<metaListaPatologias.length; a++){
+        if(idFila == metaListaPatologias[a][0]){
+            metaListaPatologias.splice(a,1)
+            break;
+        }
+    }
+    console.log(metaListaPatologias);
+}
+var metaListaTratamientos = [];
+function addTratamiento(){
+    let listaTratamientos = document.getElementById('listaTratamientos');
+    let farmaco = document.getElementById('farmaco').value;
+    let fechaInicio = document.getElementById('fechaInicioTratamiento').value;
+    let fechaFin = document.getElementById('fechaFinTratamiento').value;
+    listaTratamientos.innerHTML += `<li id="LI${farmaco}">${farmaco}-${fechaInicio}-${fechaFin}<button type="button" onclick="deleteTratamiento('${farmaco}')">❌</li>`;
+    let pushTrat = [farmaco,fechaInicio,fechaFin];
+    metaListaTratamientos.push(pushTrat);
+    document.getElementById('farmaco').value = "";
+    document.getElementById('fechaInicioTratamiento').value = "";
+    document.getElementById('fechaFinTratamiento').value = "";
+}
+
+function deleteTratamiento(idFila){
+    let lista = document.getElementById('listaTratamientos');
+    let IDFila = `LI${idFila}`
+    let fila = document.getElementById(IDFila);
+    lista.removeChild(fila);
+    for(let a = 0; a<metaListaTratamientos.length; a++){
+        if(idFila == metaListaTratamientos[a][0]){
+            metaListaTratamientos.splice(a,1)
+            break;
+        }
+    }
+    console.log(metaListaTratamientos);
+}
+
+function transferTratamientos(){
+    let longitud = metaListaTratamientos.length;
+    let array = metaListaTratamientos.splice(0,longitud);
+    return array;
 }
 
 function registrarPaciente(){
@@ -518,9 +558,10 @@ function registrarPaciente(){
         let lactancia = document.getElementById('lactancia').value;
         console.log(lactancia);
     }
-    console.log(transferPatologias())
+    console.log(transferPatologias());
+    console.log(transferTratamientos());
 
-    
+
 }
 
 

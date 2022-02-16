@@ -327,12 +327,16 @@
                 </section>
                 <section id="formularioTratamientos">
                     <p><h3>Tratamiento en curso</h3></p>
-                    <label for="farmaco">Fármaco</label>
-                    <input type="text" name="farmaco" id="farmaco">
-                    <label for="fechaInicioTratamiento">Inicio del tratamiento:</label>
-                    <input type="date" name="fechaInicioTratamiento" id="fechaInicioTratamiento">
-                    <label for="fechaFinTratamiento">Fin del tratamiento:</label>
-                    <input type="date" name="fechaFinTratamiento" id="fechaFinTratamiento">
+                    <p><label for="farmaco">Fármaco</label>
+                    <input type="text" name="farmaco" id="farmaco"></p>
+                    <p>
+                        <label for="fechaInicioTratamiento">Inicio del tratamiento:</label>
+                        <input type="date" name="fechaInicioTratamiento" id="fechaInicioTratamiento">
+                        <label for="fechaFinTratamiento">Fin del tratamiento:</label>
+                        <input type="date" name="fechaFinTratamiento" id="fechaFinTratamiento">
+                    </p>
+                    <p><button type="button" onclick="addTratamiento()">Añadir tratamiento</button></p>
+                    <ul id="listaTratamientos"></ul>
                 </section>
             </form>
         </div>
