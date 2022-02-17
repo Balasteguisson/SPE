@@ -420,12 +420,12 @@ function extraerAlergias(){ //permite extraer el contenido de la lista de alergi
 function extraerDatosTablaPaciente(){
     let nombre = document.getElementById('nombrePaciente').value;
     let apellidos = document.getElementById('apellidosPaciente').value;
-    let SIP = document.getElementById('SIPPaciente').value;
+    let identificador = document.getElementById('SIPPaciente').value;
     let fechaNacimiento = document.getElementById('fechaNacimientoPaciente').value;
     let sexo = document.getElementById('sexoPaciente').value;
     let peso = document.getElementById('pesoPaciente').value;
     let talla = document.getElementById('tallaPaciente').value;
-    let datos = [nombre,apellidos,SIP,fechaNacimiento,sexo,peso,talla];
+    let datos = [nombre,apellidos,identificador,fechaNacimiento,sexo,peso,talla];
     return datos;
 }
 
@@ -495,7 +495,7 @@ function addPatologia(){
     document.getElementById('fechaFinEnfermedad').value = "";
     document.getElementById('descripcionEnfermedad').value = "";
 }
-function transferPatologias(){
+function extraerPatologias(){
     let longitud = metaListaPatologias.length;
     let array = metaListaPatologias.splice(0,longitud);
     return array;
@@ -542,26 +542,44 @@ function deleteTratamiento(idFila){
     console.log(metaListaTratamientos);
 }
 
-function transferTratamientos(){
+function extraerTratamientos(){
     let longitud = metaListaTratamientos.length;
     let array = metaListaTratamientos.splice(0,longitud);
     return array;
 }
 
-function registrarPaciente(){
-    console.log(extraerAlergias());
-    console.log(extraerDatosTablaPaciente());
-    let formSexoPaciente = document.getElementById('sexoPaciente');
+async function registrarPaciente(){
+    let formSexoPaciente = document.getElementById('sexoPaciente').value;
     if(formSexoPaciente =='F'){
         //si es femenino, se lee la parte de embarazo y lactancia
-        console.log(extraerEmbarazos());
-        let lactancia = document.getElementById('lactancia').value;
-        console.log(lactancia);
+        let lactanciaValue = document.getElementById('lactancia').value;
+        var datosPaciente = {
+            info : extraerDatosTablaPaciente(),
+            alergias : extraerAlergias(),
+            patologias : extraerPatologias(),
+            tratamientos : extraerTratamientos(),
+            embarazos : extraerEmbarazos(),
+            lactancia : lactanciaValue
+        }
+        
+    }else if(formSexoPaciente =='M'){
+        var datosPaciente = {
+            info : extraerDatosTablaPaciente(),
+            alergias : extraerAlergias(),
+            patologias : extraerPatologias(),
+            tratamientos : extraerTratamientos()
+        }
     }
-    console.log(transferPatologias());
-    console.log(transferTratamientos());
-
-
+    let url = '/api/admin/:id/nuevoPaciente';
+    let peticionServer = {
+        method : 'POST',
+        body : JSON.stringify(datosPaciente),
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let respuestaServidor = await peticionREST(url,peticionServer);
+    console.log(respuestaServidor);
 }
 
 

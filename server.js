@@ -271,6 +271,71 @@ app.post("/api/admin/:id/registrarAdmin", (req,res) => {
 
 //REGISTRO PACIENTE
 
+app.post("/api/admin/:id/nuevoPaciente", (req,res) =>{
+    //crea el paciente y devuelve el ID que le ha generado
+    let datos = req.body;
+    console.log(datos);
+    var info = datos.info; //0-nombre, 1-apellidos, 2-dni/pasaporte, 3-fechaNacimiento, 4-sexo, 5-peso, 6-talla
+    var alergias = datos.alergias;
+    var patologias = datos.patologias;
+    var tratamientos = datos.tratamientos;
+    //insert del paciente
+    let petBBDDpaciente = `INSERT INTO Pacientes ('NIdentidad', 'Nombre', 'Apellidos', 'FechaNacimiento', 'Sexo', 'Talla', 'Peso') VALUES ('${info[2]}', '${info[0]}', '${info[1]}', '${info[3]}', '${info[4]}', '${info[6]}', '${info[5]}');`
+    baseDatos.query(petBBDDpaciente, (err) => {
+        if(err){
+            res.status(502).json('Fallo con la base de datos.'+ err);
+            return;
+        }
+    })
+    //insert de alergias
+    for (let a = 0; a < alergias.length; a++) {
+        let alergia = alergias[a];
+        let petBBDDalergia = `INSERT INTO 'Alergias' ('IDAlergia', 'IdPaciente', 'Alergeno') VALUES (NULL, '${info[2]}', '${alergia}');`
+        baseDatos.query(petBBDDalergia, (err) =>{
+            if(err){
+                res.status(502).json('Fallo con la base de datos.'+ err);
+                return;
+            }
+        }) 
+    }
+    //insert de patologias
+    for (let a = 0; a < patologias.length; a++) {
+        let patologia = patologias[a];
+        let activa;
+        let fechaFin;
+        patologia[1] == "ACTIVA" ? (activa = 1, fechaFin = "NULL"):(activa = 0, fechaFin = patologia[3]);
+        let petBBDDpatologia = `INSERT INTO 'PatologiasPrevias' ('IDPatologia', 'IdPaciente', 'Nombre', 'Descripcion', 'Activo', 'FechaInicio', 'FechaFin') VALUES (NULL, '${info[2]}', '${patologia[0]}', '${patologia[4]}', '${activa}', '${patologia[2]}', '${fechaFin}');`
+        baseDatos.query(petBBDDpatologia,(err)=>{
+            if(err){
+                res.status(502).json('Fallo con la base de datos.'+err);
+                return;
+            }
+        })
+    }
+    //insert de tratamientos
+    for(let a = 0; a< tratamientos.length; a++){
+        let tratamiento = tratamientos[a];
+        let petBBDDtratamiento = `INSERT INTO 'Tratamiento' ('IDTratamiento', 'IdPaciente', 'IDFarmaco','Farmaco', 'FechaInicio', 'FechaFin', 'IntervaloTomas', 'Cantidad', 'Anotaciones', 'EfectosSecundarios', 'IDCita') VALUES (NULL, '${info[2]}',NULL,'${tratamiento[0]}','${tratamiento[1]}', '${tratamiento[2]}', NULL, NULL, NULL, NULL, NULL);`
+        baseDatos.query(petBBDDtratamiento,(err)=>{
+            if(err){
+                res.status(502).json('Fallo con la base de datos.'+err);
+                return;
+            }
+        })
+    }
+    if(info[4] == "F"){
+        var embarazos = datos.embarazos;
+        var lactancia = datos.lactancia;
+        for (let a = 0; a < embarazos.length; a++) {
+            let embarazo = embarazos[a];
+            let petBBDDembarazo = ``
+        
+        }
+    }
+
+})
+
+
 
 //RELLENADO MONITOR RENDIMIENTO
 //Obtencion de ciclos de test
