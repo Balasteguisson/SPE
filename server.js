@@ -365,7 +365,6 @@ app.post("/api/admin/:id/nuevoPaciente", (req,res) =>{
     }
     //si llega hasta aqui puedes celebrar
     res.status(201).json('Paciente creado en la BBDD');
-
 })
 
 

@@ -566,8 +566,7 @@ async function registrarPaciente(){
             tratamientos : extraerTratamientos(),
             embarazos : extraerEmbarazos(),
             lactancia : lactanciaValue
-        }
-        
+        }   
     }else if(formSexoPaciente =='M'){
         var datosPaciente = {
             info : extraerDatosTablaPaciente(),
