@@ -586,8 +586,41 @@ async function registrarPaciente(){
     let respuestaServidor = await peticionREST(url,peticionServer);
     console.log(respuestaServidor);
 }
+async function borrarPaciente(idPaciente){
+    console.log("entro a la funcion")
+    console.log(idPaciente)
+}
+function verMenuEditarPaciente(idPaciente){
+    console.log("entro a la funcion")
+    console.log(idPaciente)
+}
 
+async function fillListaPacientes(){
+    let url = "/api/admin/:id/getPacientes";
+    let petGet = {
+        method : "GET",
+        headers: {
+            'Content-Type':'application/json',
+        } 
+    }
+    let listaPacientes = await peticionREST(url,petGet);
+    var tabla = document.getElementById('cuerpoListadoPacientes');
+    tabla.innerHTML += `<tr id="12312312C"><td>12312312C</td><td>Prueba1</td><td>Error botnes</td><td><button type="button" onclick="verMenuEditarPaciente(12312312)">Editar</button></td><td><button type="button" onclick="borrarPaciente(12312312)">Borrar</button></td></tr>`;
+    for (let a = 0; a < listaPacientes.length; a++) {
+        let paciente = listaPacientes[a];
+        let identificadorPaciente = paciente.NIdentidad;
+        let nombre = paciente.Nombre;
+        let apellidos = paciente.Apellidos;
+        console.log(paciente);
+        console.log(`<tr id="${identificadorPaciente}"><td>${identificadorPaciente}</td><td>${nombre}</td><td>${apellidos}</td><td><button type="button" onclick="verMenuEditarPaciente(${identificadorPaciente})">Editar</button></td><td><button type="button" onclick="borrarPaciente(${identificadorPaciente})">Borrar</button></td></tr>`)
+        tabla.innerHTML += `<tr id="${identificadorPaciente}"><td>${identificadorPaciente}</td><td>${nombre}</td><td>${apellidos}</td><td><button type="button" onclick="verMenuEditarPaciente(${identificadorPaciente})">Editar</button></td><td><button type="button" onclick="borrarPaciente(${identificadorPaciente})">Borrar</button></td></tr>`;
+    }
+}
 
+function verMenuListaPacientes(){
+    fillListaPacientes()
+    cambiarPantalla("menuListaPacientes");
+}
 
 
 //RELLENAR MONITOR RENDIMIENTO

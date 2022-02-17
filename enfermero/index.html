@@ -67,7 +67,7 @@
             <div id='gestionPac' class='card'>
                 <h4 class='cardHeader'>Pacientes</h4>
                 <p><button onclick="verMenuRegistroPaciente()">Nuevo Paciente</button></p>
-                <p><button onclick=''>Lista de Pacientes</button></p>
+                <p><button onclick='verMenuListaPacientes()'>Lista de Pacientes</button></p>
             </div>
             <div id='gestionAdmin' class='card'>
                 <h4 class='cardHeader'>Administración</h4>
@@ -196,7 +196,7 @@
             </table>
             <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
         </div>
-        <div id='menuCrearTest' class='seccion'>
+        <div id ='menuCrearTest' class='seccion'> <!--MENU CREACION TEST-->
             <h1>Nuevo Test</h1>
             <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
             <button onclick="crearTest()">Generar test</button>
@@ -229,8 +229,11 @@
             </section>
             
         </div>
-        <div id='menuRegistrarEnfermero' class='seccion'> <!--REGISTRO DE ENFERMERO-->
-            <p><h1>Nuevo perfil de Enfermero</h1><button onclick="cambiarPantalla('menuAdmin')">Volver</button></p>
+        <div id ='menuRegistrarEnfermero' class='seccion'> <!--REGISTRO DE ENFERMERO-->
+            <p>
+                <h1>Nuevo perfil de Enfermero</h1><button onclick="cambiarPantalla('menuAdmin')">Volver</button>
+                <button type="submit" id="botonRegistrarEnfermero" onclick="registrarEnfermero()">Guardar usuario</button>
+            </p>
             <form>
                 <p>
                     <label for="nombreEnfermero">Nombre: </label>
@@ -244,11 +247,8 @@
                 <p><label for="emailEnfermero">Email:</label><input type="email" name="emailEnfermero" id="emailEnfermero" placeholder="ejemplo@grupohla.es"></p>
                 <button type="reset">Borrar Todo</button>
             </form>
-            <p>
-                <button type="submit" id="botonRegistrarEnfermero" onclick="registrarEnfermero()">Guardar usuario</button>
-            </p>
         </div>
-        <div id='menuRegistrarPaciente' class='seccion'><!--REGISTRO DE PACIENTE-->
+        <div id ='menuRegistrarPaciente' class='seccion'><!--REGISTRO DE PACIENTE-->
             <p><h1>Registrar paciente</h1></p>
             <p>
                 <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
@@ -339,6 +339,20 @@
                     <ul id="listaTratamientos"></ul>
                 </section>
             </form>
+        </div>
+        <div id="menuListaPacientes" class='seccion'><!--LISTA DE PACIENTES-->
+            <p><h1>Lista de Pacientes</h1></p>
+            <p><button onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
+            <table id="listaPacientes">
+                <thead>
+                    <th>Identificador</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Editar</th>
+                    <th>Borrar</th>
+                </thead>
+                <tbody id = "cuerpoListadoPacientes"></tbody>
+            </table>
         </div>
         <script src="main.js"></script>
     </body>

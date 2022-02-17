@@ -367,6 +367,18 @@ app.post("/api/admin/:id/nuevoPaciente", (req,res) =>{
     res.status(201).json('Paciente creado en la BBDD');
 })
 
+app.get("/api/admin/:id/getPacientes", (req,res) => {
+    let petBBDD = "SELECT * FROM Pacientes";
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        if(err){
+            console.log(err)
+            res.status(502).json('Fallo con la base de datos.'+err);
+            return;
+        }
+        res.status(201).json(respuesta);
+    })
+})
+
 
 
 //RELLENADO MONITOR RENDIMIENTO
