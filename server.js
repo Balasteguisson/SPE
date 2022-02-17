@@ -323,15 +323,34 @@ app.post("/api/admin/:id/nuevoPaciente", (req,res) =>{
             }
         })
     }
+    //insert de embarazo y lactancia
     if(info[4] == "F"){
-        var embarazos = datos.embarazos;
-        var lactancia = datos.lactancia;
+        let embarazos = datos.embarazos;
+        let lactancia;
+        // 0 activo 1 fechainicio 2 fechafin
         for (let a = 0; a < embarazos.length; a++) {
             let embarazo = embarazos[a];
-            let petBBDDembarazo = ``
-        
+            let activo;
+            embarazo[0] == "ACTIVO" ? (activo = 1):(activo = 0)
+            let petBBDDembarazo = `INSERT INTO 'Embarazo' ('IDEmbarazo', 'IdPaciente', 'Activo', 'FechaInicio', 'FechaFin') VALUES (NULL, '${info[2]}', '${activo}', '${embarazo[1]}', '${embarazo[2]}');`;
+            baseDatos.query(petBBDDembarazo, (err)=>{
+                if(err){
+                    res.status(502).json('Fallo con la base de datos.'+err);
+                    return;
+                }
+            })  
         }
+
+        datos.lactancia == "SI" ? (lactancia = 1):(lactancia = 0);
+        let petBBDDlactancia = `INSERT INTO 'Lactancia' ('IDLactancia', 'IdPaciente', 'Activa') VALUES (NULL, '${info[2]}', '${lactancia}');`;
+        baseDatos.query(petBBDDlactancia, (err)=>{
+            if(err){
+                res.status(502).json('Fallo con la base de datos.'+err);
+                return;
+            }
+        })
     }
+
 
 })
 

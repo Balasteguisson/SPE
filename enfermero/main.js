@@ -438,19 +438,23 @@ document.getElementById('embarazo').addEventListener('change', ()=>{
         document.getElementById('embarazoDesde').disabled = true;
     }
 })
+var metaListaEmbarazos = []
 function addEmbarazo(){
     let activo = document.getElementById('embarazo').value;
     let listaEmbarazos = document.getElementById('listaEmbarazos');
 
     if (activo == "ACTIVO"){
         let embDesde = document.getElementById('embarazoDesde').value;
-        fechaFin = "Desconocida";
+        fechaFin = NULL;
         listaEmbarazos.innerHTML += `<li id="LI${embDesde}">${embDesde} ${activo} <button type="button" onclick ="deleteEmbarazo('${embDesde}')">❌</li>`;
+        var pushTrat = [activo,embDesde,fechaFin];
     }else{
         let fechaInicio = document.getElementById('inicioEmbarazo').value;
         let fechaFin = document.getElementById('finEmbarazo').value;
         listaEmbarazos.innerHTML += `<li id="LI${fechaInicio}">${fechaInicio} a ${fechaFin}<button type="button" onclick ="deleteEmbarazo('${fechaInicio}')">❌</li>`;
+        var pushTrat = [activo,fechaInicio,fechaFin];
     }
+    metaListaEmbarazos.push(pushTrat)
     document.getElementById('embarazoDesde').value="";
     document.getElementById('inicioEmbarazo').value="";
     document.getElementById('finEmbarazo').value="";
@@ -460,15 +464,17 @@ function deleteEmbarazo(idFila){
     let IDFila = `LI${idFila}`
     let fila = document.getElementById(IDFila);
     lista.removeChild(fila);
+    for(let a = 0; a<metaListaEmbarazos.length; a++){
+        if(idFila == metaListaEmbarazos[a][1]){
+            metaListaEmbarazos.splice(a,1)
+            break;
+        }
+    }
 }
 function extraerEmbarazos(){
-    let listaInputEmb = document.getElementById('listaEmbarazos');
-    let embarazos = listaInputEmb.childNodes;
-    let listaEmbarazos = [];
-    for (let a = 0; a < embarazos.length; a++) {
-        listaEmbarazos.push(embarazos[a].childNodes[0].data);
-    }
-    return listaEmbarazos;
+    let longitud = metaListaEmbarazos.length;
+    let array = metaListaEmbarazos.splice(0,longitud);
+    return array;
 }
 //PATOLOGIAS PREVIAS
 var metaListaPatologias = []; //se usa mas tarde para el formulario de patologias previas
