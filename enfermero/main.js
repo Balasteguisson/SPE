@@ -587,12 +587,75 @@ async function registrarPaciente(){
     console.log(respuestaServidor);
 }
 async function borrarPaciente(idPaciente){
-    console.log("entro a la funcion")
-    console.log(idPaciente)
+    let url = `/api/admin/:id/borrarPaciente/${idPaciente}`
+    let peticionServer = {
+        method : 'DELETE',
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let respuestaServidor = await peticionREST(url, peticionServer);
+    let lista = document.getElementById("cuerpoListadoPacientes");
+    respuestaServidor == "Borrado" ? (verMenuListaPacientes()) : (alert('No se ha podido borrar el paciente'))
 }
-function verMenuEditarPaciente(idPaciente){
-    console.log("entro a la funcion")
-    console.log(idPaciente)
+
+async function deleteAlergiaBBDD(idAlergia){
+    let url = `/api/admin/:id/deleteAlergia/${idAlergia}`;
+    let petDelete = { 
+        method: 'DELETE',
+        headers: {
+            'Content-Type':'application/json',
+        }
+    };
+    let respuesta = await peticionREST(url, petDelete);
+    if(respuesta == "Borrado"){
+        let lista = document.getElementById('alergiasPacienteE');
+        let IDFila = `LI${idAlergia}`
+        let fila = document.getElementById(IDFila);
+        lista.removeChild(fila);
+    }
+}
+async function verMenuEditarPaciente(idPaciente){
+    let url = `/api/admin/:id/getPaciente/${idPaciente}`
+    let urlAlergias = `/api/admin/:id/getAlergiasPaciente/${idPaciente}`
+    let urlPatPrev = `/api/admin/:id/getPatPreviasPaciente/${idPaciente}`
+    let urlTratamientos = `/api/admin/:id/getTratamientosPaciente/${idPaciente}`
+    let peticionServer = {
+        method : 'GET',
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let datosPaciente = await peticionREST(url,peticionServer);
+    let alergiasPaciente = await peticionREST(urlAlergias, peticionServer)
+    let patologiasPrevias = await peticionREST(urlPatPrev, peticionServer)
+    let tratamientos = await peticionREST(urlTratamientos, peticionServer)
+    let data = datosPaciente[0];
+    if (data.sexo == "F"){
+        let urlEmbarazos = `/api/admin/:id/getEmbarazosPaciente/${idPaciente}`
+        let urlLactancia = `/api/admin/:id/getLactanciaPaciente/${idPaciente}`
+        let embarazosPaciente = await peticionREST(urlEmbarazos, peticionServer);
+        let lactanciaPaciente = await peticionREST(urlLactancia, peticionServer);
+    }
+
+    //datos del paciente
+    document.getElementById('nombrePacienteE').value = data.Nombre;
+    document.getElementById('apellidosPacienteE').value = data.Apellidos;
+    document.getElementById('IdPacienteE').value = data.NIdentidad;
+    document.getElementById('fechaNacimientoPacienteE').value = data.FechaNacimiento;
+    document.getElementById('sexoPacienteE').value = data.Sexo;
+    document.getElementById('pesoPacienteE').value = data.Peso;
+    document.getElementById('tallaPacienteE').value = data.Talla;
+
+    let listaAlergenos = document.getElementById('alergiasPacienteE');
+    //alergias
+    for(let a = 0; a<alergiasPaciente.length; a++){
+        let alergia = alergiasPaciente[a];
+        listaAlergenos.innerHTML += `<li id="LI${alergia.IDAlergia}">${alergia.Alergeno}<button type="button" onclick ="deleteAlergiaBBDD('${alergia.IDAlergia}')">❌</li>`;
+    }
+
+
+    cambiarPantalla("menuEditarPaciente");
 }
 
 async function fillListaPacientes(){
@@ -605,19 +668,17 @@ async function fillListaPacientes(){
     }
     let listaPacientes = await peticionREST(url,petGet);
     var tabla = document.getElementById('cuerpoListadoPacientes');
-    tabla.innerHTML += `<tr id="12312312C"><td>12312312C</td><td>Prueba1</td><td>Error botnes</td><td><button type="button" onclick="verMenuEditarPaciente(12312312)">Editar</button></td><td><button type="button" onclick="borrarPaciente(12312312)">Borrar</button></td></tr>`;
     for (let a = 0; a < listaPacientes.length; a++) {
         let paciente = listaPacientes[a];
         let identificadorPaciente = paciente.NIdentidad;
         let nombre = paciente.Nombre;
         let apellidos = paciente.Apellidos;
-        console.log(paciente);
-        console.log(`<tr id="${identificadorPaciente}"><td>${identificadorPaciente}</td><td>${nombre}</td><td>${apellidos}</td><td><button type="button" onclick="verMenuEditarPaciente(${identificadorPaciente})">Editar</button></td><td><button type="button" onclick="borrarPaciente(${identificadorPaciente})">Borrar</button></td></tr>`)
-        tabla.innerHTML += `<tr id="${identificadorPaciente}"><td>${identificadorPaciente}</td><td>${nombre}</td><td>${apellidos}</td><td><button type="button" onclick="verMenuEditarPaciente(${identificadorPaciente})">Editar</button></td><td><button type="button" onclick="borrarPaciente(${identificadorPaciente})">Borrar</button></td></tr>`;
+        tabla.innerHTML += `<tr id="${identificadorPaciente}"><td>${identificadorPaciente}</td><td>${nombre}</td><td>${apellidos}</td><td><button type="button" onclick="verMenuEditarPaciente('${identificadorPaciente}')">Editar</button></td><td><button type="button" onclick="borrarPaciente('${identificadorPaciente}')">Borrar</button></td></tr>`;
     }
 }
 
 function verMenuListaPacientes(){
+    document.getElementById('cuerpoListadoPacientes').innerHTML = "";
     fillListaPacientes()
     cambiarPantalla("menuListaPacientes");
 }

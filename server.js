@@ -379,6 +379,157 @@ app.get("/api/admin/:id/getPacientes", (req,res) => {
     })
 })
 
+app.get("/api/admin/:id/getPaciente/:idPaciente", (req,res) => {
+    let datos = [];
+    let petBBDD = `SELECT * FROM Pacientes WHERE NIdentidad = '${req.params.idPaciente}'`
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        err ? (res.status(502).json("Fallo en la bbdd" + err)) : (res.status(201).json(respuesta));
+    })
+})
+app.get("/api/admin/:id/getAlergiasPaciente/:idPaciente", (req,res) => {
+    let petAlergias = `SELECT * FROM Alergias WHERE IdPaciente = '${req.params.idPaciente}'`
+    baseDatos.query(petAlergias, (err,respuesta) => {
+        err ? (res.status(502).json("Fallo en la bbdd" + err)) : (res.status(201).json(respuesta));
+    })
+})
+
+app.get("/api/admin/:id/getPatPreviasPaciente/:idPaciente", (req,res) => {
+    let petPatPrev = `SELECT * FROM PatologiasPrevias WHERE IdPaciente = '${req.params.idPaciente}'` 
+    baseDatos.query(petPatPrev, (err,respuesta) => {
+        err ? (res.status(502).json("Fallo en la bbdd" + err)) : (res.status(201).json(respuesta));
+    })
+})
+
+app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req,res) => {
+    let petTratamiento = `SELECT * FROM Tratamiento WHERE IdPaciente = '${req.params.idPaciente}'`
+    baseDatos.query(petTratamiento, (err,respuesta) => {
+        err ? (res.status(502).json("Fallo en la bbdd" + err)) : (res.status(201).json(respuesta));
+    })
+})
+app.get("/api/admin/:id/getEmbarazosPaciente/:idPaciente", (req,res) => {
+    let petEmbarazos = `SELECT * FROM Embarazo WHERE IdPaciente = '${req.params.idPaciente}'`
+    baseDatos.query(petEmbarazos, (err,respuesta) => {
+        err ? (res.status(502).json("Fallo en la bbdd" + err)) : (res.status(201).json(respuesta));
+    })
+})
+app.get("/api/admin/:id/getLactanciaPaciente/:idPaciente", (req,res) => {
+    let petLactancia = `SELECT * FROM Lactancia WHERE IdPaciente = '${req.params.idPaciente}'`
+    baseDatos.query(petLactancia, (err,respuesta) => {
+        err ? (res.status(502).json("Fallo en la bbdd" + err)) : (res.status(201).json(respuesta));
+    })
+})
+
+app.delete("/api/admin/:id/deleteAlergia/:idAlergia", (req,res) =>{
+    let petBBDD = `DELETE from Alergias where IdAlergia = '${req.params.idAlergia}'`;
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        err ? (res.status(502).json("Error en base de datos" + err)):(res.status(200).json("Borrado"))
+    })
+})
+
+
+
+app.delete("/api/admin/:id/borrarPaciente/:idPaciente", (req,res) => {
+    let petBBDD = `DELETE from Pacientes where NIdentidad = '${req.params.idPaciente}'`;
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        err ? (res.status(502).json("Error en base de datos" + err)):(res.status(200).json("Borrado"))
+    })
+})
+
+app.put("/api/admin/:id/editPaciente/:idPaciente", (req,res) => {
+    let datos = req.body;
+    var info = datos.info; //0-nombre, 1-apellidos, 2-dni/pasaporte, 3-fechaNacimiento, 4-sexo, 5-peso, 6-talla
+    var alergias = datos.alergias;
+    var patologias = datos.patologias;
+    var tratamientos = datos.tratamientos;
+    //insert del paciente
+    let petBBDDpaciente = `UPDATE Pacientes SET NIdentidad ='${info[2]}', Nombre = '${info[0]}', Apellidos ='${info[1]}', FechaNacimiento = '${info[3]}', Sexo = '${info[4]}', Talla = '${info[6]}', Peso = '${info[5]}'  WHERE NIdentidad = '${info[2]}'`;
+    baseDatos.query(petBBDDpaciente, (err) => {
+        if(err){
+            console.log(err)
+            res.status(502).json('Fallo con la base de datos.'+ err);
+            return;
+        }
+    })
+    //insert de alergias
+    for (let a = 0; a < alergias.length; a++) {
+        let alergia = alergias[a];
+        let petBBDDalergia = `INSERT INTO Alergias (IDAlergia, IdPaciente, Alergeno) VALUES (NULL, '${info[2]}', '${alergia}');`
+        baseDatos.query(petBBDDalergia, (err) =>{
+            if(err){
+                console.log(err)
+                console.log("Error en alergias")
+                res.status(502).json('Fallo con la base de datos.'+ err);
+                return;
+            }
+        }) 
+    }
+    //insert de patologias
+    for (let a = 0; a < patologias.length; a++) {
+        let patologia = patologias[a];
+        let activa;
+        let fechaFin;
+        let petBBDDpatologia;
+        patologia[1] == "ACTIVA" ? (activa = 1):(activa = 0, fechaFin = patologia[3]);
+        activa == 1 ? 
+        (petBBDDpatologia = `INSERT INTO PatologiasPrevias (IDPatologia, IdPaciente, Nombre, Descripcion, Activo, FechaInicio, FechaFin) VALUES (NULL, '${info[2]}', '${patologia[0]}', '${patologia[4]}', '${activa}', '${patologia[2]}', NULL);`):
+        (petBBDDpatologia = `INSERT INTO PatologiasPrevias (IDPatologia, IdPaciente, Nombre, Descripcion, Activo, FechaInicio, FechaFin) VALUES (NULL, '${info[2]}', '${patologia[0]}', '${patologia[4]}', '${activa}', '${patologia[2]}', '${fechaFin}');`);
+        baseDatos.query(petBBDDpatologia,(err)=>{
+            if(err){
+                console.log(err)
+                console.log("Error en patologia")
+                res.status(502).json('Fallo con la base de datos.'+err);
+                return;
+            }
+        })
+    }
+    //insert de tratamientos
+    for(let a = 0; a< tratamientos.length; a++){
+        let tratamiento = tratamientos[a];
+        let petBBDDtratamiento = `INSERT INTO Tratamiento (IDTratamiento, IdPaciente, IDFarmaco,Farmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, EfectosSecundarios, IDCita) VALUES (NULL, '${info[2]}',NULL,'${tratamiento[0]}','${tratamiento[1]}', '${tratamiento[2]}', NULL, NULL, NULL, NULL, NULL);`
+        baseDatos.query(petBBDDtratamiento,(err)=>{
+            if(err){
+                console.log(err)
+                console.log("Error en tratamiento")
+                res.status(502).json('Fallo con la base de datos.'+err);
+                return;
+            }
+        })
+    }
+    //insert de embarazo y lactancia
+    if(info[4] == "F"){
+        let embarazos = datos.embarazos;
+        let lactancia;
+        // 0 activo 1 fechainicio 2 fechafin
+        for (let a = 0; a < embarazos.length; a++) {
+            let embarazo = embarazos[a];
+            let activo;
+            embarazo[0] == "ACTIVO" ? (activo = 1):(activo = 0)
+            let petBBDDembarazo = `INSERT INTO Embarazo (IDEmbarazo, IdPaciente, Activo, FechaInicio, FechaFin) VALUES (NULL, '${info[2]}', '${activo}', '${embarazo[1]}', '${embarazo[2]}');`;
+            baseDatos.query(petBBDDembarazo, (err)=>{
+                if(err){
+                    console.log(err)
+                    console.log("Error en embarazo")
+                    res.status(502).json('Fallo con la base de datos.'+err);
+                    return;
+                }
+            })  
+        }
+
+        datos.lactancia == "SI" ? (lactancia = 1):(lactancia = 0);
+        let petBBDDlactancia = `INSERT INTO Lactancia (IDLactancia, IdPaciente, Activa) VALUES (NULL, '${info[2]}', '${lactancia}');`;
+        baseDatos.query(petBBDDlactancia, (err)=>{
+            if(err){
+                console.log(err)
+                console.log("Error en lactancia")
+                res.status(502).json('Fallo con la base de datos.'+err);
+                return;
+            }
+        })
+    }
+    //si llega hasta aqui puedes celebrar
+    res.status(201).json('Paciente creado en la BBDD');
+})
+
 
 
 //RELLENADO MONITOR RENDIMIENTO
