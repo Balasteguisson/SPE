@@ -235,7 +235,7 @@
                 <h1>Nuevo perfil de Enfermero</h1><button onclick="cambiarPantalla('menuAdmin')">Volver</button>
                 <button type="submit" id="botonRegistrarEnfermero" onclick="registrarEnfermero()">Guardar usuario</button>
             </p>
-            <form>
+            <form>  
                 <p>
                     <label for="nombreEnfermero">Nombre: </label>
                     <input type="text" name="nombreEnfermero" id="nombreEnfermero" placeholder="Nombre">
@@ -361,7 +361,7 @@
                 <button onclick="verMenuListaPacientes()">Volver</button>
                 <button type="submit" onclick="registrarPaciente()">Guardar cambios</button>
             </p>
-            <form id="formularioRegistroPaciente">
+            <form id="formularioEditarPaciente">
                 <section id="datosTablaPaciente">
                     <p>
                         <label for="nombrePacienteE">Nombre</label>
@@ -406,8 +406,8 @@
                     <p>¿Está dando lactancia?</p>
                     <select name="lactanciaE" id="lactanciaE">
                         <option hidden selected value="placeholderSexo">Escoge una opción</option>
-                        <option value="SI">Sí</option>
-                        <option value="NO">No</option>
+                        <option value="1">Sí</option>
+                        <option value="0">No</option>
                     </select>
                 </section>
                 <section id="formularioPatologiasPreviasE">

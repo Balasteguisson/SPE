@@ -333,15 +333,20 @@ app.post("/api/admin/:id/nuevoPaciente", (req,res) =>{
         })
     }
     //insert de embarazo y lactancia
+    
     if(info[4] == "F"){
         let embarazos = datos.embarazos;
         let lactancia;
         // 0 activo 1 fechainicio 2 fechafin
+        console.log("han llegado embarazos " + embarazos.length)
         for (let a = 0; a < embarazos.length; a++) {
             let embarazo = embarazos[a];
             let activo;
+            let petBBDDembarazo;
             embarazo[0] == "ACTIVO" ? (activo = 1):(activo = 0)
-            let petBBDDembarazo = `INSERT INTO Embarazo (IDEmbarazo, IdPaciente, Activo, FechaInicio, FechaFin) VALUES (NULL, '${info[2]}', '${activo}', '${embarazo[1]}', '${embarazo[2]}');`;
+            activo == 1 ? (petBBDDembarazo = `INSERT INTO Embarazo (IDEmbarazo, IdPaciente, Activo, FechaInicio, FechaFin) VALUES (NULL, '${info[2]}', '${activo}', '${embarazo[1]}', NULL);`):( petBBDDembarazo = `INSERT INTO Embarazo (IDEmbarazo, IdPaciente, Activo, FechaInicio, FechaFin) VALUES (NULL, '${info[2]}', '${activo}', '${embarazo[1]}', '${embarazo[2]}');`);
+            console.log(petBBDDembarazo);
+
             baseDatos.query(petBBDDembarazo, (err)=>{
                 if(err){
                     console.log(err)
@@ -426,6 +431,12 @@ app.delete("/api/admin/:id/deleteAlergia/:idAlergia", (req,res) =>{
     })
 })
 
+app.delete("/api/admin/:id/deleteEmbarazo/:idEmbarazo", (req,res) =>{
+    let petBBDD = `DELETE from Embarazo where IDEmbarazo = '${req.params.idEmbarazo}'`;
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        err ? (res.status(502).json("Error en base de datos" + err)):(res.status(200).json("Borrado"))
+    })
+})
 
 
 app.delete("/api/admin/:id/borrarPaciente/:idPaciente", (req,res) => {
@@ -434,6 +445,7 @@ app.delete("/api/admin/:id/borrarPaciente/:idPaciente", (req,res) => {
         err ? (res.status(502).json("Error en base de datos" + err)):(res.status(200).json("Borrado"))
     })
 })
+
 
 app.put("/api/admin/:id/editPaciente/:idPaciente", (req,res) => {
     let datos = req.body;

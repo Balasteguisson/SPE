@@ -23,3 +23,8 @@ table{
     border-style: solid;
     box-sizing: border-box;
 }
+#formularioEditarPaciente>section{
+    border-width: 0.2em;
+    border-style: solid;
+    box-sizing: border-box;
+}
