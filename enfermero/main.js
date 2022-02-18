@@ -445,7 +445,7 @@ function addEmbarazo(){
 
     if (activo == "ACTIVO"){
         let embDesde = document.getElementById('embarazoDesde').value;
-        fechaFin = NULL;
+        fechaFin = "NULL";
         listaEmbarazos.innerHTML += `<li id="LI${embDesde}">${embDesde} ${activo} <button type="button" onclick ="deleteEmbarazo('${embDesde}')">❌</li>`;
         var pushTrat = [activo,embDesde,fechaFin];
     }else{
@@ -631,11 +631,33 @@ async function verMenuEditarPaciente(idPaciente){
     let patologiasPrevias = await peticionREST(urlPatPrev, peticionServer)
     let tratamientos = await peticionREST(urlTratamientos, peticionServer)
     let data = datosPaciente[0];
-    if (data.sexo == "F"){
+    //cambio de los formularios de maternidad
+    if (data.Sexo == "F"){
         let urlEmbarazos = `/api/admin/:id/getEmbarazosPaciente/${idPaciente}`
         let urlLactancia = `/api/admin/:id/getLactanciaPaciente/${idPaciente}`
         let embarazosPaciente = await peticionREST(urlEmbarazos, peticionServer);
         let lactanciaPaciente = await peticionREST(urlLactancia, peticionServer);
+        document.getElementById('embarazoE').disabled = false;
+        document.getElementById('embarazoE').value = "NO";
+        document.getElementById('inicioEmbarazoE').disabled = false;
+        document.getElementById('finEmbarazoE').disabled = false;
+        document.getElementById('botonAddEmbarazoE').disabled = false;
+        document.getElementById('lactanciaE').disabled = false;
+        document.getElementById('lactanciaE').value = "NO";
+
+        for(let a = 0; a<embarazosPaciente.length; a++){
+            let embarazo = embarazosPaciente[a];
+            console.log(embarazo)
+        }
+
+    }else if(data.Sexo =="M"){
+        document.getElementById('embarazoE').disabled = true;
+        document.getElementById('embarazoE').value = "NO";
+        document.getElementById('inicioEmbarazoE').disabled = true;
+        document.getElementById('finEmbarazoE').disabled = true;
+        document.getElementById('botonAddEmbarazoE').disabled = true;
+        document.getElementById('lactanciaE').disabled = true;
+        document.getElementById('lactanciaE').value = "NO";
     }
 
     //datos del paciente
@@ -653,8 +675,6 @@ async function verMenuEditarPaciente(idPaciente){
         let alergia = alergiasPaciente[a];
         listaAlergenos.innerHTML += `<li id="LI${alergia.IDAlergia}">${alergia.Alergeno}<button type="button" onclick ="deleteAlergiaBBDD('${alergia.IDAlergia}')">❌</li>`;
     }
-
-
     cambiarPantalla("menuEditarPaciente");
 }
 
