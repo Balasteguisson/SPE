@@ -388,6 +388,11 @@ app.get("/api/admin/:id/getPaciente/:idPaciente", (req,res) => {
     let datos = [];
     let petBBDD = `SELECT * FROM Pacientes WHERE NIdentidad = '${req.params.idPaciente}'`
     baseDatos.query(petBBDD, (err,respuesta) => {
+        var fecha = new Date(respuesta[0].FechaNacimiento)
+        console.log(fecha)
+        console.log(fecha.getDay())
+        console.log(fecha.getMonth())
+        console.log(fecha.getFullYear())
         err ? (res.status(502).json("Fallo en la bbdd" + err)) : (res.status(201).json(respuesta));
     })
 })

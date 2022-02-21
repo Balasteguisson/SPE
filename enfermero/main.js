@@ -884,7 +884,18 @@ async function verMenuEditarPaciente(idPaciente){
     document.getElementById('nombrePacienteE').value = data.Nombre;
     document.getElementById('apellidosPacienteE').value = data.Apellidos;
     document.getElementById('IdPacienteE').value = data.NIdentidad;
-    document.getElementById('fechaNacimientoPacienteE').value = data.FechaNacimiento.substring(0,10);
+    let fecha = new Date(data.FechaNacimiento)
+    let dia = fecha.getDay()+1
+    dia = dia.toString()
+    dia.length == 1 ? (dia = "0"+dia):(dia = dia)
+    let mes = fecha.getMonth()+1
+    mes = mes.toString()
+    mes.length == 1 ? (mes = "0"+ mes): (mes = mes)
+    let anno = fecha.getFullYear()
+    anno = anno.toString()
+    fecha = `${anno}-${mes}-${dia}`
+    document.getElementById('fechaNacimientoPacienteE').value = fecha;
+
     document.getElementById('sexoPacienteE').value = data.Sexo;
     document.getElementById('pesoPacienteE').value = data.Peso;
     document.getElementById('tallaPacienteE').value = data.Talla;
