@@ -258,8 +258,23 @@ app.post("/api/admin/:id/addPreguntas", (req,res) => {
 //REGISTRO DE ENFERMERO
 app.post("/api/admin/:id/registrarEnfermero", (req,res) => {
     let datos = req.body;
-    let petBBDD = `INSERT INTO`
-    baseDatos.query()
+    console.log(datos);
+    let petBBDD = `INSERT INTO Usuarios (ID, Usuario, Password, Tipo) VALUES (NULL, '${datos.dni}','${datos.fechaNacimiento}', 'enfermero')`
+    let petBBDDenfermero = `INSERT INTO Enfermero (ID, DNI, Nombre, Apellidos) VALUES (NULL, '${datos.dni}', '${datos.nombre}', '${datos.apellidos}')`
+    console.log(petBBDD)
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        var idCreado;
+        err ? (res.status(502).json("Fallo en la base de datos"+err)) :(idCreado = respuesta.insertId);
+        let petBBDD2 = `INSERT INTO DatosUsuarios (ID, IDUsuario, Nombre, Apellidos, DNI, IDFoto, FechaNacimiento, EmailContacto) VALUES (NULL, '${idCreado}', '${datos.nombre}', '${datos.apellidos}','${datos.dni}',NULL, '${datos.fechaNacimiento}', '${datos.email}')`
+        baseDatos.query(petBBDD2, (err,respuesta2) => {
+            let respuesta;
+            err ? (res.status(502).json("Fallo en la base de datos"+err)) : (respuesta = respuesta2);
+            baseDatos.query(petBBDDenfermero, (err,respuesta3) => {
+                err ? (res.status(502).json("Fallo en la base de datos"+err)) : (res.status(201).json("Enfermero creado"));
+            })
+        })
+    })
+    
 })
 
 //REGISTRO ADMINISTRADOR
@@ -385,14 +400,8 @@ app.get("/api/admin/:id/getPacientes", (req,res) => {
 })
 
 app.get("/api/admin/:id/getPaciente/:idPaciente", (req,res) => {
-    let datos = [];
     let petBBDD = `SELECT * FROM Pacientes WHERE NIdentidad = '${req.params.idPaciente}'`
     baseDatos.query(petBBDD, (err,respuesta) => {
-        var fecha = new Date(respuesta[0].FechaNacimiento)
-        console.log(fecha)
-        console.log(fecha.getDay())
-        console.log(fecha.getMonth())
-        console.log(fecha.getFullYear())
         err ? (res.status(502).json("Fallo en la bbdd" + err)) : (res.status(201).json(respuesta));
     })
 })

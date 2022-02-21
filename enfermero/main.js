@@ -347,8 +347,9 @@ async function registrarEnfermero(){
         nombre : document.getElementById('nombreEnfermero').value,
         apellidos : document.getElementById('apellidosEnfermero').value,
         dni : document.getElementById('dniEnfermero').value,
-        fechaNacimiento : document.getElementById('fechaNacimiento').value,
-        email : document.getElementById('emailEnfermero').value
+        fechaNacimiento : document.getElementById('fechaNacimientoEnfermero').value,
+        email : document.getElementById('emailEnfermero').value,
+        rutaFoto : document.getElementById('fotoEnfermero')
     }
     let url = '/api/admin/:id/registrarEnfermero';
     let petPost = {
@@ -362,7 +363,11 @@ async function registrarEnfermero(){
     console.log(respuestaServidor);
 }
 
-//      ----------REGISTRO DE PACIENTE----------
+
+
+
+//      ----------REGISTRO DE PACIENTE Y EDICION DE PACIENTE----------
+//      las funciones con una "E" al final son para editar al paciente
 function verMenuRegistroPaciente(){
     //limpia formulario y lo muestra
     document.getElementById('embarazoDesde').disabled = true;
@@ -812,6 +817,7 @@ async function deleteTratamientoBBDD(idTratamiento){
         lista.removeChild(fila);
     }
 }
+
 async function verMenuEditarPaciente(idPaciente){
     document.getElementById('embarazoDesdeE').disabled = true;
     document.getElementById('formularioEditarPaciente').reset();
@@ -920,8 +926,6 @@ async function verMenuEditarPaciente(idPaciente){
     cambiarPantalla("menuEditarPaciente");
 }
 
-
-
 async function editarPaciente(idPaciente){
     let url = `/api/admin/:id/editPaciente/${idPaciente}`
     let formSexoPaciente = document.getElementById('sexoPacienteE').value;
@@ -979,6 +983,10 @@ function verMenuListaPacientes(){
     fillListaPacientes()
     cambiarPantalla("menuListaPacientes");
 }
+//  FIN DE REGISTRAR/EDITAR PACIENTE
+//  --------------------------------
+
+
 
 
 //RELLENAR MONITOR RENDIMIENTO
