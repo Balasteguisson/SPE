@@ -445,6 +445,19 @@ app.delete("/api/admin/:id/borrarPaciente/:idPaciente", (req,res) => {
         err ? (res.status(502).json("Error en base de datos" + err)):(res.status(200).json("Borrado"))
     })
 })
+app.delete("/api/admin/:id/deletePatologia/:idPatologia", (req,res) => {
+    let petBBDD = `DELETE from PatologiasPrevias where IDPatologia ='${req.params.idPatologia}'`
+    baseDatos.query(petBBDD, (err,respuesta) =>{
+        err ? (res.status(502).json("Error en base de datos" + err)) : (res.status(200).json("Borrado"))
+    })
+})
+
+app.delete("/api/admin/:id/deleteTratamiento/:idTratamiento", (req,res) => {
+    let petBBDD = `DELETE from Tratamiento where IDTratamiento ='${req.params.idTratamiento}'`
+    baseDatos.query(petBBDD, (err,respuesta) =>{
+        err ? (res.status(502).json("Error en base de datos" + err)) : (res.status(200).json("Borrado"))
+    })
+})
 
 
 app.put("/api/admin/:id/editPaciente/:idPaciente", (req,res) => {
@@ -528,7 +541,7 @@ app.put("/api/admin/:id/editPaciente/:idPaciente", (req,res) => {
         }
 
         datos.lactancia == "SI" ? (lactancia = 1):(lactancia = 0);
-        let petBBDDlactancia = `INSERT INTO Lactancia (IDLactancia, IdPaciente, Activa) VALUES (NULL, '${info[2]}', '${lactancia}');`;
+        let petBBDDlactancia = `UPDATE Lactancia SET Activa ='${lactancia}' WHERE IDPaciente='${info[2]}'`
         baseDatos.query(petBBDDlactancia, (err)=>{
             if(err){
                 console.log(err)
@@ -539,7 +552,7 @@ app.put("/api/admin/:id/editPaciente/:idPaciente", (req,res) => {
         })
     }
     //si llega hasta aqui puedes celebrar
-    res.status(201).json('Paciente creado en la BBDD');
+    res.status(201).json('Cambios guardados correctamente');
 })
 
 

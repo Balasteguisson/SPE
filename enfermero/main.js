@@ -371,7 +371,10 @@ function verMenuRegistroPaciente(){
     document.getElementById('listaPatologiasPrevias').innerHTML = "";
     document.getElementById('alergiasPaciente').innerHTML = "";
     document.getElementById('listaEmbarazos').innerHTML = "";
-
+    metaListaEmbarazos.splice(0,metaListaEmbarazos.length)
+    metaListaAlergias.splice(0,metaListaAlergias.length)
+    metaListaPatologias.splice(0,metaListaPatologias.length)
+    metaListaTratamientos.splice(0,metaListaTratamientos.length)
     cambiarPantalla('menuRegistrarPaciente');
 }
 
@@ -411,6 +414,27 @@ function deleteAlergia(idFila){
     let fila = document.getElementById(IDFila);
     lista.removeChild(fila);
 }
+function addAlergiaE(){
+    let alergeno = document.getElementById('alergenoPacienteE').value;
+    let listaAlergenos = document.getElementById('alergiasPacienteE');
+    listaAlergenos.innerHTML += `<li id="LI${alergeno}">${alergeno}<button type="button" onclick ="deleteAlergiaE('${alergeno}')">❌</li>`;
+    document.getElementById('alergenoPacienteE').value="";
+    var pushAlergia = [alergeno];
+    metaListaAlergias.push(pushAlergia);
+}
+function deleteAlergiaE(idFila){
+    let lista = document.getElementById('alergiasPacienteE');
+    let IDFila = `LI${idFila}`
+    let fila = document.getElementById(IDFila);
+    lista.removeChild(fila);
+
+    for(let a = 0; a<metaListaAlergias.length; a++){
+        if(idFila == metaListaAlergias[a][1]){
+            metaListaEmbarazos.splice(a,1)
+            break;
+        }
+    }
+}
 
 function extraerAlergias(){ //permite extraer el contenido de la lista de alergias para el post hacia el server
     let listaInputAl = document.getElementById('alergiasPaciente');
@@ -420,6 +444,12 @@ function extraerAlergias(){ //permite extraer el contenido de la lista de alergi
         listaAlergias.push(alergias[a].childNodes[0].data);
     }
     return listaAlergias;
+}
+var metaListaAlergias = []
+function extraerAlergiasE(){ //permite extraer el contenido de la lista de alergias para el post hacia el server
+    let longitud = metaListaAlergias.length;
+    let array = metaListaAlergias.splice(0,longitud);
+    return array;
 }
 //DATOS TABLA PACIENTE
 function extraerDatosTablaPaciente(){
@@ -433,6 +463,17 @@ function extraerDatosTablaPaciente(){
     let datos = [nombre,apellidos,identificador,fechaNacimiento,sexo,peso,talla];
     return datos;
 }
+function extraerDatosTablaPacienteE(){
+    let nombre = document.getElementById('nombrePacienteE').value;
+    let apellidos = document.getElementById('apellidosPacienteE').value;
+    let identificador = document.getElementById('IdPacienteE').value;
+    let fechaNacimiento = document.getElementById('fechaNacimientoPacienteE').value;
+    let sexo = document.getElementById('sexoPacienteE').value;
+    let peso = document.getElementById('pesoPacienteE').value;
+    let talla = document.getElementById('tallaPacienteE').value;
+    let datos = [nombre,apellidos,identificador,fechaNacimiento,sexo,peso,talla];
+    return datos;
+}
 
 //EMBARAZO
 document.getElementById('embarazo').addEventListener('change', ()=>{
@@ -441,6 +482,14 @@ document.getElementById('embarazo').addEventListener('change', ()=>{
         document.getElementById('embarazoDesde').disabled = false;
     }else if(valor == 'NOACTIVO'){
         document.getElementById('embarazoDesde').disabled = true;
+    }
+})
+document.getElementById('embarazoE').addEventListener('change', ()=>{
+    let valor = document.getElementById('embarazoE').value;
+    if (valor == 'ACTIVO'){
+        document.getElementById('embarazoDesdeE').disabled = false;
+    }else if(valor == 'NOACTIVO'){
+        document.getElementById('embarazoDesdeE').disabled = true;
     }
 })
 var metaListaEmbarazos = []
@@ -466,6 +515,38 @@ function addEmbarazo(){
 }
 function deleteEmbarazo(idFila){
     let lista = document.getElementById('listaEmbarazos');
+    let IDFila = `LI${idFila}`
+    let fila = document.getElementById(IDFila);
+    lista.removeChild(fila);
+    for(let a = 0; a<metaListaEmbarazos.length; a++){
+        if(idFila == metaListaEmbarazos[a][1]){
+            metaListaEmbarazos.splice(a,1)
+            break;
+        }
+    }
+}
+function addEmbarazoE(){
+    let activo = document.getElementById('embarazoE').value;
+    let listaEmbarazos = document.getElementById('listaEmbarazosE');
+
+    if (activo == "ACTIVO"){
+        let embDesde = document.getElementById('embarazoDesdeE').value;
+        fechaFin = "NULL";
+        listaEmbarazos.innerHTML += `<li id="LI${embDesde}">${embDesde} ${activo} <button type="button" onclick ="deleteEmbarazoE('${embDesde}')">❌</li>`;
+        var pushTrat = [activo,embDesde,fechaFin];
+    }else{
+        let fechaInicio = document.getElementById('inicioEmbarazoE').value;
+        let fechaFin = document.getElementById('finEmbarazoE').value;
+        listaEmbarazos.innerHTML += `<li id="LI${fechaInicio}">${fechaInicio} a ${fechaFin}<button type="button" onclick ="deleteEmbarazoE('${fechaInicio}')">❌</li>`;
+        var pushTrat = [activo,fechaInicio,fechaFin];
+    }
+    metaListaEmbarazos.push(pushTrat)
+    document.getElementById('embarazoDesdeE').value="";
+    document.getElementById('inicioEmbarazoE').value="";
+    document.getElementById('finEmbarazoE').value="";
+}
+function deleteEmbarazoE(idFila){
+    let lista = document.getElementById('listaEmbarazosE');
     let IDFila = `LI${idFila}`
     let fila = document.getElementById(IDFila);
     lista.removeChild(fila);
@@ -506,6 +587,30 @@ function addPatologia(){
     document.getElementById('fechaFinEnfermedad').value = "";
     document.getElementById('descripcionEnfermedad').value = "";
 }
+function addPatologiaE(){
+    let listaPatologias = document.getElementById('listaPatologiasPreviasE');
+    //get datos
+    let patologia = document.getElementById('enfermedadPreviaE').value;
+    let activa = document.getElementById('enfermedadActivaE').value;
+    let fechaInicio = document.getElementById('fechaInicioEnfermedadE').value;
+    let fechaFin = document.getElementById('fechaFinEnfermedadE').value;
+    let descripcion = document.getElementById('descripcionEnfermedadE').value;
+    let pushLista;
+    activa == "ACTIVA" ? (
+        pushLista = `<li id="LI${patologia}">${patologia} - Desde ${fechaInicio} ${activa}<button type="button" onclick ="deletePatologiaE('${patologia}')">❌</li>`
+    ):(
+        pushLista = `<li id="LI${patologia}">${patologia} - Desde ${fechaInicio} hasta ${fechaFin}<button type="button" onclick ="deletePatologiaE('${patologia}')">❌</li>`
+    );
+    listaPatologias.innerHTML += pushLista;
+    var pushPat = [patologia,activa,fechaInicio,fechaFin,descripcion];
+    metaListaPatologias.push(pushPat);
+    document.getElementById('enfermedadPreviaE').value = "";
+    document.getElementById('enfermedadActivaE').value = "placeholderPatAct";
+    document.getElementById('fechaInicioEnfermedadE').value = "";
+    document.getElementById('fechaFinEnfermedadE').value = "";
+    document.getElementById('descripcionEnfermedadE').value = "";
+}
+
 function extraerPatologias(){
     let longitud = metaListaPatologias.length;
     let array = metaListaPatologias.splice(0,longitud);
@@ -525,13 +630,38 @@ function deletePatologia(idFila){
     }
     console.log(metaListaPatologias);
 }
+function deletePatologiaE(idFila){
+    let lista = document.getElementById('listaPatologiasPreviasE');
+    let IDFila = `LI${idFila}`
+    let fila = document.getElementById(IDFila);
+    lista.removeChild(fila);
+    for(let a = 0; a<metaListaPatologias.length; a++){
+        if(idFila == metaListaPatologias[a][0]){
+            metaListaPatologias.splice(a,1)
+            break;
+        }
+    }
+    console.log(metaListaPatologias);
+}
 var metaListaTratamientos = [];
 function addTratamiento(){
     let listaTratamientos = document.getElementById('listaTratamientos');
     let farmaco = document.getElementById('farmaco').value;
     let fechaInicio = document.getElementById('fechaInicioTratamiento').value;
     let fechaFin = document.getElementById('fechaFinTratamiento').value;
-    listaTratamientos.innerHTML += `<li id="LI${farmaco}">${farmaco}-${fechaInicio}-${fechaFin}<button type="button" onclick="deleteTratamiento('${farmaco}')">❌</li>`;
+    listaTratamientos.innerHTML += `<li id="LI${farmaco}">${farmaco} - ${fechaInicio} - ${fechaFin}<button type="button" onclick="deleteTratamiento('${farmaco}')">❌</li>`;
+    let pushTrat = [farmaco,fechaInicio,fechaFin];
+    metaListaTratamientos.push(pushTrat);
+    document.getElementById('farmaco').value = "";
+    document.getElementById('fechaInicioTratamiento').value = "";
+    document.getElementById('fechaFinTratamiento').value = "";
+}
+function addTratamientoE(){
+    let listaTratamientos = document.getElementById('listaTratamientosE');
+    let farmaco = document.getElementById('farmacoE').value;
+    let fechaInicio = document.getElementById('fechaInicioTratamientoE').value;
+    let fechaFin = document.getElementById('fechaFinTratamientoE').value;
+    listaTratamientos.innerHTML += `<li id="LI${farmaco}">${farmaco} - ${fechaInicio} - ${fechaFin}<button type="button" onclick="deleteTratamientoE('${farmaco}')">❌</li>`;
     let pushTrat = [farmaco,fechaInicio,fechaFin];
     metaListaTratamientos.push(pushTrat);
     document.getElementById('farmaco').value = "";
@@ -541,6 +671,19 @@ function addTratamiento(){
 
 function deleteTratamiento(idFila){
     let lista = document.getElementById('listaTratamientos');
+    let IDFila = `LI${idFila}`
+    let fila = document.getElementById(IDFila);
+    lista.removeChild(fila);
+    for(let a = 0; a<metaListaTratamientos.length; a++){
+        if(idFila == metaListaTratamientos[a][0]){
+            metaListaTratamientos.splice(a,1)
+            break;
+        }
+    }
+    console.log(metaListaTratamientos);
+}
+function deleteTratamientoE(idFila){
+    let lista = document.getElementById('listaTratamientosE');
     let IDFila = `LI${idFila}`
     let fila = document.getElementById(IDFila);
     lista.removeChild(fila);
@@ -636,7 +779,39 @@ async function borrarEmbarazoBBDD(idEmbarazo){
         lista.removeChild(fila);
     }
 }
+async function deletePatologiaBBDD(idPatologia){
+    let url = `/api/admin/:id/deletePatologia/${idPatologia}`;
+    let petDelete = { 
+        method: 'DELETE',
+        headers: {
+            'Content-Type':'application/json',
+        }
+    };
+    let respuesta = await peticionREST(url, petDelete);
+    if(respuesta == "Borrado"){
+        let lista = document.getElementById('listaPatologiasPreviasE')
+        let IDFila = `LI${idPatologia}`
+        let fila = document.getElementById(IDFila)
+        lista.removeChild(fila);
+    }
+}
 
+async function deleteTratamientoBBDD(idTratamiento){
+    let url = `/api/admin/:id/deleteTratamiento/${idTratamiento}`;
+    let petDelete = { 
+        method: 'DELETE',
+        headers: {
+            'Content-Type':'application/json',
+        }
+    };
+    let respuesta = await peticionREST(url, petDelete);
+    if(respuesta == "Borrado"){
+        let lista = document.getElementById('listaTratamientosE')
+        let IDFila = `LI${idTratamiento}`
+        let fila = document.getElementById(IDFila)
+        lista.removeChild(fila);
+    }
+}
 async function verMenuEditarPaciente(idPaciente){
     document.getElementById('embarazoDesdeE').disabled = true;
     document.getElementById('formularioEditarPaciente').reset();
@@ -645,6 +820,10 @@ async function verMenuEditarPaciente(idPaciente){
     document.getElementById('alergiasPacienteE').innerHTML = "";
     document.getElementById('listaEmbarazosE').innerHTML = "";
 
+    metaListaEmbarazos.splice(0,metaListaEmbarazos.length)
+    metaListaAlergias.splice(0,metaListaAlergias.length)
+    metaListaPatologias.splice(0,metaListaPatologias.length)
+    metaListaTratamientos.splice(0,metaListaTratamientos.length)
 
 
     let url = `/api/admin/:id/getPaciente/${idPaciente}`
@@ -705,18 +884,64 @@ async function verMenuEditarPaciente(idPaciente){
     document.getElementById('nombrePacienteE').value = data.Nombre;
     document.getElementById('apellidosPacienteE').value = data.Apellidos;
     document.getElementById('IdPacienteE').value = data.NIdentidad;
-    document.getElementById('fechaNacimientoPacienteE').value = data.FechaNacimiento;
+    document.getElementById('fechaNacimientoPacienteE').value = data.FechaNacimiento.substring(0,10);
     document.getElementById('sexoPacienteE').value = data.Sexo;
     document.getElementById('pesoPacienteE').value = data.Peso;
     document.getElementById('tallaPacienteE').value = data.Talla;
-
+    document.getElementById("submitCambiosPaciente").setAttribute('onclick',`editarPaciente('${data.NIdentidad}')`)
+    console.log(document.getElementById('submitCambiosPaciente').attributes.onclick)
     let listaAlergenos = document.getElementById('alergiasPacienteE');
     //alergias
     for(let a = 0; a<alergiasPaciente.length; a++){
         let alergia = alergiasPaciente[a];
         listaAlergenos.innerHTML += `<li id="LI${alergia.IDAlergia}">${alergia.Alergeno}<button type="button" onclick ="deleteAlergiaBBDD('${alergia.IDAlergia}')">❌</li>`;
     }
+    let listaPatologiasPrevias = document.getElementById('listaPatologiasPreviasE');
+    for(let a = 0; a<patologiasPrevias.length; a++){
+        let patologia = patologiasPrevias[a];
+        listaPatologiasPrevias.innerHTML += `<li id="LI${patologia.IDPatologia}">${patologia.Nombre}<button type="button" onclick="deletePatologiaBBDD('${patologia.IDPatologia}')">❌</button></li>`
+    }
+    let listaTratamientos = document.getElementById('listaTratamientosE');
+    for(let a  = 0; a<tratamientos.length; a++){
+        let tratamiento = tratamientos[a];
+        listaTratamientos.innerHTML += `<li id="LI${tratamiento.IDTratamiento}">${tratamiento.Farmaco}<button type="button" onclick="deleteTratamientoBBDD('${tratamiento.IDTratamiento}')">❌</button></li>`
+    }
     cambiarPantalla("menuEditarPaciente");
+}
+
+
+
+async function editarPaciente(idPaciente){
+    let url = `/api/admin/:id/editPaciente/${idPaciente}`
+    let formSexoPaciente = document.getElementById('sexoPacienteE').value;
+    if(formSexoPaciente =='F'){
+        //si es femenino, se lee la parte de embarazo y lactancia
+        let lactanciaValue = document.getElementById('lactanciaE').value;
+        var datosPaciente = {
+            info : extraerDatosTablaPacienteE(),
+            alergias : extraerAlergiasE(),
+            patologias : extraerPatologias(),
+            tratamientos : extraerTratamientos(),
+            embarazos : extraerEmbarazos(),
+            lactancia : lactanciaValue
+        }   
+    }else if(formSexoPaciente =='M'){
+        var datosPaciente = {
+            info : extraerDatosTablaPacienteE(),
+            alergias : extraerAlergiasE(),
+            patologias : extraerPatologias(),
+            tratamientos : extraerTratamientos()
+        }
+    }
+    let petPut = { 
+        method: 'PUT', 
+        body: JSON.stringify(datosPaciente),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    let respuesta = await peticionREST(url,petPut)
+    console.log(respuesta)
 }
 
 async function fillListaPacientes(){

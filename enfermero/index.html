@@ -359,7 +359,7 @@
             <p><h1>Editar paciente</h1></p>
             <p>
                 <button onclick="verMenuListaPacientes()">Volver</button>
-                <button type="submit" onclick="registrarPaciente()">Guardar cambios</button>
+                <button type="submit" id="submitCambiosPaciente">Guardar cambios</button>
             </p>
             <form id="formularioEditarPaciente">
                 <section id="datosTablaPaciente">
@@ -387,7 +387,7 @@
                     </p>
                 </section>
                 <section id="formularioAlergiasPacienteE">
-                    <p><label for="alergenoPacienteE">Alérgeno</label><input type="text" name="alergenoPacienteE" id="alergenoPacienteE" placeholder="Alérgeno"><button type = "button" id="submitAlergenoE" onclick="addAlergia()">Añadir</button></p>
+                    <p><label for="alergenoPacienteE">Alérgeno</label><input type="text" name="alergenoPacienteE" id="alergenoPacienteE" placeholder="Alérgeno"><button type = "button" id="submitAlergenoE" onclick="addAlergiaE()">Añadir</button></p>
                     <ul id="alergiasPacienteE"></ul>
                 </section>
                 <section id="formularioEmbarazoE">
@@ -399,7 +399,7 @@
                     </select>
                     <p><label for="embarazoDesdeE">¿Desde cuándo?</label><input disabled type="date" name="embarazoDesdeE" id="embarazoDesdeE"></p>
                     <p>¿Ha estado embarazada?</p>
-                    <p>Desde: <input type="date" name="inicioEmbarazoE" id="inicioEmbarazoE"> Hasta: <input type="date" name="finEmbarazoE" id="finEmbarazoE"> <button type="button" onclick="addEmbarazo()" id ="botonAddEmbarazoE">Añadir</button></p>
+                    <p>Desde: <input type="date" name="inicioEmbarazoE" id="inicioEmbarazoE"> Hasta: <input type="date" name="finEmbarazoE" id="finEmbarazoE"> <button type="button" onclick="addEmbarazoE()" id ="botonAddEmbarazoE">Añadir</button></p>
                     <ul id="listaEmbarazosE"></ul>
                 </section>
                 <section id="formularioLactanciaE">
@@ -429,7 +429,7 @@
                         <input type="date" name="fechaFinEnfermedadE" id="fechaFinEnfermedadE">
                     </p>
                     <p><textarea name="descripcionEnfermedadE" id="descripcionEnfermedadE" cols="30" rows="5" placeholder="Pequeña descripción"></textarea></p>
-                    <button type="button" onclick="addPatologia()">Añadir enfermedad</button>
+                    <button type="button" onclick="addPatologiaE()">Añadir enfermedad</button>
                     <ul id="listaPatologiasPreviasE"></ul>
                 </section>
                 <section id="formularioTratamientosE">
@@ -442,7 +442,7 @@
                         <label for="fechaFinTratamientoE">Fin del tratamiento:</label>
                         <input type="date" name="fechaFinTratamientoE" id="fechaFinTratamientoE">
                     </p>
-                    <p><button type="button" onclick="addTratamiento()">Añadir tratamiento</button></p>
+                    <p><button type="button" onclick="addTratamientoE()">Añadir tratamiento</button></p>
                     <ul id="listaTratamientosE"></ul>
                 </section>
             </form>
