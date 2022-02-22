@@ -64,18 +64,18 @@
                 <h4 class='cardHeader'>Enfermería</h4>
                 <p><button onclick='pantallaRegistrarEnfermero()'>Nuevo Enfermero</button></p>
                 <p><button onclick='fillListaEnfermeros()'>Lista de Enfermeros</button></p>
-                <p><button onclick=''>Dar Cita</button></p>
+                <p><button onclick='pantallaDarCita()'>Dar Cita</button></p>
             </div>
             <div id='gestionPac' class='card'>
                 <h4 class='cardHeader'>Pacientes</h4>
                 <p><button onclick="verMenuRegistroPaciente()">Nuevo Paciente</button></p>
                 <p><button onclick='verMenuListaPacientes()'>Lista de Pacientes</button></p>
             </div>
-            <div id='gestionAdmin' class='card'>
+            <!-- <div id='gestionAdmin' class='card'>
                 <h4 class='cardHeader'>Administración</h4>
                 <p><button>Nuevo Administrador</button></p>
                 <p><button>Lista de Administradores</button></p>
-            </div>
+            </div> -->
             <div id='gestionForm' class='card'>
                 <h4 class='cardHeader'>Formación</h4>
                 <p><button onclick="pantallaCrearPregunta()">Nueva Pregunta</button></p>
@@ -488,6 +488,16 @@
                 <p></p>
                 <button type="reset">Borrar Todo</button>
             </form>
+        </div>
+        <div id='menuDarCita' class="seccion">
+            <p><h1>Crear nueva cita</h1></p>
+            <p><button onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
+            <form id='formularioCita'>
+                <!-- input select del paciente -->
+                <!-- input select del enfermero -->
+                <p><label for="fechaCita">Fecha y hora</label><input type="datetime-local" name="fechaCita" id="fechaCita"></p>
+            </form>
+            <button type="button" onclick="crearCita()">Crear cita</button>
         </div>
         <script src="main.js"></script>
     </body>

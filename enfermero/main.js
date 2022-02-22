@@ -447,8 +447,6 @@ async function editarEnfermero(dniEnfermero){
 
 
 
-
-
 //      ----------REGISTRO DE PACIENTE Y EDICION DE PACIENTE----------
 //      las funciones con una "E" al final son para editar al paciente
 function verMenuRegistroPaciente(){
@@ -1062,6 +1060,15 @@ function verMenuListaPacientes(){
 //  FIN DE REGISTRAR/EDITAR PACIENTE
 //  --------------------------------
 
+// MENU DAR CITA
+function pantallaDarCita(){
+    document.getElementById('formularioCita').reset()
+    cambiarPantalla('menuDarCita')
+}
+async function crearCita(){
+    let fechaHora = document.getElementById('fechaCita').value
+    console.log(fechaHora);
+}
 //RELLENAR MONITOR RENDIMIENTO
 //Insertar ciclos en el select
 async function insertCiclos(){
