@@ -76,8 +76,6 @@ async function log() {
         cambiarPantalla('menuEnfermero');
         let citas = await getCitas(datosUser.DNI); //aqui tengo las citas del enfermero
         let resultados = await getResultados(datosUser.DNI); //aqui tengo los resultados de sus test actuales
-        console.log(citas);
-        console.log(resultados);
     }else if(dataLog.permisos == 'administrador'){
         let mensajeBienvenida = document.createTextNode(`Bienvenido administrador ${datosUser.Nombre}`);
         document.getElementById('bienvenidaAdmin').appendChild(mensajeBienvenida);
@@ -133,7 +131,6 @@ async function guardarPregunta() {
         respuesta4: document.getElementById('respuesta4').value,
         respuestaCorrecta: document.getElementById('respuestaCorrecta').value
     }
-    //console.log(JSON.stringify(datosPregunta));
     let url = '/api/enfermero/:id/addPregunta';
     let petPost = {
         method: 'POST',
@@ -200,7 +197,6 @@ async function pantallaEditarPregunta(IDPregunta){
 }
 
 async function editarPregunta(IDPregunta){ //EDITAR PREGUNTA
-    console.log(IDPregunta);
     let datosPreguntaE = {
         IDPregunta: IDPregunta,
         tipo: document.getElementById('tipoPreguntaE').value,
@@ -212,7 +208,6 @@ async function editarPregunta(IDPregunta){ //EDITAR PREGUNTA
         respuesta4: document.getElementById('respuesta4E').value,
         respuestaCorrecta: document.getElementById('respuestaCorrectaE').value
     }
-    console.log(datosPreguntaE);
     let url = `/api/admin/:id/editPregunta/${IDPregunta}`;
     let petPut = { method: 'PUT', 
         body: JSON.stringify(datosPreguntaE),
@@ -225,7 +220,6 @@ async function editarPregunta(IDPregunta){ //EDITAR PREGUNTA
 }
 
 async function borrarPregunta(IDPregunta){ //BORRAR PREGUNTA
-    console.log(IDPregunta);
     let url = `/api/admin/:id/deletePregunta/${IDPregunta}`;
     let petDelete = { 
         method: 'DELETE',
@@ -259,7 +253,6 @@ async function fillSurtidor(){
         }
     }
     let preguntas = await peticionREST(url,petGet);
-    console.log(preguntas);
     for (let a = 0; a < preguntas.length; a++) {
         surtidor.innerHTML += `<tr onclick="moverPregunta(${preguntas[a].IDPregunta})" id= 'SROW${preguntas[a].IDPregunta}'><td>${preguntas[a].IDPregunta}</td><td>${preguntas[a].Pregunta}</td></tr>`;
     }
@@ -281,7 +274,6 @@ function moverPregunta(IDtr){
 
 //funcion para crear test con las preguntas del deposito
 async function crearTest(){
-    console.log('Creando test')
     let deposito = document.getElementById('cuerpoDepositoPreguntas');
     let modalidad = document.getElementById('tipoTest').value;
     let filas = deposito.childNodes;
@@ -341,7 +333,6 @@ function pantallaRegistrarEnfermero(){
     document.getElementById('emailEnfermero').value = "";
     cambiarPantalla('menuRegistrarEnfermero');
 }
-
 async function registrarEnfermero(){
     let datosEnfermero = {
         nombre : document.getElementById('nombreEnfermero').value,
@@ -362,6 +353,98 @@ async function registrarEnfermero(){
     let respuestaServidor = await peticionREST(url,petPost);
     console.log(respuestaServidor);
 }
+// LISTA DE ENFERMEROS
+async function fillListaEnfermeros(){
+    let url = '/api/admin/:id/getEnfermeros'
+    let petGet = {
+        method : "GET",
+        headers: {
+            'Content-Type':'application/json',
+        } 
+    }
+
+    let enfermeros = await peticionREST(url, petGet)
+    let listaEnfermeros = document.getElementById('cuerpoListaEnfermeros')
+    listaEnfermeros.innerHTML = ""
+    for(let a = 0; a < enfermeros.length; a++){
+        let enfermero = enfermeros[a]
+        listaEnfermeros.innerHTML += `<tr id="TR${enfermero.DNI}"><td>${enfermero.DNI}</td><td>${enfermero.Nombre}</td><td>${enfermero.Apellidos}</td><td><button type="button" onclick="verMenuEditarEnfermero('${enfermero.DNI}')">Editar</button></td><td><button type="button" onclick="borrarEnfermero('${enfermero.DNI}')">Borrar</button></td></tr>`;
+    }
+    cambiarPantalla("menuListaEnfermeros");
+
+}
+
+async function borrarEnfermero(dniEnfermero){
+    let url = `/api/admin/:id/deleteEnfermero/${dniEnfermero}`
+    let petDelete = {
+        method : 'DELETE',
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let respuesta = await peticionREST(url, petDelete)
+    if(respuesta.serverStatus === 2){
+        let fila = document.getElementById(`TR${dniEnfermero}`)
+        fila.parentElement.removeChild(fila)
+    }else{
+        console.log(respuesta)
+    }
+    
+}
+
+async function verMenuEditarEnfermero(dniEnfermero){
+    document.getElementById('nombreEnfermeroE').value = "";
+    document.getElementById('apellidosEnfermeroE').value = "";
+    document.getElementById('dniEnfermeroE').value = "";
+    document.getElementById('fechaNacimientoEnfermeroE').value = "";
+    document.getElementById('emailEnfermeroE').value = "";
+    document.getElementById('fotoEnfermeroE').value = "";
+    let url = `/api/admin/:id/getEnfermero/${dniEnfermero}`
+    let petGet ={
+        method : "GET",
+        headers: {
+            'Content-Type':'application/json',
+        } 
+    }
+    let datosEnfermero = await peticionREST(url, petGet);
+    document.getElementById('botonEditarEnfermero').setAttribute('onclick',`editarEnfermero('${datosEnfermero[0].DNI}')`)
+    document.getElementById('nombreEnfermeroE').value = datosEnfermero[0].Nombre
+    document.getElementById('apellidosEnfermeroE').value = datosEnfermero[0].Apellidos
+    document.getElementById('dniEnfermeroE').value = datosEnfermero[0].DNI
+    let fecha = new Date(datosEnfermero[0].FechaNacimiento)
+    let dia = fecha.getDay()+1; dia = dia.toString(); dia.length == 1 ? (dia = "0"+dia):(dia = dia)
+    let mes = fecha.getMonth()+1; mes = mes.toString(); mes.length == 1 ? (mes = "0"+ mes): (mes = mes)
+    let anno = fecha.getFullYear(); anno = anno.toString()
+    fecha = `${anno}-${mes}-${dia}`
+    document.getElementById('fechaNacimientoEnfermeroE').value = fecha;
+    document.getElementById('emailEnfermeroE').value = datosEnfermero[0].EmailContacto
+    document.getElementById('fotoEnfermeroE').value = datosEnfermero[0].IDFoto
+
+    cambiarPantalla('menuEditarEnfermero');
+}
+
+async function editarEnfermero(dniEnfermero){
+    let url = `/api/admin/:id/editarEnfermero/${dniEnfermero}`
+
+    datosEnfermero = {
+        nombre : document.getElementById('nombreEnfermeroE').value,
+        apellidos : document.getElementById('apellidosEnfermeroE').value,
+        dni : document.getElementById('dniEnfermeroE').value,
+        idFoto : document.getElementById('fotoEnfermeroE').value,
+        email : document.getElementById('emailEnfermeroE').value,
+        fechaNacimiento : document.getElementById('fechaNacimientoEnfermeroE').value
+    }
+
+    let petPut = { 
+        method: 'PUT', 
+        body: JSON.stringify(datosEnfermero),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    await  peticionREST(url, petPut);
+}
+
 
 
 
@@ -633,7 +716,6 @@ function deletePatologia(idFila){
             break;
         }
     }
-    console.log(metaListaPatologias);
 }
 function deletePatologiaE(idFila){
     let lista = document.getElementById('listaPatologiasPreviasE');
@@ -646,7 +728,6 @@ function deletePatologiaE(idFila){
             break;
         }
     }
-    console.log(metaListaPatologias);
 }
 var metaListaTratamientos = [];
 function addTratamiento(){
@@ -685,7 +766,6 @@ function deleteTratamiento(idFila){
             break;
         }
     }
-    console.log(metaListaTratamientos);
 }
 function deleteTratamientoE(idFila){
     let lista = document.getElementById('listaTratamientosE');
@@ -698,7 +778,6 @@ function deleteTratamientoE(idFila){
             break;
         }
     }
-    console.log(metaListaTratamientos);
 }
 
 function extraerTratamientos(){
@@ -737,7 +816,6 @@ async function registrarPaciente(){
         }
     }
     let respuestaServidor = await peticionREST(url,peticionServer);
-    console.log(respuestaServidor);
 }
 async function borrarPaciente(idPaciente){
     let url = `/api/admin/:id/borrarPaciente/${idPaciente}`
@@ -906,7 +984,6 @@ async function verMenuEditarPaciente(idPaciente){
     document.getElementById('pesoPacienteE').value = data.Peso;
     document.getElementById('tallaPacienteE').value = data.Talla;
     document.getElementById("submitCambiosPaciente").setAttribute('onclick',`editarPaciente('${data.NIdentidad}')`)
-    console.log(document.getElementById('submitCambiosPaciente').attributes.onclick)
     let listaAlergenos = document.getElementById('alergiasPacienteE');
     //alergias
     for(let a = 0; a<alergiasPaciente.length; a++){
@@ -955,8 +1032,7 @@ async function editarPaciente(idPaciente){
             'Content-Type': 'application/json'
         }
     }
-    let respuesta = await peticionREST(url,petPut)
-    console.log(respuesta)
+    await peticionREST(url,petPut)
 }
 
 async function fillListaPacientes(){
@@ -985,9 +1061,6 @@ function verMenuListaPacientes(){
 }
 //  FIN DE REGISTRAR/EDITAR PACIENTE
 //  --------------------------------
-
-
-
 
 //RELLENAR MONITOR RENDIMIENTO
 //Insertar ciclos en el select

@@ -63,7 +63,7 @@
             <div id='gestionEnf' class='card'>
                 <h4 class='cardHeader'>Enfermería</h4>
                 <p><button onclick='pantallaRegistrarEnfermero()'>Nuevo Enfermero</button></p>
-                <p><button onclick=''>Lista de Enfermeros</button></p>
+                <p><button onclick='fillListaEnfermeros()'>Lista de Enfermeros</button></p>
                 <p><button onclick=''>Dar Cita</button></p>
             </div>
             <div id='gestionPac' class='card'>
@@ -346,7 +346,7 @@
                 </section>
             </form>
         </div>
-        <div id="menuListaPacientes" class='seccion'><!--LISTA DE PACIENTES-->
+        <div id='menuListaPacientes' class='seccion'><!--LISTA DE PACIENTES-->
             <p><h1>Lista de Pacientes</h1></p>
             <p><button onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
             <table id="listaPacientes">
@@ -450,6 +450,43 @@
                     <p><button type="button" onclick="addTratamientoE()">Añadir tratamiento</button></p>
                     <ul id="listaTratamientosE"></ul>
                 </section>
+            </form>
+        </div>
+        <div id='menuListaEnfermeros' class='seccion'> <!--LISTA DE ENFERMEROS-->
+            <p><h1>Lista de enfermeros</h1></p>
+            <p><button onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
+            <table id="listaEnfermeros">
+                <thead>
+                    <th>DNI</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Editar</th>
+                    <th>Borrar</th>
+                </thead>
+                <tbody id = "cuerpoListaEnfermeros"></tbody>
+            </table>
+        </div>
+        <div id='menuEditarEnfermero' class='seccion'>
+            <p>
+                <h1>Editar Enfermero</h1><button onclick="fillListaEnfermeros()">Volver</button>
+                <button type="submit" id="botonEditarEnfermero">Guardar cambios</button>
+            </p>
+            <form>  
+                <p>
+                    <label for="nombreEnfermeroE">Nombre: </label>
+                    <input type="text" name="nombreEnfermeroE" id="nombreEnfermeroE" placeholder="Nombre">
+                    <label for="apellidosEnfermeroE">Apellidos: </label>
+                    <input type="text" name="apellidosEnfermeroE" id="apellidosEnfermeroE" placeholder="Apellidos">
+                    <label for="dniEnfermeroE">DNI:</label>
+                    <input type="text" name="dniEnfermeroE" id="dniEnfermeroE" placeholder="11111111A">
+                </p>
+                <p>
+                    <label for="fechaNacimientoEnfermeroE">Fecha Nacimiento:</label><input type="date" id="fechaNacimientoEnfermeroE">
+                    <label for="emailEnfermeroE">Email:</label><input type="email" name="emailEnfermeroE" id="emailEnfermeroE" placeholder="ejemplo@grupohla.es">
+                    <label for="fotoEnfermeroE">Foto:</label><input type="text" name="fotoEnfermeroE" id="fotoEnfermeroE">
+                </p>
+                <p></p>
+                <button type="reset">Borrar Todo</button>
             </form>
         </div>
         <script src="main.js"></script>

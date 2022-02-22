@@ -277,6 +277,47 @@ app.post("/api/admin/:id/registrarEnfermero", (req,res) => {
     
 })
 
+//LISTADO ENFERMEROS
+app.get("/api/admin/:id/getEnfermeros", (req,res) => {
+    let petBBDD = `SELECT * FROM Enfermero`
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        err ? (res.status(501).json("Error en BBDD" + err)) : (res.status(201).json(respuesta))
+    })
+})
+
+app.delete("/api/admin/:id/deleteEnfermero/:dniEnfermero", (req,res) => {
+    let petBBDD = `DELETE FROM Enfermero WHERE DNI ='${req.params.dniEnfermero}'`
+    console.log(petBBDD)
+    baseDatos.query(petBBDD, (err,respuesta) =>{
+        err ? (res.status(502).json("Error con BBDD"+ err)) : (res.status(201).json(respuesta))
+    })
+})
+
+app.get("/api/admin/:id/getEnfermero/:dniEnfermero", (req,res) => {
+    let petBBDD = `SELECT * FROM DatosUsuarios WHERE DNI='${req.params.dniEnfermero}';`;
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        
+        err ? (res.status(502).json(err)) : (res.status(201).json(respuesta));
+    })
+})
+
+app.put("/api/admin/:id/editarEnfermero/:dniEnfermero", (req,res) => {
+    let dniEnfermero = req.params.dniEnfermero
+    let datosEnfermero = req.body
+    let petBBDD = `UPDATE DatosUsuarios SET DNI ='${datosEnfermero.dni}', Nombre ='${datosEnfermero.nombre}', Apellidos ='${datosEnfermero.apellidos}', FechaNacimiento='${datosEnfermero.fechaNacimiento}', IDFoto =${datosEnfermero.idFoto}, EmailContacto='${datosEnfermero.email}' WHERE DNI ='${dniEnfermero}'`;
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        if (err){
+            res.status(502).json("Error en BBDD" + err)
+        }else{
+            let petBBDD2 = `UPDATE Enfermero SET DNI='${datosEnfermero.dni}', Nombre='${datosEnfermero.nombre}', Apellidos='${datosEnfermero.apellidos}' WHERE DNI='${dniEnfermero}'`;
+            baseDatos.query(petBBDD2, (err2,respuesta2) => {
+                err2 ? (res.status(502).json("Error en BBDD" + err)) : (res.status(201).json(respuesta2))
+            })
+        }
+    })
+    
+})
+
 //REGISTRO ADMINISTRADOR
 app.post("/api/admin/:id/registrarAdmin", (req,res) => {
     let datos = req.body;
@@ -284,7 +325,7 @@ app.post("/api/admin/:id/registrarAdmin", (req,res) => {
     
 })
 
-//REGISTRO PACIENTE
+//REGISTRO Y EDICION DE PACIENTE
 
 app.post("/api/admin/:id/nuevoPaciente", (req,res) =>{
     //crea el paciente y devuelve el ID que le ha generado
@@ -481,7 +522,7 @@ app.put("/api/admin/:id/editPaciente/:idPaciente", (req,res) => {
     var patologias = datos.patologias;
     var tratamientos = datos.tratamientos;
     //insert del paciente
-    let petBBDDpaciente = `UPDATE Pacientes SET NIdentidad ='${info[2]}', Nombre = '${info[0]}', Apellidos ='${info[1]}', FechaNacimiento = '${info[3]}', Sexo = '${info[4]}', Talla = '${info[6]}', Peso = '${info[5]}'  WHERE NIdentidad = '${info[2]}'`;
+    let petBBDDpaciente = `UPDATE Pacientes SET NIdentidad ='${info[2]}', Nombre = '${info[0]}', Apellidos ='${info[1]}', FechaNacimiento = '${info[3]}', Sexo = '${info[4]}', Talla = '${info[6]}', Peso = '${info[5]}'  WHERE NIdentidad = '${req.params.idPaciente}'`;
     baseDatos.query(petBBDDpaciente, (err) => {
         if(err){
             console.log(err)
@@ -568,6 +609,11 @@ app.put("/api/admin/:id/editPaciente/:idPaciente", (req,res) => {
     //si llega hasta aqui puedes celebrar
     res.status(201).json('Cambios guardados correctamente');
 })
+
+// -----FIN DE REGISTRO Y EDICION DE PACIENTE-----
+
+
+
 
 
 
