@@ -612,7 +612,29 @@ app.put("/api/admin/:id/editPaciente/:idPaciente", (req,res) => {
 
 // -----FIN DE REGISTRO Y EDICION DE PACIENTE-----
 
-
+// DAR CITAS
+app.get(`/api/admin/:id/getPacientesEnfermeros`,(req,res) =>{
+    let petBBDD = `SELECT NIdentidad, Nombre, Apellidos FROM Pacientes`
+    let listaPacientes
+    let listaEnfermeros
+    let petBBDD2 = `SELECT ID, Nombre, Apellidos FROM Enfermero`
+    baseDatos.query(petBBDD, (err,response) => {
+        if(err){
+            res.status(502).json("Error bbdd"+err)
+        } else{
+            listaPacientes = response 
+            baseDatos.query(petBBDD2, (err,respuesta) =>{
+                if(err){
+                    res.status(502).json("Error bbdd"+err)
+                } else {
+                    listaEnfermeros = respuesta
+                    listas = [listaPacientes,listaEnfermeros]
+                    res.status(201).json(listas)
+                }
+            })
+        }
+    })
+})
 
 
 

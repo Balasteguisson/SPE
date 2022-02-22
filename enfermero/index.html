@@ -492,9 +492,12 @@
         <div id='menuDarCita' class="seccion">
             <p><h1>Crear nueva cita</h1></p>
             <p><button onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
-            <form id='formularioCita'>
+            <form id='formularioCita' autocomplete="off">
                 <!-- input select del paciente -->
                 <!-- input select del enfermero -->
+                <section class="autocomplete" style="width:300px;">
+                    <input type="text" id="nombrePacienteCita" name="nombrePacienteCita" placeholder="Paciente">
+                </section>
                 <p><label for="fechaCita">Fecha y hora</label><input type="datetime-local" name="fechaCita" id="fechaCita"></p>
             </form>
             <button type="button" onclick="crearCita()">Crear cita</button>
