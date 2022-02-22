@@ -1207,4 +1207,6 @@ function autocomplete(inp, arr) {
       closeAllLists(e.target);
   });
   } 
-  autocomplete(document.getElementById("nombrePacienteCita"), listaPacientes);
+autocomplete(document.getElementById("nombrePacienteCita"), listaPacientes);
+  
+autocomplete(document.getElementById("nombreEnfermeroCita"), listaEnfermeros);
