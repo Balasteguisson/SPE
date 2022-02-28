@@ -636,6 +636,27 @@ app.get(`/api/admin/:id/getPacientesEnfermeros`,(req,res) =>{
     })
 })
 
+app.post(`/api/admin/:id/crearCita`, (req,res) => {
+    let paciente = req.body.paciente
+    let enfermero = req.body.enfermero
+    let tipoRevision = req.body.tipo
+    let presencialidad = req.body.presencialidad
+    let fechaHora = req.body.fechaHora
+
+    //se procesa la entrada para que pueda usarse en la bbdd
+    paciente = paciente.substring(paciente.indexOf("-")+2)
+    enfermero = enfermero.substring(enfermero.indexOf("-")+2)
+    fechaHora = `${fechaHora.substring(0,10)} ${fechaHora.substring(11)}`
+
+    presencialidad == "presencial" ? (presencialidad = 0) : (presencialidad = 1)
+    //se genera la peticion de la bbdd 
+    let petBBDD = `INSERT INTO Cita (IDCita, IdPaciente, IDEnfermero, TipoRevision, Online, Sintomas, Signos, FechaHora, Realizada) VALUES (NULL, '${paciente}', '${enfermero}', '${tipoRevision}', '${presencialidad}', '', '', '${fechaHora}', '0');`
+    console.log(petBBDD)
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        err ? (res.status(502).json("Error en BBDD" + err)) : (res.status(201).json("Cita creada"))
+    })
+})
+
 
 
 

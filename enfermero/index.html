@@ -493,24 +493,27 @@
             <p><h1>Crear nueva cita</h1></p>
             <p><button onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
             <form id='formularioCita' autocomplete="off">
-                <!-- input select del paciente -->
-                <!-- input select del enfermero -->
-                <section class="autocomplete" style="width:300px;">
-                    <input type="text" id="nombrePacienteCita" name="nombrePacienteCita" placeholder="Paciente">
-                    <input type="text" name="nombreEnfermeroCita" id="nombreEnfermeroCita" placeholder="Enfermero">
-                </section>
                 <p>
                     <label for="fechaCita">Fecha y hora</label><input type="datetime-local" name="fechaCita" id="fechaCita">
                     <select name="tipoRevision" id="tipoRevision">
+                        <option hidden selected value="placeholderTipoRevision">Selecciona tratamiento</option>
                         <option value="ACOs">Tratamiento ACOs</option>
                         <option value="Diabetes">Tratamiento Diabetes</option>
                         <option value="RV">Tratamiento Riesgo Vascular</option>
                     </select>
                     <select name="ubicacionCita" id="ubicacionCita">
+                        <option hidden selected value="placeholderUbiCita">¿Presencialidad?</option>
                         <option value="online">Cita Online</option>
                         <option value="presencial">Cita Presencial</option>
                     </select>
                 </p>
+                <section class="autocomplete" style="width:300px;">
+                    <label for="nombrePacienteCita">Paciente: </label>
+                    <input type="text" id="nombrePacienteCita" name="nombrePacienteCita" placeholder="Paciente">
+                    <label for="nombreEnfermeroCita">Enfermero: </label>
+                    <input type="text" name="nombreEnfermeroCita" id="nombreEnfermeroCita" placeholder="Enfermero">
+                </section>
+                
             </form>
             <button type="button" onclick="crearCita()">Crear cita</button>
         </div>

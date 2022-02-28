@@ -1087,7 +1087,26 @@ async function llenarListasCita(){
 }
 async function crearCita(){
     let fechaHora = document.getElementById('fechaCita').value
-    console.log(fechaHora);
+    let tipo = document.getElementById('tipoRevision').value
+    let presencialidad = document.getElementById('ubicacionCita').value
+    let enfermero = document.getElementById('nombreEnfermeroCita').value
+    let paciente = document.getElementById('nombrePacienteCita').value
+    let datosCita = {
+        paciente : paciente,
+        enfermero : enfermero,
+        tipo : tipo,
+        presencialidad : presencialidad,
+        fechaHora : fechaHora
+    }
+    let url = '/api/admin/:id/crearCita'
+    let petServer = {
+        method : 'POST',
+        body : JSON.stringify(datosCita),
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let respuesta = await peticionREST(url, petServer)
 }
 //RELLENAR MONITOR RENDIMIENTO
 //Insertar ciclos en el select
