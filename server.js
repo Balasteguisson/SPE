@@ -651,7 +651,6 @@ app.post(`/api/admin/:id/crearCita`, (req,res) => {
     presencialidad == "presencial" ? (presencialidad = 0) : (presencialidad = 1)
     //se genera la peticion de la bbdd 
     let petBBDD = `INSERT INTO Cita (IDCita, IdPaciente, IDEnfermero, TipoRevision, Online, Sintomas, Signos, FechaHora, Realizada) VALUES (NULL, '${paciente}', '${enfermero}', '${tipoRevision}', '${presencialidad}', '', '', '${fechaHora}', '0');`
-    console.log(petBBDD)
     baseDatos.query(petBBDD, (err,respuesta) => {
         err ? (res.status(502).json("Error en BBDD" + err)) : (res.status(201).json("Cita creada"))
     })
