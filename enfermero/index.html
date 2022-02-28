@@ -499,7 +499,18 @@
                     <input type="text" id="nombrePacienteCita" name="nombrePacienteCita" placeholder="Paciente">
                     <input type="text" name="nombreEnfermeroCita" id="nombreEnfermeroCita" placeholder="Enfermero">
                 </section>
-                <p><label for="fechaCita">Fecha y hora</label><input type="datetime-local" name="fechaCita" id="fechaCita"></p>
+                <p>
+                    <label for="fechaCita">Fecha y hora</label><input type="datetime-local" name="fechaCita" id="fechaCita">
+                    <select name="tipoRevision" id="tipoRevision">
+                        <option value="ACOs">Tratamiento ACOs</option>
+                        <option value="Diabetes">Tratamiento Diabetes</option>
+                        <option value="RV">Tratamiento Riesgo Vascular</option>
+                    </select>
+                    <select name="ubicacionCita" id="ubicacionCita">
+                        <option value="online">Cita Online</option>
+                        <option value="presencial">Cita Presencial</option>
+                    </select>
+                </p>
             </form>
             <button type="button" onclick="crearCita()">Crear cita</button>
         </div>
