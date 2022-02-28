@@ -1133,6 +1133,11 @@ async function verMenuEnfermero(dniEnfermero){
     cambiarPantalla('menuEnfermero')
 }
 
+function verTest0(){
+    //lleva al test de diabetes
+     
+}
+
 
 function debugg(paso) {
     console.log(`Paso realizado ${paso}`);
