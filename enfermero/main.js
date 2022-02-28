@@ -51,7 +51,7 @@ async function log() {
         login: document.getElementById('user').value,
         password: document.getElementById('password').value
     }
-    let url = '/api/enfermero/login';
+    let url = '/api/login';
     let peticion = {
         method: 'POST',
         body: JSON.stringify(datosLog),
@@ -63,7 +63,6 @@ async function log() {
     let urlGet = `/api/enfermero/${dataLog.id}`;
     let peticionGet = { method: 'GET' };
     const datosUser = await peticionREST(urlGet, peticionGet); //DATOS DEL ENFERMERO
-    
     //A partir de aqui puede tomar 3 caminos, si el rol es enfermero, carga la pantalla
     // de enfermero, si es admin, la pantalla de admin, si es ambos, le lleva a la de
     // enfermero, pero habilita un boton para acceder a la admin.
@@ -73,14 +72,12 @@ async function log() {
         //Actualizar pantalla de enfermero
         let mensajeBienvenida = document.createTextNode( `Bienvenido enfermero ${datosUser.Nombre}`);
         document.getElementById('bienvenida').appendChild(mensajeBienvenida)
-        cambiarPantalla('menuEnfermero');
-        let citas = await getCitas(datosUser.DNI); //aqui tengo las citas del enfermero
-        let resultados = await getResultados(datosUser.DNI); //aqui tengo los resultados de sus test actuales
+        verMenuEnfermero(datosUser.DNI)
     }else if(dataLog.permisos == 'administrador'){
         let mensajeBienvenida = document.createTextNode(`Bienvenido administrador ${datosUser.Nombre}`);
         document.getElementById('bienvenidaAdmin').appendChild(mensajeBienvenida);
         cambiarPantalla('menuAdmin');
-    }else if(dataLog.permisos == 'ambos'){
+    }else if(dataLog.permisos == 'ambos'){ //probablemente esta parte no se acabe usando y se borre o comente
         //Actualizar pantalla de enfermero
         let mensajeBienvenida = document.createTextNode( `Bienvenido ${datosUser.Nombre}`);
         document.getElementById('bienvenidaEleccion').appendChild(mensajeBienvenida);
@@ -1117,6 +1114,25 @@ const getCicloSeleccionado = () => {
     let selector = document.getElementById('cicloTest');
     let ciclo = selector.value; 
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////MENU ENFERMERO///////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
+async function verMenuEnfermero(dniEnfermero){
+
+    //info para rellenar toda la pagina
+    let citas = await getCitas(dniEnfermero); //aqui tengo las citas del enfermero
+    let resultados = await getResultados(dniEnfermero); //aqui tengo los resultados de sus test actuales
+
+    //ajustar fechas y horas de la tabla
+
+    cambiarPantalla('menuEnfermero')
+}
+
 
 function debugg(paso) {
     console.log(`Paso realizado ${paso}`);

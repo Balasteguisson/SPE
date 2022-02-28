@@ -64,3 +64,44 @@ table{
     background-color: DodgerBlue !important;
     color: #ffffff;
 }
+
+
+/* PANELES DE LOS TEST */
+.test {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+	display: flex;
+	max-width: 80%;
+	margin: 20px;
+	overflow: hidden;
+	width: 80%;
+    max-height: fit-content;
+}
+
+.test-info{
+    background-color: #2A265F;
+	color: #fff;
+	padding: 14px;
+	max-width: 25%;
+}
+
+.test-status{
+    padding: 15px;
+	position: relative;
+    max-width: 100%;
+	width: 100%;
+}
+.btn {
+	background-color: #2A265F;
+	border: 0;
+	border-radius: 50px;
+	box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+	color: #fff;
+	font-size: 14px;
+	padding: 12px 18px;
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+	letter-spacing: 1px;
+}

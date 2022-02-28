@@ -25,36 +25,102 @@
             <p><button class="botonMenu" onclick="logout()">Cerrar sesión</button></p>
             <section id = 'formacion' class="seccionMEnf">
                 <h3>Formación</h3>
-                <div id = 'testPropios'>
-                    <table>
-                        <tr><th>Tus test en este ciclo</th></tr>
-                        <tbody>
-                            <tr id = 'test1E'><td><button>test 1  <progress max='100' value='70'>50%</progress></button></td></tr>
-                            <tr id = 'test1E'><td><button>test 1  <progress max='100' value='50'>50%</progress></button></td></tr>
-                            <tr id = 'test1E'><td><button>test 1  <progress max='100' value='28'>50%</progress></button></td></tr>
-                        </tbody>
-                    </table>
+                <div id="formacionPropia">
+                    <div id="test0" class="test">
+                        <div class="test-info">
+                            <h6>Test</h6>
+                            <h3>Diabetes</h2>
+                        </div>
+                        <div class="test-status">
+                            <div class="barra-progreso">
+                                <div class="progress-bar">
+                                    <progress max="100" value="100">100%</progress>
+                                </div>
+                                <span class="progress-text">
+                                    15/50 preguntas
+                                </span>
+                            </div>
+                            <h2>Febrero</h2>
+                            <button class="btn" onclick="verTest0()">Realizar test</button>
+                        </div>
+                    </div>
+                    <div id="test1" class="test">
+                        <div class="test-info">
+                            <h6>Test</h6>
+                            <h3>Anticoagulantes Orales</h2>
+                        </div>
+                        <div class="test-status">
+                            <div class="barra-progreso">
+                                <div class="progress-bar">
+                                    <progress max="100" value="10">10%</progress>
+                                </div>
+                                <span class="progress-text">
+                                    15/50 preguntas
+                                </span>
+                            </div>
+                            <h2>Febrero</h2>
+                            <button class="btn" onclick="verTest1()">Realizar test</button>
+                        </div>
+                    </div>
+                    <div id="test2" class="test">
+                        <div class="test-info">
+                            <h6>Test</h6>
+                            <h3>Riesgo Vascular</h2>
+                        </div>
+                        <div class="test-status">
+                            <div class="barra-progreso">
+                                <div class="progress-bar">
+                                    <progress max="100" value="40">40%</progress>
+                                </div>
+                                <span class="progress-text">
+                                    15/50 preguntas
+                                </span>
+                            </div>
+                            <h2>Febrero</h2>
+                            <button class="btn" onclick="verTest2()">Realizar test</button>
+                        </div>
+                    </div>
                 </div>
-                <div id = 'testGeneral'>
-                    <table>
-                        <tr><th>Progreso general</th></tr>
-                        <tbody>
-                            <tr id = 'test1G'><td>Info test 1</td></tr>
-                            <tr id = 'test1G'><td>Info test 2</td></tr>
-                            <tr id = 'test1G'><td>Info test 3</td></tr>
-                        </tbody>
-                    </table>
+                <div id="formacionGeneral">
+                    <div id="test3" class="test">
+                        <div class="test-info"></div>
+                        <div class="test-status"></div>
+                    </div>
+                    <div id="test4">
+                        <div class="test-info"></div>
+                        <div class="test-status"></div>
+                    </div>
+                    <div id="test5">
+                        <div class="test-info"></div>
+                        <div class="test-status"></div>
+                    </div>
                 </div>
             </section>
             <section id = 'citas' class="seccionMEnf">
                 <h3>Citas</h3>
                 <table id = 'horarioCitas'>
-                    <th>
-                        <td>Hora</td>
-                        <td id = 'dia0'>D1</td>
-                        <td id = 'dia1'>D2</td>
-                        <td id = 'dia2'>D3</td>
-                    </th>
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th id = 'dia0'>D1</th>
+                            <th id = 'dia1'>D2</th>
+                            <th id = 'dia2'>D3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="h0"></tr>
+                        <tr id="h1"></tr>
+                        <tr id="h2"></tr>
+                        <tr id="h3"></tr>
+                        <tr id="h4"></tr>
+                        <tr id="h5"></tr>
+                        <tr id="h6"></tr>
+                        <tr id="h7"></tr>
+                        <tr id="h8"></tr>
+                        <tr id="h9"></tr>
+                        <tr id="h10"></tr>
+                        <tr id="h11"></tr>
+                    </tbody>
                 </table>
             </section>
         </div>

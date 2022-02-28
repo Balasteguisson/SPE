@@ -42,7 +42,7 @@ baseDatos.connect(function (err) {
 
 //Funciones
 //LOGIN
-app.post('/api/enfermero/login',(req,res) => {
+app.post('/api/login',(req,res) => {
     var user = req.body.login;
     var password = req.body.password;
     var petUser = 'SELECT * FROM Usuarios';
