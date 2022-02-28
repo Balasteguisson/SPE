@@ -18,6 +18,10 @@ table{
     padding: 1;
     background-color: red;
 }
+.seccionMEnf{
+    float:left;
+    width: 50% !important;
+}
 #formularioRegistroPaciente>section{
     border-width: 0.2em;
     border-style: solid;

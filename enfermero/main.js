@@ -1082,9 +1082,8 @@ async function llenarListasCita(){
         let entrada = `${respuesta[1][a].Nombre} ${respuesta[1][a].Apellidos} - ${respuesta[1][a].ID}`;
         listaEnfermeros.push(entrada)
     }
-    console.log(listaPacientes)
-    console.log(listaEnfermeros)
 }
+
 async function crearCita(){
     let fechaHora = document.getElementById('fechaCita').value
     let tipo = document.getElementById('tipoRevision').value
