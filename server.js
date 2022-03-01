@@ -251,7 +251,6 @@ app.post("/api/admin/:id/addPreguntas", (req,res) => {
             }
         })
     }
-    console.log("Test bien creado");
     res.status(201).json(`Test creado con exito, tiene ${preguntas.length} preguntas`);
 })
 

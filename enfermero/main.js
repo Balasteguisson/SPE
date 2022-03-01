@@ -274,6 +274,9 @@ async function crearTest(){
     let deposito = document.getElementById('cuerpoDepositoPreguntas');
     let modalidad = document.getElementById('tipoTest').value;
     let periodo = document.getElementById('periodoTestCreado').value;
+    let annoCiclo = new Date();
+    annoCiclo = (annoCiclo.getFullYear()).toString()
+    periodo += `-${annoCiclo}`
     let filas = deposito.childNodes;
     let idsPreguntas = [];
     fechaCreacion = fecha();
