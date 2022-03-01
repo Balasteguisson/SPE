@@ -273,6 +273,7 @@ function moverPregunta(IDtr){
 async function crearTest(){
     let deposito = document.getElementById('cuerpoDepositoPreguntas');
     let modalidad = document.getElementById('tipoTest').value;
+    let periodo = document.getElementById('periodoTestCreado').value;
     let filas = deposito.childNodes;
     let idsPreguntas = [];
     fechaCreacion = fecha();
@@ -293,6 +294,7 @@ async function crearTest(){
         idTest : IDTest,
         tipo : modalidad,
         fechaCreacion : fechaCreacion,
+        periodo : periodo
     }
     let petPost = {
         method: 'POST',
@@ -1133,9 +1135,29 @@ async function verMenuEnfermero(dniEnfermero){
     cambiarPantalla('menuEnfermero')
 }
 
+
+function cargarTest({periodo, tipo}){
+    
+}
+
+
+function cargarPregunta({test}){
+    //se emplea para mostrar la pregunta en la pantalla de test
+}
+
 function verTest0(){
     //lleva al test de diabetes
-     
+    
+    
+    
+    cambiarPantalla("pantallaTest")
+}
+
+function verTest1(){
+
+}
+function verTest2(){
+
 }
 
 

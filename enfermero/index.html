@@ -275,6 +275,22 @@
                 <option value="RV">Riesgo Vascular</option>
                 <option value="ACOs">ACOs</option>
             </select>
+            <p>Selecciona el periodo en el que será realizado:</p>
+            <select name="periodo" id="periodoTestCreado">
+                <option id ='placeholderCrearTest' hidden selected value=NULL>Escoge periodo</option>
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+            </select>
             <section id='depositoPreguntas'>
                 <h2>Preguntas para el test</h2>
                 <table>
@@ -532,7 +548,7 @@
                 <tbody id = "cuerpoListaEnfermeros"></tbody>
             </table>
         </div>
-        <div id='menuEditarEnfermero' class='seccion'>
+        <div id='menuEditarEnfermero' class='seccion'> <!--EDITAR ENFERMERO-->
             <p>
                 <h1>Editar Enfermero</h1><button onclick="fillListaEnfermeros()">Volver</button>
                 <button type="submit" id="botonEditarEnfermero">Guardar cambios</button>
@@ -555,7 +571,7 @@
                 <button type="reset">Borrar Todo</button>
             </form>
         </div>
-        <div id='menuDarCita' class="seccion">
+        <div id='menuDarCita' class="seccion"><!--MENU CITA-->
             <p><h1>Crear nueva cita</h1></p>
             <p><button onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
             <form id='formularioCita' autocomplete="off">
@@ -582,6 +598,25 @@
                 
             </form>
             <button type="button" onclick="crearCita()">Crear cita</button>
+        </div>
+        <div id='pantallaTest' class='seccion'><!--PANTALLA PARA MOSTRAR PREGUNTAS TEST-->
+            <section id='encabezadoTest'>
+                <h1 id="nombreTest"></h1>
+                <h2 id="cicloTest"></h2>
+                <p id="preguntaActual"></p>
+                <p id="testTimer"></p>
+            </section>
+            <section id='preguntaActual'>
+                <h3 id="enunciadoPregunta"></h3>
+                <p><input type="radio" value="1" name="respuestas" id="respuesta1T"><label for="respuesta1T" id="contenidoR1T"></label></p>
+                <p><input type="radio" value="2" name="respuestas" id="respuesta2T"><label for="respuesta2T" id="contenidoR2T"></label></p>
+                <p><input type="radio" value="3" name="respuestas" id="respuesta3T"><label for="respuesta3T" id="contenidoR3T"></label></p>
+                <p><input type="radio" value="4" name="respuestas" id="respuesta4T"><label for="respuesta4T" id="contenidoR4T"></label></p>
+            </section>
+            <section id='navegacionTest'>
+                <p><button onclick="">Pregunta Previa</button><button onclick="">Pregunta Siguiente</button></p>
+                <p><button onclick="cambiarPantalla('menuEnfermero')">Abandonar test</button></p>
+            </section>
         </div>
         <script src="main.js"></script>
     </body>

@@ -223,7 +223,7 @@ app.post("/api/admin/:id/crearTest", (req,res) => {
     let IDTest = datosTest.idTest;
     console.log(IDTest);
     let tipo = datosTest.tipo; let fechaCreacion = datosTest.fechaCreacion;
-    let petPush1 = `INSERT INTO Test (IDTest, Tipo, FechaCreacion) VALUES (${IDTest}, "${tipo}", "${fechaCreacion}")`;
+    let petPush1 = `INSERT INTO Test (IDTest, Tipo, FechaCreacion, Periodo) VALUES (${IDTest}, "${tipo}", "${fechaCreacion}", "${datosTest.periodo}")`;
     console.log(petPush1);
     baseDatos.query(petPush1, (err,respuesta) => {
         if(err){

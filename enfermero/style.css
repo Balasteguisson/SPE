@@ -93,7 +93,7 @@ table{
 	width: 100%;
 }
 .btn {
-	background-color: #2A265F;
+	/* background-color: #2A265F;
 	border: 0;
 	border-radius: 50px;
 	box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
@@ -103,5 +103,5 @@ table{
 	position: absolute;
 	bottom: 20px;
 	right: 20px;
-	letter-spacing: 1px;
+	letter-spacing: 1px; */
 }
