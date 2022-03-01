@@ -241,7 +241,6 @@ app.post("/api/admin/:id/addPreguntas", (req,res) => {
     for(let a = 0; a < preguntas.length; a++){
         //el bucle inserta pregunta a pregunta en la tabla que relaciona el test con las preguntas
         let petPush2 = `INSERT INTO PreguntasTest (IDTest, IDPregunta) VALUES ("${IDTest}", "${preguntas[a]}")`
-        console.log(petPush2)
         baseDatos.query(petPush2, (err,respuesta) => {
             if(err){
                 console.log('Entrando a error');
@@ -652,6 +651,24 @@ app.post(`/api/admin/:id/crearCita`, (req,res) => {
     let petBBDD = `INSERT INTO Cita (IDCita, IdPaciente, IDEnfermero, TipoRevision, Online, Sintomas, Signos, FechaHora, Realizada) VALUES (NULL, '${paciente}', '${enfermero}', '${tipoRevision}', '${presencialidad}', '', '', '${fechaHora}', '0');`
     baseDatos.query(petBBDD, (err,respuesta) => {
         err ? (res.status(502).json("Error en BBDD" + err)) : (res.status(201).json("Cita creada"))
+    })
+})
+
+
+//FUNCIONES PARA LA FORMACION DEL ENFERMERO
+app.get("/api/enfermero/:id/getTest/:tipo/:periodo", (req,res) => {
+    let tipo = req.params.tipo
+    let periodo = req.params.periodo
+
+    let petBBDD = `SELECT * FROM Test WHERE (Tipo = '${tipo}') AND (Periodo = '${periodo}')`
+    // 
+    console.log(petBBDD)
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        if(err){
+            res.status(502).json("Fallo en BBDD" + err)
+        }else{
+            res.status(201).json(respuesta);
+        }
     })
 })
 

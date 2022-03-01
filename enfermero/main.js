@@ -1139,8 +1139,16 @@ async function verMenuEnfermero(dniEnfermero){
 }
 
 
-function cargarTest({periodo, tipo}){
-    
+async function cargarTest({periodo, tipo}){
+    //obtiene un unico test y sus preguntas, y genera un array con el ID del test, los ids de las preguntas
+    // return ID test, ciclotest, preguntas[]
+    let url = `/api/enfermero/:id/getTest/${tipo}/${periodo}`
+    let peticion = {
+        method: "GET"
+    }
+    let contestacion = await peticionREST(url, peticion)
+    console.log(contestacion)
+
 }
 
 
@@ -1148,9 +1156,11 @@ function cargarPregunta({test}){
     //se emplea para mostrar la pregunta en la pantalla de test
 }
 
-function verTest0(){
+async function verTest0(){
     //lleva al test de diabetes
-    
+    let hoy = new Date()
+    let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
+    cargarTest({periodo:periodo,tipo: "Diabetes"})
     
     
     cambiarPantalla("pantallaTest")
