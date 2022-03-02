@@ -602,7 +602,7 @@
         <div id='pantallaTest' class='seccion'><!--PANTALLA PARA MOSTRAR PREGUNTAS TEST-->
             <section id='encabezadoTest'>
                 <h1 id="nombreTest"></h1>
-                <h2 id="cicloTest"></h2>
+                <h2 id="periodoTest"></h2>
                 <p id="preguntaActual"></p>
                 <p id="testTimer"></p>
             </section>
@@ -614,7 +614,7 @@
                 <p><input type="radio" value="4" name="respuestas" id="respuesta4T"><label for="respuesta4T" id="contenidoR4T"></label></p>
             </section>
             <section id='navegacionTest'>
-                <p><button onclick="">Pregunta Previa</button><button onclick="">Pregunta Siguiente</button></p>
+                <p><button onclick="">Pregunta Previa</button> <button id="botonSiguientePregunta" onclick="siguientePregunta()">Pregunta Siguiente</button><button id="botonTerminarTest" onclick="terminarTest()">Terminar Test</button></p>
                 <p><button onclick="cambiarPantalla('menuEnfermero')">Abandonar test</button></p>
             </section>
         </div>

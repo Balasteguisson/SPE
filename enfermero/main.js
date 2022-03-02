@@ -1164,32 +1164,95 @@ async function cargarPreguntas({idTest}){
 }
 
 
-async function cargarPregundgftas({idPreguntas}){
-    let url = '/api/enfermero/:id/getInfoPreguntas'
-    let peticion = {
-        method: 'POST',
-        body : JSON.stringify(idPreguntas),
-        headers : {
-            'Content-Type' : 'application/json'
+
+var preguntasActivas = []
+var contestaciones = []
+var preguntaActual = 0
+var puntuacion = 0
+function gestionBotonesTest(){
+    //cambia el boton a usar en funcion de la pregunta en la que se encuentra el test
+    if (preguntaActual >= preguntasActivas.length){
+        document.getElementById("botonSiguientePregunta").style.display = "none"
+        document.getElementById("botonTerminarTest").style.display = "inline"
+    }else{
+        document.getElementById("botonSiguientePregunta").style.display = "inline"
+        document.getElementById("botonTerminarTest").style.display = "none"
+    }
+}
+
+function terminarTest(){
+    var contestacion = 0
+    puntuacion = 0
+    let opciones = document.getElementsByName('respuestas')
+    for(let a  = 0; a<opciones.length;a++){
+        if(opciones[a].checked){
+            contestacion = opciones[a].value
         }
     }
-    let infoPreguntas = await peticionREST(url,peticion)
-    return infoPreguntas
+    contestaciones[preguntaActual-1] = contestacion
+    let correctas =  []
+    for(let a  = 0; a<preguntasActivas.length; a++){
+        correctas.push(preguntasActivas[a].RespuestaCorrecta)
+        if(contestaciones[a] == preguntasActivas[a].RespuestaCorrecta){
+            let valor = 10/preguntasActivas.length
+            puntuacion += valor
+        } else if (contestaciones[a] != preguntasActivas[a].RespuestaCorrecta && contestaciones[a] != 0) {
+            let valor = 10/(preguntasActivas.length*3)
+            puntuacion -= valor
+        }
+    }
+    console.log(puntuacion)
+}
+
+
+function cargarPregunta(){
+    let pregunta = preguntasActivas[preguntaActual].Pregunta
+    let resp1 = preguntasActivas[preguntaActual].Respuesta1
+    let resp2 = preguntasActivas[preguntaActual].Respuesta2
+    let resp3 = preguntasActivas[preguntaActual].Respuesta3
+    let resp4 = preguntasActivas[preguntaActual].Respuesta4
+    document.getElementById("preguntaActual").innerHTML = `Pregunta ${preguntaActual + 1}/${preguntasActivas.length}`
+    document.getElementById("enunciadoPregunta").innerHTML = pregunta
+    document.getElementById("contenidoR1T").innerHTML = resp1
+    document.getElementById("contenidoR2T").innerHTML = resp2
+    document.getElementById("contenidoR3T").innerHTML = resp3
+    document.getElementById("contenidoR4T").innerHTML = resp4
+    preguntaActual +=1
+    gestionBotonesTest()
+
+}
+
+function siguientePregunta(){
+    let contestacion = 0
+    let opciones = document.getElementsByName('respuestas')
+    for(let a  = 0; a<opciones.length;a++){
+        if(opciones[a].checked){
+            contestacion = opciones[a].value
+        }
+    }
+    contestaciones[preguntaActual-1] = contestacion
+    console.log(contestaciones)
+    cargarPregunta()
 }
 
 async function verTest0(){
     //lleva al test de diabetes
     //primero se obtiene el test del ciclo actual
+    preguntasActivas = []
+    preguntaActual = 0
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
     let test = await cargarTest({periodo:periodo,tipo: "Diabetes"})
     let idTest = test.IDTest
     //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
-    let preguntas = await cargarPreguntas({idTest:idTest})
-    console.log(preguntas)
-
-
-    
+    preguntasActivas = await cargarPreguntas({idTest:idTest})
+    document.getElementById("nombreTest").innerHTML = "Diabetes";
+    document.getElementById("periodoTest").innerHTML = periodo;
+    contestaciones = new Array(preguntasActivas.length)
+    for(let a = 0;a<contestaciones.length; a++){
+        contestaciones[a] = 0
+    }
+    cargarPregunta()
     cambiarPantalla("pantallaTest")
 }
 
