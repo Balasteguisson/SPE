@@ -661,8 +661,6 @@ app.get("/api/enfermero/:id/getTest/:tipo/:periodo", (req,res) => {
     let periodo = req.params.periodo
 
     let petBBDD = `SELECT * FROM Test WHERE (Tipo = '${tipo}') AND (Periodo = '${periodo}')`
-    // 
-    console.log(petBBDD)
     baseDatos.query(petBBDD, (err,respuesta) => {
         if(err){
             res.status(502).json("Fallo en BBDD" + err)
@@ -670,6 +668,31 @@ app.get("/api/enfermero/:id/getTest/:tipo/:periodo", (req,res) => {
             res.status(201).json(respuesta);
         }
     })
+})
+
+app.get("/api/enfermero/:id/getPreguntasTest/:idTest", (req,res) => {
+    let idTest = req.params.idTest
+    let petBBDD = `SELECT * FROM PreguntasTest WHERE IDTest = '${idTest}'`
+    baseDatos.query(petBBDD, (err,preguntas) => {
+        if(err){
+            res.status(502).json('Error en base de datos'+err)
+        }else{
+            var idPreguntas = preguntas.map((pregunta) => {return pregunta.IDPregunta})
+            let listIDS = idPreguntas.join(",")
+            let petBBDDpreguntas = `SELECT * FROM Preguntas WHERE IDPregunta IN (${listIDS})`;
+            baseDatos.query(petBBDDpreguntas, (err,datosPreguntas) => {
+                if(err){
+                    res.status(502).json("Error BBDD" +err)
+                }else{
+                    res.status(201).json(datosPreguntas)
+                }
+            })
+        }
+    })
+})
+
+app.get("/api/enfermero/:id/getInfoPreguntas", (req,res) => {
+    // let preguntas = ;
 })
 
 

@@ -1147,21 +1147,48 @@ async function cargarTest({periodo, tipo}){
         method: "GET"
     }
     let contestacion = await peticionREST(url, peticion)
-    console.log(contestacion)
+    let test = contestacion[contestacion.length-1] // a priori esto devuelve el ultimo test creado, es decir, el mas reciente
+    return test
+}
 
+async function cargarPreguntas({idTest}){
+    let url = `/api/enfermero/:id/getPreguntasTest/${idTest}`
+    let peticionServer = {
+        method: 'GET',
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let conjuntoPreguntas = await peticionREST(url, peticionServer)
+    return conjuntoPreguntas
 }
 
 
-function cargarPregunta({test}){
-    //se emplea para mostrar la pregunta en la pantalla de test
+async function cargarPregundgftas({idPreguntas}){
+    let url = '/api/enfermero/:id/getInfoPreguntas'
+    let peticion = {
+        method: 'POST',
+        body : JSON.stringify(idPreguntas),
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let infoPreguntas = await peticionREST(url,peticion)
+    return infoPreguntas
 }
 
 async function verTest0(){
     //lleva al test de diabetes
+    //primero se obtiene el test del ciclo actual
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
-    cargarTest({periodo:periodo,tipo: "Diabetes"})
-    
+    let test = await cargarTest({periodo:periodo,tipo: "Diabetes"})
+    let idTest = test.IDTest
+    //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
+    let preguntas = await cargarPreguntas({idTest:idTest})
+    console.log(preguntas)
+
+
     
     cambiarPantalla("pantallaTest")
 }
