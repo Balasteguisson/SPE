@@ -691,7 +691,10 @@ app.get("/api/enfermero/:id/getPreguntasTest/:idTest", (req,res) => {
     })
 })
 
-
+app.post("/api/enfermero/:id/guardarTest", (req,res) => {
+    let datosTest = req.body;
+    console.log(datosTest);
+})
 
 
 

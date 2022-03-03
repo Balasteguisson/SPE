@@ -1126,13 +1126,13 @@ const getCicloSeleccionado = () => {
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-
+var dniEnfermeroActual
 async function verMenuEnfermero(dniEnfermero){
 
     //info para rellenar toda la pagina
     let citas = await getCitas(dniEnfermero); //aqui tengo las citas del enfermero
     let resultados = await getResultados(dniEnfermero); //aqui tengo los resultados de sus test actuales
-
+    dniEnfermeroActual = dniEnfermero
     //ajustar fechas y horas de la tabla
 
     cambiarPantalla('menuEnfermero')
@@ -1166,8 +1166,12 @@ async function cargarPreguntas({idTest}){
 
 var preguntasActivas = []
 var contestaciones = []
+var preguntasMalas = []
 var preguntaActual = 1
 var puntuacion = 0
+var idTestActual 
+var tipoTestActual
+var periodoTestActual
 function gestionBotonesTest(){
     //cambia el boton a usar en funcion de la pregunta en la que se encuentra el test
     if (preguntaActual >= preguntasActivas.length){
@@ -1197,12 +1201,47 @@ function terminarTest(){
             puntuacion += valor
         } else if (contestaciones[a] != preguntasActivas[a].RespuestaCorrecta && contestaciones[a] != 0) {
             let valor = 10/(preguntasActivas.length*3)
+            preguntasMalas.push(preguntasActivas[a])
             puntuacion -= valor
         }
     }
-    console.log(puntuacion)
+    tiempoRestanteTest = document.getElementById('testTimer').innerHTML
+    console.log(tiempoRestanteTest)
+    enviarResultadosTest()
+    cambiarPantalla('pantallaReviewTest')
+    //hay que devolver el IDEnfermero, IDTest, IDPreguntas Contestadas, las contestaciones, el tiempo restante, puntuacion
+    //hay que hacer insert en enfermero test y en contestacion enfermero
 }
 
+async function enviarResultadosTest(){
+    let idPreguntas = preguntasActivas.map((x)=>{return x.IDPregunta})
+    let datosTest = {
+        dniEnfermero : dniEnfermeroActual,
+        idTest: idTestActual,
+        idPreguntas : idPreguntas,
+        contestaciones : contestaciones,
+        tiempoRestante : tiempoRestanteTest,
+        puntuacion : puntuacion 
+    }
+    //rellenado de la pantalla de review
+    document.getElementById('testRealizado').innerHTML = `${tipoTestActual} - ${periodoTestActual}`
+    document.getElementById('resultadoTestRealizado').innerHTML = `${puntuacion} - Correctas: ${preguntasActivas.length-preguntasMalas.length} - Incorrectas: ${preguntasMalas.length}`
+    document.getElementById('tiempoRestanteTestRealizado').innerHTML = `Tiempo sobrante: ${tiempoRestanteTest}`
+    let listaPreguntasMalas = document.getElementById('listaPreguntasIncorrectas')
+    listaPreguntasMalas.innerHTML = ""
+    for(let a  = 0; a<preguntasMalas.length; a++){
+        listaPreguntasMalas.innerHTML += `${preguntasMalas[a].Pregunta}`
+    }
+    let url = '/api/enfermero/:id/guardarTest'
+    let peticion = {
+        method: 'POST',
+        body : JSON.stringify(datosTest),
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let contestacion = peticionREST(url, peticion)
+}
 
 function cargarPregunta(){
     let pregunta = preguntasActivas[preguntaActual-1].Pregunta
@@ -1258,7 +1297,6 @@ function setTimer(){
     let tiempoRestante = tiempoLimite - tiempoActual
     let minutosRestantes
     let segundosRestantes
-    console.log(tiempoRestante)
     let temporizador = setInterval(()=>{
         tiempoActual = getMomentoActual()
         tiempoRestante = tiempoLimite - tiempoActual
@@ -1272,28 +1310,28 @@ function setTimer(){
         }
         document.getElementById('botonAbandonarTest').addEventListener('click',()=>{
             console.log("Test abandonado")
-            tiempoRestanteTest = `${minutosRestantes}:${segundosRestantes}`
             clearInterval(temporizador)
         })
         document.getElementById('botonTerminarTest').addEventListener('click',()=>{
-            tiempoRestanteTest = `${minutosRestantes}:${segundosRestantes}`
             clearInterval(temporizador)
             console.log("Test terminado")
         })
     },1000)
-    console.log(tiempoInicial)
-    console.log(tiempoLimite)
 }
 
 async function verTest0(){
     //lleva al test de diabetes
     //primero se obtiene el test del ciclo actual
+    
     preguntasActivas = []
     preguntaActual = 1
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
     let test = await cargarTest({periodo:periodo,tipo: "Diabetes"})
+    tipoTestActual = "Diabetes"
+    periodoTestActual = periodo
     let idTest = test.IDTest
+    idTestActual = idTest
     //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
     preguntasActivas = await cargarPreguntas({idTest:idTest})
     document.getElementById("nombreTest").innerHTML = "Diabetes";
@@ -1315,6 +1353,8 @@ async function verTest1(){
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
     let test = await cargarTest({periodo:periodo,tipo: "ACOs"})
+    tipoTestActual = "ACOs"
+    periodoTestActual = periodo
     let idTest = test.IDTest
     //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
     preguntasActivas = await cargarPreguntas({idTest:idTest})
@@ -1336,6 +1376,8 @@ async function verTest2(){
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
     let test = await cargarTest({periodo:periodo,tipo: "RV"})
+    tipoTestActual = "Riesgo Vascular"
+    periodoTestActual = periodo
     let idTest = test.IDTest
     //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
     preguntasActivas = await cargarPreguntas({idTest:idTest})
