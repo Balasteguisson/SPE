@@ -1139,6 +1139,7 @@ async function verMenuEnfermero(dniEnfermero){
 }
 
 
+//FUNCIONES PARA TEST
 async function cargarTest({periodo, tipo}){
     //obtiene un unico test y sus preguntas, y genera un array con el ID del test, los ids de las preguntas
     // return ID test, ciclotest, preguntas[]
@@ -1162,8 +1163,6 @@ async function cargarPreguntas({idTest}){
     let conjuntoPreguntas = await peticionREST(url, peticionServer)
     return conjuntoPreguntas
 }
-
-
 
 var preguntasActivas = []
 var contestaciones = []
@@ -1250,6 +1249,7 @@ function getMomentoActual(){
     let tiempo = new Date().getTime()
     return tiempo
 }
+var tiempoRestanteTest
 function setTimer(){
     document.getElementById('testTimer').innerHTML = ""
     let tiempoInicial = new Date().getTime()
@@ -1267,13 +1267,16 @@ function setTimer(){
         document.getElementById('testTimer').innerHTML = `${minutosRestantes}:${segundosRestantes}`;
         if(tiempoRestante<0){
             clearInterval(temporizador)
+            tiempoRestanteTest = "00:00"
             terminarTest()
         }
         document.getElementById('botonAbandonarTest').addEventListener('click',()=>{
             console.log("Test abandonado")
+            tiempoRestanteTest = `${minutosRestantes}:${segundosRestantes}`
             clearInterval(temporizador)
         })
         document.getElementById('botonTerminarTest').addEventListener('click',()=>{
+            tiempoRestanteTest = `${minutosRestantes}:${segundosRestantes}`
             clearInterval(temporizador)
             console.log("Test terminado")
         })
@@ -1346,6 +1349,12 @@ async function verTest2(){
     setTimer()
     cambiarPantalla("pantallaTest")
 }
+
+
+
+
+
+
 
 
 function debugg(paso) {
