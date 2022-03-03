@@ -1167,7 +1167,7 @@ async function cargarPreguntas({idTest}){
 
 var preguntasActivas = []
 var contestaciones = []
-var preguntaActual = 0
+var preguntaActual = 1
 var puntuacion = 0
 function gestionBotonesTest(){
     //cambia el boton a usar en funcion de la pregunta en la que se encuentra el test
@@ -1201,24 +1201,34 @@ function terminarTest(){
             puntuacion -= valor
         }
     }
+    console.log(contestaciones)
     console.log(puntuacion)
 }
 
 
 function cargarPregunta(){
-    let pregunta = preguntasActivas[preguntaActual].Pregunta
-    let resp1 = preguntasActivas[preguntaActual].Respuesta1
-    let resp2 = preguntasActivas[preguntaActual].Respuesta2
-    let resp3 = preguntasActivas[preguntaActual].Respuesta3
-    let resp4 = preguntasActivas[preguntaActual].Respuesta4
-    document.getElementById("preguntaActual").innerHTML = `Pregunta ${preguntaActual + 1}/${preguntasActivas.length}`
+    let pregunta = preguntasActivas[preguntaActual-1].Pregunta
+    let resp1 = preguntasActivas[preguntaActual-1].Respuesta1
+    let resp2 = preguntasActivas[preguntaActual-1].Respuesta2
+    let resp3 = preguntasActivas[preguntaActual-1].Respuesta3
+    let resp4 = preguntasActivas[preguntaActual-1].Respuesta4
+    document.getElementById("preguntaActual").innerHTML = `Pregunta ${preguntaActual}/${preguntasActivas.length}`
     document.getElementById("enunciadoPregunta").innerHTML = pregunta
     document.getElementById("contenidoR1T").innerHTML = resp1
     document.getElementById("contenidoR2T").innerHTML = resp2
     document.getElementById("contenidoR3T").innerHTML = resp3
     document.getElementById("contenidoR4T").innerHTML = resp4
-    preguntaActual +=1
+    let respuestaDada = contestaciones[preguntaActual-1]
+    if(respuestaDada != 0){
+        document.getElementById(`respuesta${respuestaDada}T`).checked = true;
+    } else if (respuestaDada == 0){
+        document.getElementById(`respuesta1T`).checked = false;
+        document.getElementById(`respuesta2T`).checked = false;
+        document.getElementById(`respuesta3T`).checked = false;
+        document.getElementById(`respuesta4T`).checked = false;
+    }
     gestionBotonesTest()
+    console.log(preguntaActual)
 
 }
 
@@ -1232,6 +1242,12 @@ function siguientePregunta(){
     }
     contestaciones[preguntaActual-1] = contestacion
     console.log(contestaciones)
+    preguntaActual +=1
+    cargarPregunta()
+}
+
+function preguntaAnterior(){
+    preguntaActual -=1
     cargarPregunta()
 }
 
@@ -1239,7 +1255,7 @@ async function verTest0(){
     //lleva al test de diabetes
     //primero se obtiene el test del ciclo actual
     preguntasActivas = []
-    preguntaActual = 0
+    preguntaActual = 1
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
     let test = await cargarTest({periodo:periodo,tipo: "Diabetes"})
