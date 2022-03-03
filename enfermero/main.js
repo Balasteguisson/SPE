@@ -1201,7 +1201,6 @@ function terminarTest(){
             puntuacion -= valor
         }
     }
-    console.log(contestaciones)
     console.log(puntuacion)
 }
 
@@ -1228,8 +1227,6 @@ function cargarPregunta(){
         document.getElementById(`respuesta4T`).checked = false;
     }
     gestionBotonesTest()
-    console.log(preguntaActual)
-
 }
 
 function siguientePregunta(){
@@ -1241,7 +1238,6 @@ function siguientePregunta(){
         }
     }
     contestaciones[preguntaActual-1] = contestacion
-    console.log(contestaciones)
     preguntaActual +=1
     cargarPregunta()
 }
@@ -1272,11 +1268,45 @@ async function verTest0(){
     cambiarPantalla("pantallaTest")
 }
 
-function verTest1(){
-
+async function verTest1(){
+    //lleva al test de diabetes
+    //primero se obtiene el test del ciclo actual
+    preguntasActivas = []
+    preguntaActual = 1
+    let hoy = new Date()
+    let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
+    let test = await cargarTest({periodo:periodo,tipo: "ACOs"})
+    let idTest = test.IDTest
+    //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
+    preguntasActivas = await cargarPreguntas({idTest:idTest})
+    document.getElementById("nombreTest").innerHTML = "Anticoagulantes Orales";
+    document.getElementById("periodoTest").innerHTML = periodo;
+    contestaciones = new Array(preguntasActivas.length)
+    for(let a = 0;a<contestaciones.length; a++){
+        contestaciones[a] = 0
+    }
+    cargarPregunta()
+    cambiarPantalla("pantallaTest")
 }
-function verTest2(){
-
+async function verTest2(){
+    //lleva al test de diabetes
+    //primero se obtiene el test del ciclo actual
+    preguntasActivas = []
+    preguntaActual = 1
+    let hoy = new Date()
+    let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
+    let test = await cargarTest({periodo:periodo,tipo: "RV"})
+    let idTest = test.IDTest
+    //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
+    preguntasActivas = await cargarPreguntas({idTest:idTest})
+    document.getElementById("nombreTest").innerHTML = "Riesgo Vascular";
+    document.getElementById("periodoTest").innerHTML = periodo;
+    contestaciones = new Array(preguntasActivas.length)
+    for(let a = 0;a<contestaciones.length; a++){
+        contestaciones[a] = 0
+    }
+    cargarPregunta()
+    cambiarPantalla("pantallaTest")
 }
 
 
