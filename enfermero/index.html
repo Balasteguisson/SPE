@@ -81,7 +81,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="formacionGeneral">
+                <!-- <div id="formacionGeneral">
                     <div id="test3" class="test">
                         <div class="test-info"></div>
                         <div class="test-status"></div>
@@ -94,7 +94,7 @@
                         <div class="test-info"></div>
                         <div class="test-status"></div>
                     </div>
-                </div>
+                </div> -->
             </section>
             <section id = 'citas' class="seccionMEnf">
                 <h3>Citas</h3>
@@ -604,7 +604,7 @@
                 <h1 id="nombreTest"></h1>
                 <h2 id="periodoTest"></h2>
                 <p id="preguntaActual"></p>
-                <p id="testTimer"></p>
+                <div>Tiempo restante: <p id="testTimer"></p></div>
             </section>
             <section id='preguntaActual'>
                 <h3 id="enunciadoPregunta"></h3>
@@ -615,7 +615,7 @@
             </section>
             <section id='navegacionTest'>
                 <p><button onclick="preguntaAnterior()">Pregunta Previa</button> <button id="botonSiguientePregunta" onclick="siguientePregunta()">Pregunta Siguiente</button><button id="botonTerminarTest" onclick="terminarTest()">Terminar Test</button></p>
-                <p><button onclick="cambiarPantalla('menuEnfermero')">Abandonar test</button></p>
+                <p><button id="botonAbandonarTest" onclick="cambiarPantalla('menuEnfermero')">Abandonar test</button></p>
             </section>
         </div>
         <script src="main.js"></script>

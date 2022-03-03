@@ -691,9 +691,7 @@ app.get("/api/enfermero/:id/getPreguntasTest/:idTest", (req,res) => {
     })
 })
 
-app.get("/api/enfermero/:id/getInfoPreguntas", (req,res) => {
-    // let preguntas = ;
-})
+
 
 
 

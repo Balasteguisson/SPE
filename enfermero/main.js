@@ -1246,6 +1246,41 @@ function preguntaAnterior(){
     preguntaActual -=1
     cargarPregunta()
 }
+function getMomentoActual(){
+    let tiempo = new Date().getTime()
+    return tiempo
+}
+function setTimer(){
+    document.getElementById('testTimer').innerHTML = ""
+    let tiempoInicial = new Date().getTime()
+    let tiempoLimite = tiempoInicial + 30*60*1000
+    let tiempoActual = getMomentoActual()
+    let tiempoRestante = tiempoLimite - tiempoActual
+    let minutosRestantes
+    let segundosRestantes
+    console.log(tiempoRestante)
+    let temporizador = setInterval(()=>{
+        tiempoActual = getMomentoActual()
+        tiempoRestante = tiempoLimite - tiempoActual
+        minutosRestantes = Math.floor((tiempoRestante % (1000 * 60 * 60)) / (1000 * 60));
+        segundosRestantes = Math.floor((tiempoRestante % (1000 * 60)) / 1000);
+        document.getElementById('testTimer').innerHTML = `${minutosRestantes}:${segundosRestantes}`;
+        if(tiempoRestante<0){
+            clearInterval(temporizador)
+            terminarTest()
+        }
+        document.getElementById('botonAbandonarTest').addEventListener('click',()=>{
+            console.log("Test abandonado")
+            clearInterval(temporizador)
+        })
+        document.getElementById('botonTerminarTest').addEventListener('click',()=>{
+            clearInterval(temporizador)
+            console.log("Test terminado")
+        })
+    },1000)
+    console.log(tiempoInicial)
+    console.log(tiempoLimite)
+}
 
 async function verTest0(){
     //lleva al test de diabetes
@@ -1265,6 +1300,7 @@ async function verTest0(){
         contestaciones[a] = 0
     }
     cargarPregunta()
+    setTimer()
     cambiarPantalla("pantallaTest")
 }
 
@@ -1286,6 +1322,7 @@ async function verTest1(){
         contestaciones[a] = 0
     }
     cargarPregunta()
+    setTimer()
     cambiarPantalla("pantallaTest")
 }
 async function verTest2(){
@@ -1306,6 +1343,7 @@ async function verTest2(){
         contestaciones[a] = 0
     }
     cargarPregunta()
+    setTimer()
     cambiarPantalla("pantallaTest")
 }
 
