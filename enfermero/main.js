@@ -1206,7 +1206,6 @@ function terminarTest(){
         }
     }
     tiempoRestanteTest = document.getElementById('testTimer').innerHTML
-    console.log(tiempoRestanteTest)
     enviarResultadosTest()
     cambiarPantalla('pantallaReviewTest')
     //hay que devolver el IDEnfermero, IDTest, IDPreguntas Contestadas, las contestaciones, el tiempo restante, puntuacion
@@ -1215,13 +1214,19 @@ function terminarTest(){
 
 async function enviarResultadosTest(){
     let idPreguntas = preguntasActivas.map((x)=>{return x.IDPregunta})
+    let porcentajeCompleto = 0
+    for(let a = 0; a<contestaciones.length; a++){
+        contestaciones[a] != 0 ? (porcentajeCompleto += (100/(contestaciones.length))) : (porcentajeCompleto = porcentajeCompleto)
+    }
     let datosTest = {
         dniEnfermero : dniEnfermeroActual,
         idTest: idTestActual,
         idPreguntas : idPreguntas,
         contestaciones : contestaciones,
         tiempoRestante : tiempoRestanteTest,
-        puntuacion : puntuacion 
+        puntuacion : puntuacion,
+        fecha: fecha(),
+        completado : porcentajeCompleto
     }
     //rellenado de la pantalla de review
     document.getElementById('testRealizado').innerHTML = `${tipoTestActual} - ${periodoTestActual}`
@@ -1230,7 +1235,7 @@ async function enviarResultadosTest(){
     let listaPreguntasMalas = document.getElementById('listaPreguntasIncorrectas')
     listaPreguntasMalas.innerHTML = ""
     for(let a  = 0; a<preguntasMalas.length; a++){
-        listaPreguntasMalas.innerHTML += `${preguntasMalas[a].Pregunta}`
+        listaPreguntasMalas.innerHTML += `<li>${preguntasMalas[a].Pregunta}</li>`
     }
     let url = '/api/enfermero/:id/guardarTest'
     let peticion = {
@@ -1241,6 +1246,7 @@ async function enviarResultadosTest(){
         }
     }
     let contestacion = peticionREST(url, peticion)
+    console.log(contestacion);
 }
 
 function cargarPregunta(){

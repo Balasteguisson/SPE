@@ -671,6 +671,7 @@ app.get("/api/enfermero/:id/getTest/:tipo/:periodo", (req,res) => {
 })
 
 app.get("/api/enfermero/:id/getPreguntasTest/:idTest", (req,res) => {
+    //devuelve al cliente las preguntas relativas al test solicitado
     let idTest = req.params.idTest
     let petBBDD = `SELECT * FROM PreguntasTest WHERE IDTest = '${idTest}'`
     baseDatos.query(petBBDD, (err,preguntas) => {
@@ -694,6 +695,29 @@ app.get("/api/enfermero/:id/getPreguntasTest/:idTest", (req,res) => {
 app.post("/api/enfermero/:id/guardarTest", (req,res) => {
     let datosTest = req.body;
     console.log(datosTest);
+    var getIDEnfermero = `SELECT ID FROM Enfermero WHERE DNI ='${datosTest.dniEnfermero}'`
+    baseDatos.query(getIDEnfermero,(err, idEnf) => {
+        if(err){
+            res.status(502).json("Fallo BBDD"+err)
+        }
+        let idEnfermero = idEnf[0].ID
+        var insertEnfTest = `INSERT INTO EnfermeroTest (IDEnfermero, IDTest, FechaRealizado, PorcentajeCompletitud, Puntuacion, TiempoRestante) VALUES ('${idEnfermero}', '${datosTest.idTest}', '${datosTest.fecha}','${datosTest.completado}','${datosTest.puntuacion}','${datosTest.tiempoRestante}')`
+        baseDatos.query(insertEnfTest,(err,respuesta) => {
+            if(err){
+                console.log(err)
+                res.status(502).json(err);
+            }
+        })
+        for(let a  = 0; a<datosTest.contestaciones.length; a++){
+            var insertContestacion = `INSERT INTO ContestacionEnfermero (IDEnfermero, IDPregunta, Respuesta, FechaContestado) VALUES ('${idEnfermero}', '${datosTest.idPreguntas[a]}', '${datosTest.contestaciones[a]}','${datosTest.fecha}')`
+            baseDatos.query(insertContestacion, (err,respuesta) => {
+                if(err){
+                    res.status(502).json("Error BBDD"+err)
+                }
+            })
+        }
+        res.status(201).json("Test realizado");
+    })
 })
 
 
