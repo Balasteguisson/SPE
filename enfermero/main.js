@@ -1128,7 +1128,6 @@ const getCicloSeleccionado = () => {
 
 var dniEnfermeroActual
 async function getIDEnfermero(dniEnfermero){
-    console.log(dniEnfermero)
     let url = `/api/enfermero/getIDEnfermero/${dniEnfermero}`
     let peticionServer = {
         method: "GET",
@@ -1259,7 +1258,6 @@ async function enviarResultadosTest(){
         }
     }
     let contestacion = peticionREST(url, peticion)
-    console.log(contestacion);
 }
 
 function cargarPregunta(){
@@ -1376,20 +1374,25 @@ async function verTest1(){
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
     let test = await cargarTest({periodo:periodo,tipo: "ACOs"})
-    tipoTestActual = "ACOs"
-    periodoTestActual = periodo
-    let idTest = test.IDTest
-    //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
-    preguntasActivas = await cargarPreguntas({idTest:idTest})
-    document.getElementById("nombreTest").innerHTML = "Anticoagulantes Orales";
-    document.getElementById("periodoTest").innerHTML = periodo;
-    contestaciones = new Array(preguntasActivas.length)
-    for(let a = 0;a<contestaciones.length; a++){
-        contestaciones[a] = 0
+    if(test != "testRealizado"){
+        tipoTestActual = "ACOs"
+        periodoTestActual = periodo
+        let idTest = test.IDTest
+        idTestActual = idTest
+        //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
+        preguntasActivas = await cargarPreguntas({idTest:idTest})
+        document.getElementById("nombreTest").innerHTML = "Anticoagulantes Orales";
+        document.getElementById("periodoTest").innerHTML = periodo;
+        contestaciones = new Array(preguntasActivas.length)
+        for(let a = 0;a<contestaciones.length; a++){
+            contestaciones[a] = 0
+        }
+        cargarPregunta()
+        setTimer()
+        cambiarPantalla("pantallaTest")
+    }else if(test == "testRealizado"){
+        alert("Ya has hecho este test, debes esperar al siguiente");
     }
-    cargarPregunta()
-    setTimer()
-    cambiarPantalla("pantallaTest")
 }
 async function verTest2(){
     //lleva al test de diabetes
@@ -1399,20 +1402,25 @@ async function verTest2(){
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
     let test = await cargarTest({periodo:periodo,tipo: "RV"})
-    tipoTestActual = "Riesgo Vascular"
-    periodoTestActual = periodo
-    let idTest = test.IDTest
-    //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
-    preguntasActivas = await cargarPreguntas({idTest:idTest})
-    document.getElementById("nombreTest").innerHTML = "Riesgo Vascular";
-    document.getElementById("periodoTest").innerHTML = periodo;
-    contestaciones = new Array(preguntasActivas.length)
-    for(let a = 0;a<contestaciones.length; a++){
-        contestaciones[a] = 0
+    if(test != "testRealizado"){
+        tipoTestActual = "RV"
+        periodoTestActual = periodo
+        let idTest = test.IDTest
+        idTestActual = idTest
+        //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
+        preguntasActivas = await cargarPreguntas({idTest:idTest})
+        document.getElementById("nombreTest").innerHTML = "Riesgo Vascular";
+        document.getElementById("periodoTest").innerHTML = periodo;
+        contestaciones = new Array(preguntasActivas.length)
+        for(let a = 0;a<contestaciones.length; a++){
+            contestaciones[a] = 0
+        }
+        cargarPregunta()
+        setTimer()
+        cambiarPantalla("pantallaTest")
+    }else if(test == "testRealizado"){
+        alert("Ya has hecho este test, debes esperar al siguiente");
     }
-    cargarPregunta()
-    setTimer()
-    cambiarPantalla("pantallaTest")
 }
 
 
