@@ -694,7 +694,6 @@ app.get("/api/enfermero/:id/getPreguntasTest/:idTest", (req,res) => {
 
 app.post("/api/enfermero/:id/guardarTest", (req,res) => {
     let datosTest = req.body;
-    console.log(datosTest);
     var getIDEnfermero = `SELECT ID FROM Enfermero WHERE DNI ='${datosTest.dniEnfermero}'`
     baseDatos.query(getIDEnfermero,(err, idEnf) => {
         if(err){
@@ -707,19 +706,18 @@ app.post("/api/enfermero/:id/guardarTest", (req,res) => {
                 console.log(err)
                 res.status(502).json(err);
             }
+            for(let a  = 0; a<datosTest.contestaciones.length; a++){
+                var insertContestacion = `INSERT INTO ContestacionEnfermero (IDEnfermero, IDPregunta, Respuesta, FechaContestado) VALUES ('${idEnfermero}', '${datosTest.idPreguntas[a]}', '${datosTest.contestaciones[a]}','${datosTest.fecha}')`
+                baseDatos.query(insertContestacion, (err,respuesta) => {
+                    if(err){
+                        res.status(502).json("Error BBDD"+err)
+                    }
+                })
+            }
+        res.status(201).json("test terminado")
         })
-        for(let a  = 0; a<datosTest.contestaciones.length; a++){
-            var insertContestacion = `INSERT INTO ContestacionEnfermero (IDEnfermero, IDPregunta, Respuesta, FechaContestado) VALUES ('${idEnfermero}', '${datosTest.idPreguntas[a]}', '${datosTest.contestaciones[a]}','${datosTest.fecha}')`
-            baseDatos.query(insertContestacion, (err,respuesta) => {
-                if(err){
-                    res.status(502).json("Error BBDD"+err)
-                }
-            })
-        }
-        res.status(201).json("Test realizado");
     })
 })
-
 
 
 
