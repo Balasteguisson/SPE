@@ -655,17 +655,44 @@ app.post(`/api/admin/:id/crearCita`, (req,res) => {
 })
 
 
+
+app.get('/api/enfermero/getIDEnfermero/:dni', (req,res) => {
+    console.log("buscando id")
+    let petBBDD = `SELECT ID FROM Enfermero WHERE DNI ='${req.params.dni}'`
+    baseDatos.query(petBBDD, (err,idEnfermero)=>{
+        if(err){
+            res.status(502).json("Error en BBDD"+ err)
+        }else{
+            console.log("mandando id")
+            console.log(idEnfermero)
+            res.status(201).json(idEnfermero)
+        }
+    })
+})
+
 //FUNCIONES PARA LA FORMACION DEL ENFERMERO
 app.get("/api/enfermero/:id/getTest/:tipo/:periodo", (req,res) => {
     let tipo = req.params.tipo
     let periodo = req.params.periodo
-
+    let idEnfermero = req.params.id
     let petBBDD = `SELECT * FROM Test WHERE (Tipo = '${tipo}') AND (Periodo = '${periodo}')`
     baseDatos.query(petBBDD, (err,respuesta) => {
         if(err){
             res.status(502).json("Fallo en BBDD" + err)
         }else{
-            res.status(201).json(respuesta);
+            let idTest = respuesta[respuesta.length-1].IDTest
+            let petBBDD2 = `SELECT * FROM EnfermeroTest WHERE (IDTest = '${idTest}') AND (IDEnfermero = '${idEnfermero}')`
+            baseDatos.query(petBBDD2, (err,testRealizados) => {
+                if(err){
+                    res.status(502).json(err)
+                }else{
+                    if(testRealizados.length == 0){
+                        res.status(201).json(respuesta[respuesta.length-1]);
+                    }else{
+                        res.status(201).json("testRealizado")
+                    }
+                }
+            })
         }
     })
 })

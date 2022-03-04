@@ -1127,6 +1127,19 @@ const getCicloSeleccionado = () => {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 var dniEnfermeroActual
+async function getIDEnfermero(dniEnfermero){
+    console.log(dniEnfermero)
+    let url = `/api/enfermero/getIDEnfermero/${dniEnfermero}`
+    let peticionServer = {
+        method: "GET",
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let idEnfermero = await peticionREST(url,peticionServer)
+    return idEnfermero
+}
+
 async function verMenuEnfermero(dniEnfermero){
 
     //info para rellenar toda la pagina
@@ -1143,13 +1156,13 @@ async function verMenuEnfermero(dniEnfermero){
 async function cargarTest({periodo, tipo}){
     //obtiene un unico test y sus preguntas, y genera un array con el ID del test, los ids de las preguntas
     // return ID test, ciclotest, preguntas[]
-    let url = `/api/enfermero/:id/getTest/${tipo}/${periodo}`
+    let idEnfermero = await getIDEnfermero(dniEnfermeroActual)
+    let url = `/api/enfermero/${idEnfermero[0].ID}/getTest/${tipo}/${periodo}`
     let peticion = {
         method: "GET"
     }
     let contestacion = await peticionREST(url, peticion)
-    let test = contestacion[contestacion.length-1] // a priori esto devuelve el ultimo test creado, es decir, el mas reciente
-    return test
+    return contestacion
 }
 
 async function cargarPreguntas({idTest}){
@@ -1334,21 +1347,25 @@ async function verTest0(){
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
     let test = await cargarTest({periodo:periodo,tipo: "Diabetes"})
-    tipoTestActual = "Diabetes"
-    periodoTestActual = periodo
-    let idTest = test.IDTest
-    idTestActual = idTest
-    //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
-    preguntasActivas = await cargarPreguntas({idTest:idTest})
-    document.getElementById("nombreTest").innerHTML = "Diabetes";
-    document.getElementById("periodoTest").innerHTML = periodo;
-    contestaciones = new Array(preguntasActivas.length)
-    for(let a = 0;a<contestaciones.length; a++){
-        contestaciones[a] = 0
+    if(test != "testRealizado"){
+        tipoTestActual = "Diabetes"
+        periodoTestActual = periodo
+        let idTest = test.IDTest
+        idTestActual = idTest
+        //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
+        preguntasActivas = await cargarPreguntas({idTest:idTest})
+        document.getElementById("nombreTest").innerHTML = "Diabetes";
+        document.getElementById("periodoTest").innerHTML = periodo;
+        contestaciones = new Array(preguntasActivas.length)
+        for(let a = 0;a<contestaciones.length; a++){
+            contestaciones[a] = 0
+        }
+        cargarPregunta()
+        setTimer()
+        cambiarPantalla("pantallaTest")
+    }else if(test == "testRealizado"){
+        alert("Ya has hecho este test, debes esperar al siguiente");
     }
-    cargarPregunta()
-    setTimer()
-    cambiarPantalla("pantallaTest")
 }
 
 async function verTest1(){
