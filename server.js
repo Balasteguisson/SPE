@@ -77,24 +77,24 @@ app.get('/api/enfermero/:id', function (req,res){
 })
 
 //CITAS PENDIENTES DEL ENFERMERO
-app.get('/api/enfermero/:dni/citas', function (req, res){
-    var dniEnfermero = req.params.dni;
-    var idEnfermero;
-    var petId = `SELECT * FROM Enfermero WHERE DNI = "${dniEnfermero}"`;
-    baseDatos.query(petId, (err, datos)=> {
-        if(err){
-            res.status(404).json('Peticion BBDD fallida');
-        }
-        idEnfermero = datos[0].ID;
-        var petDatos = `SELECT * FROM Cita WHERE (IDEnfermero =${idEnfermero}) AND (Realizada = 0)`;
-        baseDatos.query(petDatos, (err,datos)=>{
-            if(err){
-                res.status(404).json('Peticion BBDD fallida');
-            }
-            res.status(201).json(datos);
-        })
-    })
-})
+// app.get('/api/enfermero/:dni/citas', function (req, res){
+//     var dniEnfermero = req.params.dni;
+//     var idEnfermero;
+//     var petId = `SELECT * FROM Enfermero WHERE DNI = "${dniEnfermero}"`;
+//     baseDatos.query(petId, (err, datos)=> {
+//         if(err){
+//             res.status(404).json('Peticion BBDD fallida');
+//         }
+//         idEnfermero = datos[0].ID;
+//         var petDatos = `SELECT * FROM Cita WHERE (IDEnfermero =${idEnfermero}) AND (Realizada = 0)`;
+//         baseDatos.query(petDatos, (err,datos)=>{
+//             if(err){
+//                 res.status(404).json('Peticion BBDD fallida');
+//             }
+//             res.status(201).json(datos);
+//         })
+//     })
+// })
 
 //RESULTADO DE LOS TEST- MENU ENFERMERO
 app.get('/api/enfermero/:dni/resultados', function (req,res){
@@ -743,6 +743,18 @@ app.post("/api/enfermero/:id/guardarTest", (req,res) => {
             }
         res.status(201).json("test terminado")
         })
+    })
+})
+
+app.get("/api/enfermero/:id/citas", (req,res) => {
+    let petBBDD = `SELECT * FROM Cita WHERE IDEnfermero = '${req.params.id}'`
+    console.log(petBBDD)
+    baseDatos.query(petBBDD, (err,citas) => {
+        if(err){
+            res.status(502).json("Error BBDD"+ err);
+        }else{
+            res.status(201).json(citas);
+        }
     })
 })
 

@@ -85,23 +85,7 @@ async function log() {
     }
 }
 
-//Ahora necesito mostrar las citas, los datos de los test
 
-//funcion para obtener citas
-function getCitas(dni) {
-    let url = `/api/enfermero/${dni}/citas`;
-    let peticionGet = { method: 'GET' };
-    let citas = peticionREST(url,peticionGet);
-    return citas;
-}
-
-//funcion para obtener los resultados de los test
-function getResultados(dni) {
-    let url = `/api/enfermero/${dni}/resultados`;
-    let peticionGet = { method: 'GET'};
-    let resultados = peticionREST(url, peticionGet);
-    return resultados;
-}
 
 
 //FUNCIONES ADMIN
@@ -1136,18 +1120,59 @@ async function getIDEnfermero(dniEnfermero){
         }
     }
     let idEnfermero = await peticionREST(url,peticionServer)
-    return idEnfermero
+    return idEnfermero[0].ID
 }
 
 async function verMenuEnfermero(dniEnfermero){
-
     //info para rellenar toda la pagina
-    let citas = await getCitas(dniEnfermero); //aqui tengo las citas del enfermero
+    await getCitas(dniEnfermero); //aqui tengo las citas del enfermero
     let resultados = await getResultados(dniEnfermero); //aqui tengo los resultados de sus test actuales
     dniEnfermeroActual = dniEnfermero
+    
+
     //ajustar fechas y horas de la tabla
 
     cambiarPantalla('menuEnfermero')
+}
+
+//FUNCIONES PARA RELLENAR MENU PRINCIPAL ENFERMERO
+//funcion para obtener citas
+async function getCitas(dni) {
+    let idEnfermero = await getIDEnfermero(dni)
+    let url = `/api/enfermero/${idEnfermero}/citas`;
+    let peticionGet = { method: 'GET' };
+    let citas = await peticionREST(url,peticionGet);
+    
+    //rellenado de horas de la tabla
+    let fecha = new Date()
+    let dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    let intDia  = fecha.getDate(); let intMes = fecha.getUTCMonth() + 1; let stringDia =  dias[fecha.getUTCDay()]
+    for(let a = 0; a<12; a++){
+        let casillaHora = document.getElementById(`h${a}`);
+        let hora = `${fecha.getHours()+a}:00`
+        casillaHora.innerHTML = hora
+    }
+    for(let a  = 0; a<=3; a++){
+        let fragHora = document.getElementById(`${a}/4h`)
+        let minuto  = (a*15).toString()
+        minuto.length == 1 ? (minuto = '00') : (minuto = minuto) 
+        fragHora.innerHTML = `${fecha.getHours()}:${minuto}`
+    }
+    let stringFecha = `${intDia}/${intMes} - ${stringDia}`
+    document.getElementById('dia0').innerHTML = stringFecha
+    let horario = document.getElementById('horarioEnfermero')
+
+
+
+    return citas;
+}
+
+//funcion para obtener los resultados de los test
+function getResultados(dni) {
+    let url = `/api/enfermero/${dni}/resultados`;
+    let peticionGet = { method: 'GET'};
+    let resultados = peticionREST(url, peticionGet);
+    return resultados;
 }
 
 
@@ -1156,7 +1181,7 @@ async function cargarTest({periodo, tipo}){
     //obtiene un unico test y sus preguntas, y genera un array con el ID del test, los ids de las preguntas
     // return ID test, ciclotest, preguntas[]
     let idEnfermero = await getIDEnfermero(dniEnfermeroActual)
-    let url = `/api/enfermero/${idEnfermero[0].ID}/getTest/${tipo}/${periodo}`
+    let url = `/api/enfermero/${idEnfermero}/getTest/${tipo}/${periodo}`
     let peticion = {
         method: "GET"
     }
@@ -1427,6 +1452,9 @@ async function verTest2(){
         alert("Ya has hecho este test, debes esperar al siguiente");
     }
 }
+
+
+
 
 
 
