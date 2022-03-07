@@ -1319,7 +1319,12 @@ function setTimer(){
         tiempoRestante = tiempoLimite - tiempoActual
         minutosRestantes = Math.floor((tiempoRestante % (1000 * 60 * 60)) / (1000 * 60));
         segundosRestantes = Math.floor((tiempoRestante % (1000 * 60)) / 1000);
+        segundosRestantes = segundosRestantes.toString()
+        if(segundosRestantes.length == 1){
+            segundosRestantes = `0${segundosRestantes}`; 
+        }
         document.getElementById('testTimer').innerHTML = `${minutosRestantes}:${segundosRestantes}`;
+        console.log(`${minutosRestantes}:${segundosRestantes}`)
         if(tiempoRestante<0){
             clearInterval(temporizador)
             tiempoRestanteTest = "00:00"
