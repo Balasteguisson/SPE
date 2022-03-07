@@ -22,7 +22,7 @@ const peticionREST = async (url,parametros) => {
 }
 
 //permite obtener la fecha simplemente llamando a la funcion fecha()
-const fecha = () => {
+function fecha(){
     let fecha = new Date();
     let fechaFormato = fecha.toISOString().substring(0,10);
     return fechaFormato;
@@ -1141,30 +1141,70 @@ async function getCitas(dni) {
     let idEnfermero = await getIDEnfermero(dni)
     let url = `/api/enfermero/${idEnfermero}/citas`;
     let peticionGet = { method: 'GET' };
-    let citas = await peticionREST(url,peticionGet);
+    let respuesta = await peticionREST(url,peticionGet);
+    let citas = respuesta[0] //datos de las citas
     
     //rellenado de horas de la tabla
-    let fecha = new Date()
+    let date = new Date()
     let dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-    let intDia  = fecha.getDate(); let intMes = fecha.getUTCMonth() + 1; let stringDia =  dias[fecha.getUTCDay()]
+    let intDia  = date.getDate(); let intMes = date.getUTCMonth() + 1; let stringDia =  dias[date.getUTCDay()]
     for(let a = 0; a<12; a++){
         let casillaHora = document.getElementById(`h${a}`);
-        let hora = `${fecha.getHours()+a}:00`
+        let hora = `${date.getHours()+a}:00`
         casillaHora.innerHTML = hora
     }
     for(let a  = 0; a<=3; a++){
         let fragHora = document.getElementById(`${a}/4h`)
         let minuto  = (a*15).toString()
         minuto.length == 1 ? (minuto = '00') : (minuto = minuto) 
-        fragHora.innerHTML = `${fecha.getHours()}:${minuto}`
+        fragHora.innerHTML = `${date.getHours()}:${minuto}`
     }
     let stringFecha = `${intDia}/${intMes} - ${stringDia}`
     document.getElementById('dia0').innerHTML = stringFecha
+
+
     let horario = document.getElementById('horarioEnfermero')
+    citasHoy = [] //aqui se almacenan las citas pendientes del enfermero, es decir, las que se han de mostrar en el horario
+    let pacientes = respuesta[1] //datos de los pacientes citados
+    let fechaHoy = fecha();
+    for (let a = 0; a < citas.length; a++){
+        let cita = citas[a]
+        if(cita.FechaHora.substring(0,10) == fechaHoy && date.getHours()<=cita.FechaHora.substring(11,13)){
+            citasHoy.push(cita)
+        }
+    }
+    console.log(citasHoy)
+    let hora = date.getHours();
+    for (let a = 0; a < citasHoy.length; a++) {
+        let cita = citasHoy[a]
+        let paciente = []
+        for (let b = 0; b < pacientes.length; b++) {
+            if(cita.IdPaciente == pacientes[b].NIdentidad){
+                paciente.push(pacientes[b])
+            }
+        }
+        let celdaCita = `<td id='cita${cita.IDCita}' class='tipo${cita.Online}'>${paciente.Nombre} ${paciente.Apellidos} ${cita.TipoRevision}</td>`
+        let idFila = cita.FechaHora.substring(11,13)
+        let fila = document.getElementById(`h${idFila - hora}`)
+        let idColumna = cita.FechaHora.substring(14,16);
+        let columna;
+        if(idColumna<15){
+            columna = "0/4h";
+        }else if(15<=idColumna && idColumna<30){
+            columna = "1/4h";
+        }else if(30<=idColumna && idColumna<45){
+            columna = "2/4h";
+        }else if(45<=idColumna && idColumna<60){
+            columna = "3/4h";
+        }
+        
+        
 
+    }
 
+}
+function verCita(idCita){
 
-    return citas;
 }
 
 //funcion para obtener los resultados de los test

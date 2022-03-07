@@ -748,12 +748,29 @@ app.post("/api/enfermero/:id/guardarTest", (req,res) => {
 
 app.get("/api/enfermero/:id/citas", (req,res) => {
     let petBBDD = `SELECT * FROM Cita WHERE IDEnfermero = '${req.params.id}'`
-    console.log(petBBDD)
     baseDatos.query(petBBDD, (err,citas) => {
         if(err){
             res.status(502).json("Error BBDD"+ err);
         }else{
-            res.status(201).json(citas);
+            let petBBDD2 = `SELECT NIdentidad, Nombre, Apellidos FROM Pacientes`
+            baseDatos.query(petBBDD2,(err,pacientes) => {
+                if(err){
+                    res.status(502).json("Error BBDD"+err);
+                }else{
+                    let listaPacientes = []
+                    for (let a = 0; a < pacientes.length; a++) {
+                        let paciente = pacientes[a].NIdentidad
+                        for (let b = 0; b < citas.length; b++) {
+                            let idPaciente = citas[b].IdPaciente
+                            if (paciente == idPaciente){
+                                listaPacientes.push(pacientes[a])
+                            }
+                        }
+                    }
+                    let respuesta = [citas,listaPacientes]
+                    res.status(201).json(respuesta)
+                }
+            })
         }
     })
 })
