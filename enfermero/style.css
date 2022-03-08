@@ -109,7 +109,50 @@ table{
 #horarioCitas{
     border: 1px solid;
     width: 100%;
+    background-color: aliceblue;
 }
 #horarioCitas thead tr th{
     border: 1px solid;
 }
+
+.tipo0{
+    background-color: mediumspringgreen;
+}
+
+.tipo1{
+    background-color: aqua;
+
+}
+.casillaHora{
+    border: 1px solid;
+    background-color: turquoise;
+}
+.celdaCita{
+    border: 1px solid;
+}
+
+ul:before{
+    content:attr(aria-label);
+    font-size:120%;
+    font-weight:bold;
+    margin-left:-15px;
+}
+
+#citaDatosPaciente{
+    border: 1px solid;
+    background-color: lightblue;
+    width: 35%;
+    float: left;
+}
+#derechaCita{
+    float:left
+}
+
+#citaSeguimientoVariables{
+    border: 1px solid;
+}
+#citaTratamiento{
+    border: 1px solid;
+}
+
+

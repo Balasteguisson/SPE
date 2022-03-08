@@ -93,32 +93,31 @@
                     <thead>
                         <tr>
                             <th>Día</th>
-                            <th id = 'dia0'>D1</th>
+                            <th id = 'dia0' colspan="4">D1</th>
                             <!-- <th id = 'dia1'>D2</th>
                             <th id = 'dia2'>D3</th> -->
                         </tr>
                         <tr id="fragHora">
-                            <td>Hora</td>
-                            <td id="0/4h"></td>
-                            <td id="1/4h"></td>
-                            <td id="2/4h"></td>
-                            <td id="3/4h"></td>
+                            <td class="casillaHora">Hora</td>
+                            <td id="0/4h" class="casillaHora"></td>
+                            <td id="1/4h" class="casillaHora"></td>
+                            <td id="2/4h" class="casillaHora"></td>
+                            <td id="3/4h" class="casillaHora"></td>
                         </tr>
                     </thead>
                     <tbody id="horarioEnfermero">
-                        
-                        <tr id="h0"></tr>
-                        <tr id="h1"></tr>
-                        <tr id="h2"></tr>
-                        <tr id="h3"></tr>
-                        <tr id="h4"></tr>
-                        <tr id="h5"></tr>
-                        <tr id="h6"></tr>
-                        <tr id="h7"></tr>
-                        <tr id="h8"></tr>
-                        <tr id="h9"></tr>
-                        <tr id="h10"></tr>
-                        <tr id="h11"></tr>
+                        <tr id="h0"><td id="ch0" class="casillaHora"></td></tr>
+                        <tr id="h1"><td id="ch1" class="casillaHora"></td></tr>
+                        <tr id="h2"><td id="ch2" class="casillaHora"></td></tr>
+                        <tr id="h3"><td id="ch3" class="casillaHora"></td></tr>
+                        <tr id="h4"><td id="ch4" class="casillaHora"></td></tr>
+                        <tr id="h5"><td id="ch5" class="casillaHora"></td></tr>
+                        <tr id="h6"><td id="ch6" class="casillaHora"></td></tr>
+                        <tr id="h7"><td id="ch7" class="casillaHora"></td></tr>
+                        <tr id="h8"><td id="ch8" class="casillaHora"></td></tr>
+                        <tr id="h9"><td id="ch9" class="casillaHora"></td></tr>
+                        <tr id="h10"><td id="ch10" class="casillaHora"></td></tr>
+                        <tr id="h11"><td id="ch11" class="casillaHora"></td></tr>
                     </tbody>
                 </table>
             </section>
@@ -632,6 +631,38 @@
                     <button onclick="cambiarPantalla('menuEnfermero')">Terminar Test</button>
                 </p>
             </section>
+        </div>
+        <div id='menuCita' class='seccion'> <!--PANTALLA CITA-->
+            <div id="citaDatosPaciente"><!--Info del paciente-->
+                <p>Paciente: <span id="indNombreApellidos"></span></p>
+                <p>Sexo: <span id="indSexo"></span> Peso: <span id="indPeso"></span> Edad: <span id="indEdad"></span> Motivo de cita: <span id="indMotivo"></span></p>
+                <div id="citaInfoPaciente">
+                    <!-- Las aria label permiten mostrar su contenido como titulo de la lista gracias a CSS -->
+                    <ul id="citaListaPatologias" aria-label="Patologías Previas"></ul>
+                    <ul id="citaListaAlergias" aria-label="Alergias"></ul>
+                    <ul id="listaMaternidad" aria-label="Maternidad"></ul>
+                </div>
+                <div id="citaSintomasSignos">
+                    <p><label for="citaSintomas"> Síntomas indicados por el paciente: </label></p>
+                    <p><textarea name="citaSintoma" id="citaSintomas" cols="30" rows="8"></textarea></p>
+                    <p><label for="citaSignos">Signos observados: </label></p>
+                    <p><textarea name="citaSignos" id="citaSignos" cols="30" rows="8"></textarea></p>
+                </div>
+                <p><button onclick="verMenuEnfermeroHTML()" class="botonCita">Volver</button><button onclick="citaGuardarCambios()">Guardar cambios</button></p>
+            </div>
+            <div id="derechaCita">
+                <div id="citaSeguimientoVariables"><!--Seguimiento de variables-->
+                    <h2>Mediciones del paciente</h2>
+                    <p>
+                        <select name="tipoVariable" id="tipoVariable">
+                            <option hidden selected value="placeholderVariable">Escoge un parámetro médico</option>
+                        </select>
+                    </p>
+                </div>
+                <div id="citaTratamiento">
+                    <h2>Tratamiento</h2>
+                </div>
+            </div>
         </div>
         <script src="main.js"></script>
     </body>

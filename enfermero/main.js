@@ -1122,7 +1122,21 @@ async function getIDEnfermero(dniEnfermero){
     let idEnfermero = await peticionREST(url,peticionServer)
     return idEnfermero[0].ID
 }
-
+function verMenuEnfermeroHTML(){
+    document.getElementById('h0').innerHTML = `<td id="ch0" class="casillaHora"></td>`
+    document.getElementById('h1').innerHTML = `<td id="ch1" class="casillaHora"></td>`
+    document.getElementById('h2').innerHTML = `<td id="ch2" class="casillaHora"></td>`
+    document.getElementById('h3').innerHTML = `<td id="ch3" class="casillaHora"></td>`
+    document.getElementById('h4').innerHTML = `<td id="ch4" class="casillaHora"></td>`
+    document.getElementById('h5').innerHTML = `<td id="ch5" class="casillaHora"></td>`
+    document.getElementById('h6').innerHTML = `<td id="ch6" class="casillaHora"></td>`
+    document.getElementById('h7').innerHTML = `<td id="ch7" class="casillaHora"></td>`
+    document.getElementById('h8').innerHTML = `<td id="ch8" class="casillaHora"></td>`
+    document.getElementById('h9').innerHTML = `<td id="ch9" class="casillaHora"></td>`
+    document.getElementById('h10').innerHTML = `<td id="ch10" class="casillaHora"></td>`
+    document.getElementById('h11').innerHTML = `<td id="ch11" class="casillaHora"></td>`
+    verMenuEnfermero(dniEnfermeroActual)
+}
 async function verMenuEnfermero(dniEnfermero){
     //info para rellenar toda la pagina
     await getCitas(dniEnfermero); //aqui tengo las citas del enfermero
@@ -1149,7 +1163,7 @@ async function getCitas(dni) {
     let dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     let intDia  = date.getDate(); let intMes = date.getUTCMonth() + 1; let stringDia =  dias[date.getUTCDay()]
     for(let a = 0; a<12; a++){
-        let casillaHora = document.getElementById(`h${a}`);
+        let casillaHora = document.getElementById(`ch${a}`);
         let hora = `${date.getHours()+a}:00`
         casillaHora.innerHTML = hora
     }
@@ -1203,7 +1217,7 @@ async function getCitas(dni) {
                 paciente = pacientes[b]
             }
         }
-        let td = `<td id='cita${cita.IDCita}' onClick='verCita(${cita.IDCita})' class='tipo${cita.Online}'><div id="datosPacienteCita">${paciente.Nombre} ${paciente.Apellidos}</div><div id='tipoConsulta'>${cita.TipoRevision}</div></td>`
+        let td = `<td id='cita${cita.IDCita}' onClick='verCita(${cita.IDCita})' class='celdaCita tipo${cita.Online}'><div id="datosPacienteCita">${paciente.Nombre} ${paciente.Apellidos}</div><div id='tipoConsulta'>${cita.TipoRevision}</div></td>`
         let idFila = cita.FechaHora.substring(11,13)
         let nFila = idFila - hora;
         let idColumna = cita.FechaHora.substring(14,16);
@@ -1223,11 +1237,7 @@ async function getCitas(dni) {
         let fila = document.getElementById(`h${a}`)
         for (let b = 0; b < horarioCitas[a].length; b++) {
             if(horarioCitas[a][b] == 0){
-                // let td = document.createElement('td')
-                // let contenido = document.createTextNode(` - `)
-                // td.appendChild(contenido)
-                // fila.appendChild(td)
-                let td = `<td> - </td>`
+                let td = `<td class="celdaVacia"> - </td>`
                 fila.innerHTML += td
             }else{
                 fila.innerHTML += horarioCitas[a][b]
@@ -1240,6 +1250,7 @@ async function getCitas(dni) {
 
 function verCita(idCita){
     console.log(idCita)
+    cambiarPantalla('menuCita')
 }
 
 //funcion para obtener los resultados de los test
