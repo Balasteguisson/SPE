@@ -105,3 +105,11 @@ table{
 	right: 20px;
 	letter-spacing: 1px; */
 }
+
+#horarioCitas{
+    border: 1px solid;
+    width: 100%;
+}
+#horarioCitas thead tr th{
+    border: 1px solid;
+}

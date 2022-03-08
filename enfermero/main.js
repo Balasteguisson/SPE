@@ -1161,8 +1161,9 @@ async function getCitas(dni) {
     }
     let stringFecha = `${intDia}/${intMes} - ${stringDia}`
     document.getElementById('dia0').innerHTML = stringFecha
+    ///////////////////////////////////////////////////////////
 
-
+    //SE AÑADEN LAS CITAS A LA TABLA FORMADA EN EL PASO ANTERIOR
     let horario = document.getElementById('horarioEnfermero')
     citasHoy = [] //aqui se almacenan las citas pendientes del enfermero, es decir, las que se han de mostrar en el horario
     let pacientes = respuesta[1] //datos de los pacientes citados
@@ -1173,38 +1174,72 @@ async function getCitas(dni) {
             citasHoy.push(cita)
         }
     }
-    console.log(citasHoy)
     let hora = date.getHours();
+    var horarioCitas = new Array(12); 
+    var hora0 = new Array(4);
+    var hora1 = new Array(4);
+    var hora2 = new Array(4);
+    var hora3 = new Array(4);
+    var hora4 = new Array(4);
+    var hora5 = new Array(4);
+    var hora6 = new Array(4);
+    var hora7 = new Array(4);
+    var hora8 = new Array(4);
+    var hora9 = new Array(4);
+    var hora10 = new Array(4);
+    var hora11 = new Array(4);
+    for (let c = 0;c < hora0.length; c++) {
+        hora0[c] = 0; hora1[c] = 0; hora2[c] = 0; hora3[c] = 0; hora4[c] = 0; hora5[c] = 0; hora6[c] = 0;
+        hora7[c] = 0; hora8[c] = 0; hora9[c] = 0; hora10[c] = 0; hora11[c] = 0;
+    }
+    
+    horarioCitas= [hora0,hora1,hora2,hora3,hora4,hora5,hora6,hora7,hora8,hora9,hora10,hora11]
+
     for (let a = 0; a < citasHoy.length; a++) {
         let cita = citasHoy[a]
-        let paciente = []
+        let paciente;
         for (let b = 0; b < pacientes.length; b++) {
             if(cita.IdPaciente == pacientes[b].NIdentidad){
-                paciente.push(pacientes[b])
+                paciente = pacientes[b]
             }
         }
-        let celdaCita = `<td id='cita${cita.IDCita}' class='tipo${cita.Online}'>${paciente.Nombre} ${paciente.Apellidos} ${cita.TipoRevision}</td>`
+        let td = `<td id='cita${cita.IDCita}' onClick='verCita(${cita.IDCita})' class='tipo${cita.Online}'><div id="datosPacienteCita">${paciente.Nombre} ${paciente.Apellidos}</div><div id='tipoConsulta'>${cita.TipoRevision}</div></td>`
         let idFila = cita.FechaHora.substring(11,13)
-        let fila = document.getElementById(`h${idFila - hora}`)
+        let nFila = idFila - hora;
         let idColumna = cita.FechaHora.substring(14,16);
-        let columna;
+        let nColumna;
         if(idColumna<15){
-            columna = "0/4h";
+            nColumna = 0;
         }else if(15<=idColumna && idColumna<30){
-            columna = "1/4h";
+            nColumna = 1;
         }else if(30<=idColumna && idColumna<45){
-            columna = "2/4h";
+            nColumna = 2;
         }else if(45<=idColumna && idColumna<60){
-            columna = "3/4h";
+            nColumna = 3;
         }
-        
-        
-
+        horarioCitas[nFila][nColumna] = td;
+    }
+    for (let a = 0; a < horarioCitas.length; a++) {
+        let fila = document.getElementById(`h${a}`)
+        for (let b = 0; b < horarioCitas[a].length; b++) {
+            if(horarioCitas[a][b] == 0){
+                // let td = document.createElement('td')
+                // let contenido = document.createTextNode(` - `)
+                // td.appendChild(contenido)
+                // fila.appendChild(td)
+                let td = `<td> - </td>`
+                fila.innerHTML += td
+            }else{
+                fila.innerHTML += horarioCitas[a][b]
+            }
+        }  
     }
 
 }
-function verCita(idCita){
 
+
+function verCita(idCita){
+    console.log(idCita)
 }
 
 //funcion para obtener los resultados de los test
