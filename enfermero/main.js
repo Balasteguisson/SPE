@@ -1563,7 +1563,7 @@ async function verCita(idCita){
     document.getElementById('indNombreApellidos').innerHTML = `${data.Nombre} ${data.Apellidos}`
     document.getElementById('indIdPaciente').innerHTML = `${data.NIdentidad}`
     document.getElementById('indSexo').innerHTML = `${data.Sexo}`
-    // document.getElementById('indEdad').innerHTML = `${calcularEdad(data.FechaNacimiento)}`
+    document.getElementById('indEdad').innerHTML = `${calcularEdad(data.FechaNacimiento)}`
     document.getElementById('indPeso').innerHTML = `${data.Peso}`
     document.getElementById('indMotivo').innerHTML = `${datosCita[0].TipoRevision}`
 
@@ -1571,31 +1571,71 @@ async function verCita(idCita){
 
     //alergias
     let alergiasPaciente = await peticionREST(urlAlergias, peticionServer)
-    console.log(alergiasPaciente)
     document.getElementById('citaListaAlergias').innerHTML = ""
     for (let a = 0; a < alergiasPaciente.length; a++) {
-        document.getElementById('citaListaAlergias').innerHTML += alergiasPaciente[a].Alergeno;
+        document.getElementById('citaListaAlergias').innerHTML += `<li>${alergiasPaciente[a].Alergeno}</li>`;
     }
     //enfermedades previas
     let patologiasPrevias = await peticionREST(urlPatPrev, peticionServer)
-    console.log(patologiasPrevias)
+    document.getElementById('citaListaPatologias').innerHTML = ""
+    for (let a = 0; a < patologiasPrevias.length; a++) {
+        document.getElementById('citaListaPatologias').innerHTML+= `<li>${patologiasPrevias[a].Nombre}</li>`        
+    }
     //tratamiento en curso
     let tratamientos = await peticionREST(urlTratamientos, peticionServer)
-    console.log(tratamientos)
+    document.getElementById('citaListaTratamientos').innerHTML = ""
+    for (let a = 0; a < tratamientos.length; a++) {
+        document.getElementById('citaListaTratamientos').innerHTML += `<li>${tratamientos[a].Farmaco}</li>`        
+    }
     //maternidad
     if (data.Sexo == "F"){
+        document.getElementById('citaListaMaternidad').style.display = ""
+        document.getElementById('citaListaMaternidad').innerHTML = ""
         let urlEmbarazos = `/api/admin/:id/getEmbarazosPaciente/${idPaciente}`
         let urlLactancia = `/api/admin/:id/getLactanciaPaciente/${idPaciente}`
         let embarazosPaciente = await peticionREST(urlEmbarazos, peticionServer);
         let lactanciaPaciente = await peticionREST(urlLactancia, peticionServer);
+
+        document.getElementById('citaListaMaternidad').innerHTML += `<li id ="citaPacienteEmbarazada" onclick="abrirEmbarazo(${data.NIdentidad})">No Embarazada</li>`
+        document.getElementById('citaListaMaternidad').innerHTML += `<li id="citaPacienteLactancia" onclick="abrirLactancia(${data.NIdentidad})">No da Lactancia</li>`
+        for (let a = 0; a < embarazosPaciente.length; a++) {
+            if(embarazosPaciente[a].Activo == 1){
+                document.getElementById('citaListaMaternidad').removeChild(document.getElementById('citaPacienteEmbarazada'))
+                document.getElementById('citaListaMaternidad').innerHTML += `<li id="citaPacienteEmbarazada" onclick="cerrarEmbarazo(${embarazosPaciente[a].IDEmbarazo})">Embarazada</li>`
+            }
+        }
+        for (let a = 0; a < lactanciaPaciente.length; a++) {
+            if(lactanciaPaciente[a].Activa == 1){
+                document.getElementById('citaListaMaternidad').removeChild(document.getElementById('citaPacienteLactancia'))
+                document.getElementById('citaListaMaternidad').innerHTML += `<li id="citaPacienteLactancia" onclick="cerrarLactancia(${lactanciaPaciente[a].IDLactancia})">En lactancia</li>`
+            }
+        }
+
+    } else if (data.Sexo == "M"){
+        document.getElementById('citaListaMaternidad').style.display = "none"
     }
 
     cambiarPantalla('menuCita')
 }
 
 function calcularEdad(fechaNacimiento){
+    let nacimiento = new Date(fechaNacimiento)
+    let hoy = new Date()
+    var edad = hoy.getFullYear() - nacimiento.getFullYear()
+    var m = hoy.getMonth() - nacimiento.getMonth();
 
+    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+        edad--;
+    }
     return edad
+}
+
+async function cerrarEmbarazo(idEmbarazo){
+
+}
+
+async function cerrarLactancia(idLactancia){
+
 }
 
 function addMedicion(){
