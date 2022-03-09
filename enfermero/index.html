@@ -613,7 +613,7 @@
             </section>
             <section id='navegacionTest'>
                 <p><button onclick="preguntaAnterior()">Pregunta Previa</button> <button id="botonSiguientePregunta" onclick="siguientePregunta()">Pregunta Siguiente</button><button id="botonTerminarTest" onclick="terminarTest()">Terminar Test</button></p>
-                <p><button id="botonAbandonarTest" onclick="cambiarPantalla('menuEnfermero')">Abandonar test</button></p>
+                <p><button id="botonAbandonarTest" onclick="verMenuEnfermeroHTML()">Abandonar test</button></p>
             </section>
         </div>
         <div id='pantallaReviewTest' class='seccion'> <!--PANTALLA REVIEW TEST FINALIZADO-->
@@ -634,13 +634,14 @@
         </div>
         <div id='menuCita' class='seccion'> <!--PANTALLA CITA-->
             <div id="citaDatosPaciente"><!--Info del paciente-->
-                <p>Paciente: <span id="indNombreApellidos"></span></p>
+                <p>Paciente: <span id="indNombreApellidos"></span>-<span id="indIdPaciente"></span></p>
                 <p>Sexo: <span id="indSexo"></span> Peso: <span id="indPeso"></span> Edad: <span id="indEdad"></span> Motivo de cita: <span id="indMotivo"></span></p>
                 <div id="citaInfoPaciente">
                     <!-- Las aria label permiten mostrar su contenido como titulo de la lista gracias a CSS -->
                     <ul id="citaListaPatologias" aria-label="Patologías Previas"></ul>
                     <ul id="citaListaAlergias" aria-label="Alergias"></ul>
                     <ul id="listaMaternidad" aria-label="Maternidad"></ul>
+                    <ul id="listaTratamientosActuales" aria-label="Tratamiento en curso"></ul>
                 </div>
                 <div id="citaSintomasSignos">
                     <p><label for="citaSintomas"> Síntomas indicados por el paciente: </label></p>
@@ -657,10 +658,20 @@
                         <select name="tipoVariable" id="tipoVariable">
                             <option hidden selected value="placeholderVariable">Escoge un parámetro médico</option>
                         </select>
+                        <input type="text" name="cantidadVariable" id="cantidadVariable" placeholder="Introduce la cantidad">
+                        <select name="unidadVariable" id="unidadVariable"></select><!--Deberia mostrar automaticamente la del SI y luego dar el resto de opciones-->
+                        <button onclick="addMedicion()">Añadir</button>
                     </p>
+                    <ul id="listaMediciones" aria-label="Medidas tomadas:"></ul>
+                    <p><button onclick="verGraficasPaciente()">Ver gráficas</button><button onclick="guardarMedidas()">Guardar mediciones tomadas</button></p>
                 </div>
                 <div id="citaTratamiento">
                     <h2>Tratamiento</h2>
+                    <p><select name="medicamentoSeleccionado" id="medicamentoSeleccionado"><!--Se actualiza de forma dinamica segun las condiciones del paciente--></select></p>
+                    <p><textarea name="recomendacionesMedicamento" id="recomendacionesMedicamento" cols="30" rows="8" placeholder="Indicaciones"></textarea></p>
+                    <p></label><input type="text" name="posologiaMedicamento" id="posologiaMedicamento" placeholder="Posología"></p>
+                    <p><label for="fechaInicioMedicacion">Inicio del tratamiento: </label><input type="date" name="fechaInicioMedicacion" id="fechaInicioMedicacion"><label for="fechaFinMedicacion">Fin del tratamiento: </label><input type="date" name="fechaFinMedicacion" id="fechaFinMedicacion"></p>
+                    <p><button onclick="crearReceta()">Recetar medicamento</button></p>
                 </div>
             </div>
         </div>

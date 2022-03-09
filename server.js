@@ -776,6 +776,19 @@ app.get("/api/enfermero/:id/citas", (req,res) => {
 })
 
 
+app.get("/api/enfermero/:id/getCita/:idCita", (req,res)=>{
+    let idCita = req.params.idCita;
+    let petBBDD = `SELECT * FROM Cita WHERE IDCita = '${idCita}'`
+    baseDatos.query(petBBDD, (err,cita)=>{
+        if(err){
+            res.status(502).json("Fallo BBDD"+err)
+        }else{
+            res.status(201).json(cita)
+        }
+    })
+})
+
+
 
 //RELLENADO MONITOR RENDIMIENTO
 //Obtencion de ciclos de test

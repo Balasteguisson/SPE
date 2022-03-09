@@ -1217,7 +1217,7 @@ async function getCitas(dni) {
                 paciente = pacientes[b]
             }
         }
-        let td = `<td id='cita${cita.IDCita}' onClick='verCita(${cita.IDCita})' class='celdaCita tipo${cita.Online}'><div id="datosPacienteCita">${paciente.Nombre} ${paciente.Apellidos}</div><div id='tipoConsulta'>${cita.TipoRevision}</div></td>`
+        let td = `<td id='cita${cita.IDCita}' onClick='verCita(${cita.IDCita})' class='celdaCita tipo${cita.Online}'><div id="datosPacienteCita">${paciente.Nombre} ${paciente.Apellidos}</div><div id='tipoConsulta'>${cita.TipoRevision}    ${cita.FechaHora.substring(11,16)}</div></td>`
         let idFila = cita.FechaHora.substring(11,13)
         let nFila = idFila - hora;
         let idColumna = cita.FechaHora.substring(14,16);
@@ -1248,10 +1248,7 @@ async function getCitas(dni) {
 }
 
 
-function verCita(idCita){
-    console.log(idCita)
-    cambiarPantalla('menuCita')
-}
+
 
 //funcion para obtener los resultados de los test
 function getResultados(dni) {
@@ -1539,6 +1536,79 @@ async function verTest2(){
     }
 }
 
+
+//FUNCIONES PARA PANTALLA CITA
+async function verCita(idCita){
+    //datos relacionados con el paciente
+    //obtencion idPaciente
+    let urlCita = `/api/enfermero/:id/getCita/${idCita}`
+    let peticionServer = {
+        method : 'GET',
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    }
+    let datosCita = await peticionREST(urlCita,peticionServer)
+    let idPaciente = datosCita[0].IdPaciente
+
+
+
+    let urlPaciente = `/api/admin/:id/getPaciente/${idPaciente}`
+    let urlAlergias = `/api/admin/:id/getAlergiasPaciente/${idPaciente}`
+    let urlPatPrev = `/api/admin/:id/getPatPreviasPaciente/${idPaciente}`
+    let urlTratamientos = `/api/admin/:id/getTratamientosPaciente/${idPaciente}`
+    
+    let datosPaciente = await peticionREST(urlPaciente,peticionServer);
+    let data = datosPaciente[0];
+    document.getElementById('indNombreApellidos').innerHTML = `${data.Nombre} ${data.Apellidos}`
+    document.getElementById('indIdPaciente').innerHTML = `${data.NIdentidad}`
+    document.getElementById('indSexo').innerHTML = `${data.Sexo}`
+    // document.getElementById('indEdad').innerHTML = `${calcularEdad(data.FechaNacimiento)}`
+    document.getElementById('indPeso').innerHTML = `${data.Peso}`
+    document.getElementById('indMotivo').innerHTML = `${datosCita[0].TipoRevision}`
+
+
+
+    //alergias
+    let alergiasPaciente = await peticionREST(urlAlergias, peticionServer)
+    console.log(alergiasPaciente)
+    document.getElementById('citaListaAlergias').innerHTML = ""
+    for (let a = 0; a < alergiasPaciente.length; a++) {
+        document.getElementById('citaListaAlergias').innerHTML += alergiasPaciente[a].Alergeno;
+    }
+    //enfermedades previas
+    let patologiasPrevias = await peticionREST(urlPatPrev, peticionServer)
+    console.log(patologiasPrevias)
+    //tratamiento en curso
+    let tratamientos = await peticionREST(urlTratamientos, peticionServer)
+    console.log(tratamientos)
+    //maternidad
+    if (data.Sexo == "F"){
+        let urlEmbarazos = `/api/admin/:id/getEmbarazosPaciente/${idPaciente}`
+        let urlLactancia = `/api/admin/:id/getLactanciaPaciente/${idPaciente}`
+        let embarazosPaciente = await peticionREST(urlEmbarazos, peticionServer);
+        let lactanciaPaciente = await peticionREST(urlLactancia, peticionServer);
+    }
+
+    cambiarPantalla('menuCita')
+}
+
+function calcularEdad(fechaNacimiento){
+
+    return edad
+}
+
+function addMedicion(){
+    console.log("funcion llamada")
+}
+
+function verGraficasPaciente(){
+    console.log("cargando graficas")
+}
+
+function crearReceta(){
+    console.log("creando receta")
+}
 
 
 
