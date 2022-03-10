@@ -502,7 +502,7 @@ function deleteAlergiaE(idFila){
 
     for(let a = 0; a<metaListaAlergias.length; a++){
         if(idFila == metaListaAlergias[a][1]){
-            metaListaEmbarazos.splice(a,1)
+            metaListaAlergias.splice(a,1)
             break;
         }
     }
@@ -1654,11 +1654,18 @@ function crearReceta(){
 
 //funciones para crear medicamentos y variables de las mediciones
 function pantallaMantenimientoCita(){
+    metaUnidades.splice(0,metaUnidades.length)
+    metaAbreviaturas.splice(0,metaAbreviaturas.length)
+    metaRangosMax.splice(0,metaRangosMax.length)
+    metaRangosMin.splice(0,metaRangosMin.length)
+    document.getElementById('listaUnidadesVariable').innerHTML = ""
     document.getElementById('creacionVariable').reset();
     cambiarPantalla('mantenimientoCita')
 }
-var unidades = []
-var rangos = []
+var metaUnidades = []
+var metaAbreviaturas = []
+var metaRangosMax = []
+var metaRangosMin = []
 
 function addUnidad(){
     let unidad = document.getElementById('unidadesVariable').value
@@ -1666,14 +1673,49 @@ function addUnidad(){
     let maxU = document.getElementById('rangoHabitualMax').value
     let minU = document.getElementById('rangoHabitualMin').value
 
-    let li = ``
+    metaUnidades.push(unidad)
+    metaAbreviaturas.push(abreviatura)
+    metaRangosMax.push(maxU)
+    metaRangosMin.push(minU)
+
+    let li = `<li id="LI${abreviatura}">${unidad} - ${abreviatura} - (${maxU}:${minU}) <button type="button" onclick="borrarUnidad('${abreviatura}')">❌</button></li>`;
+    document.getElementById('listaUnidadesVariable').innerHTML += li
+
+}
+
+function borrarUnidad(abreviatura){
+    let lista = document.getElementById('listaUnidadesVariable');
+    let IDFila = `LI${abreviatura}`
+    let fila = document.getElementById(IDFila);
+    lista.removeChild(fila);
+
+    for(let a = 0; a<metaUnidades.length; a++){
+        if(abreviatura == metaAbreviaturas[a]){
+            metaUnidades.splice(a,1)
+            metaAbreviaturas.splice(a,1)
+            metaRangosMax.splice(a,1)
+            metaRangosMin.splice(a,1)
+            break;
+        }
+    }
 }
 async function crearVariable(){
     //obtencion de datos de la variable
     let nombreVariable = document.getElementById('nombreVariable').value;
+    let datosVariable = [metaUnidades, metaAbreviaturas, metaRangosMax, metaRangosMin];
     //enviado de datos a servidor
-
+    let datos = {nombre:nombreVariable, datosVariable: datosVariable}
+    let url = `/api/enfermero/:id/createVariable`
+    let peticionServer = {
+        method: 'POST',
+        body: JSON.stringify(datos),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
     //procesado de la respuesta
+    let respuesta = await peticionREST(url,peticionServer)
+    console.log(respuesta)
 }
 
 
