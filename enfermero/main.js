@@ -72,7 +72,7 @@ async function log() {
         //Actualizar pantalla de enfermero
         let mensajeBienvenida = document.createTextNode( `Bienvenido enfermero ${datosUser.Nombre}`);
         document.getElementById('bienvenida').appendChild(mensajeBienvenida)
-        verMenuEnfermero(datosUser.DNI)
+        verMenuEnfermeroHTML(datosUser.DNI)
     }else if(dataLog.permisos == 'administrador'){
         let mensajeBienvenida = document.createTextNode(`Bienvenido administrador ${datosUser.Nombre}`);
         document.getElementById('bienvenidaAdmin').appendChild(mensajeBienvenida);
@@ -1122,7 +1122,7 @@ async function getIDEnfermero(dniEnfermero){
     let idEnfermero = await peticionREST(url,peticionServer)
     return idEnfermero[0].ID
 }
-function verMenuEnfermeroHTML(){
+function verMenuEnfermeroHTML(dniEnfermero = dniEnfermeroActual){
     document.getElementById('h0').innerHTML = `<td id="ch0" class="casillaHora"></td>`
     document.getElementById('h1').innerHTML = `<td id="ch1" class="casillaHora"></td>`
     document.getElementById('h2').innerHTML = `<td id="ch2" class="casillaHora"></td>`
@@ -1135,7 +1135,7 @@ function verMenuEnfermeroHTML(){
     document.getElementById('h9').innerHTML = `<td id="ch9" class="casillaHora"></td>`
     document.getElementById('h10').innerHTML = `<td id="ch10" class="casillaHora"></td>`
     document.getElementById('h11').innerHTML = `<td id="ch11" class="casillaHora"></td>`
-    verMenuEnfermero(dniEnfermeroActual)
+    verMenuEnfermero(dniEnfermero)
 }
 async function verMenuEnfermero(dniEnfermero){
     //info para rellenar toda la pagina
@@ -1507,6 +1507,7 @@ async function verTest1(){
         alert("Ya has hecho este test, debes esperar al siguiente");
     }
 }
+
 async function verTest2(){
     //lleva al test de diabetes
     //primero se obtiene el test del ciclo actual
@@ -1651,6 +1652,29 @@ function crearReceta(){
 }
 
 
+//funciones para crear medicamentos y variables de las mediciones
+function pantallaMantenimientoCita(){
+    document.getElementById('creacionVariable').reset();
+    cambiarPantalla('mantenimientoCita')
+}
+var unidades = []
+var rangos = []
+
+function addUnidad(){
+    let unidad = document.getElementById('unidadesVariable').value
+    let abreviatura = document.getElementById('abreviaturaUnidad').value
+    let maxU = document.getElementById('rangoHabitualMax').value
+    let minU = document.getElementById('rangoHabitualMin').value
+
+    let li = ``
+}
+async function crearVariable(){
+    //obtencion de datos de la variable
+    let nombreVariable = document.getElementById('nombreVariable').value;
+    //enviado de datos a servidor
+
+    //procesado de la respuesta
+}
 
 
 

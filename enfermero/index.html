@@ -129,6 +129,7 @@
                 <p><button onclick='pantallaRegistrarEnfermero()'>Nuevo Enfermero</button></p>
                 <p><button onclick='fillListaEnfermeros()'>Lista de Enfermeros</button></p>
                 <p><button onclick='pantallaDarCita()'>Dar Cita</button></p>
+                <p><button onclick='pantallaMantenimientoCita()'>Medicamentos y mediciones</button></p>
             </div>
             <div id='gestionPac' class='card'>
                 <h4 class='cardHeader'>Pacientes</h4>
@@ -674,6 +675,27 @@
                     <p><button onclick="crearReceta()">Recetar medicamento</button></p>
                 </div>
             </div>
+        </div>
+        <div id='mantenimientoCita' class='seccion'>
+            <div id='creacionVariablesPaciente'>
+                <form id='creacionVariable'>
+                    <p><label for="nombreVariable">Nombre</label><input type="text" name="nombreVariable" id="nombreVariable"></p>
+                    <p>
+                        <label for="unidadesVariable">Unidades</label><input type="text" name="unidadesVariable" id="unidadesVariable">
+                        <label for="abreviaturaUnidad">Abreviatura</label><input type="text" name="abreviaturaUnidad" id="abreviaturaUnidad">
+                    </p>
+                    <p>
+                        <label for="rangoHabitual">Valores normales</label>
+                        <input type="text" name="rangoHabitual" id="rangoHabitualMax" placeholder="Máximo">
+                        <input type="text" name="rangoHabitual" id="rangoHabitualMin" placeholder="Mínimo">
+                    </p>
+                    <button type="button" onclick="addUnidad()">Añadir unidad y rango</button>
+                    <ul id="listaUnidadesVariable" aria-label="Unidades"></ul>
+                    <button type="button" onclick="crearVariable()">Crear variable</button>
+                </form>
+                <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            </div>
+            <div id='addMedicamentos'></div>
         </div>
         <script src="main.js"></script>
     </body>
