@@ -1539,6 +1539,7 @@ async function verTest2(){
 
 
 //FUNCIONES PARA PANTALLA CITA
+var idPacienteCita;
 async function verCita(idCita){
     //datos relacionados con el paciente
     //obtencion idPaciente
@@ -1551,7 +1552,10 @@ async function verCita(idCita){
     }
     let datosCita = await peticionREST(urlCita,peticionServer)
     let idPaciente = datosCita[0].IdPaciente
-
+    idPacienteCita = idPaciente;
+    idMedidaTomada.splice(0,idMedidaTomada.length)
+    cantidadTomada.splice(0,cantidadTomada.length)
+    unidadTomada.splice(0,unidadTomada.length)
 
 
     let urlPaciente = `/api/admin/:id/getPaciente/${idPaciente}`
@@ -1640,12 +1644,56 @@ async function cerrarLactancia(idLactancia){
 
 }
 
+var idMedidaTomada = []
+var cantidadTomada = []
+var unidadTomada = []
 function addMedicion(){
     let tipo = document.getElementById('tipoVariable').value
+    let nombreTipo = document.getElementById('tipoVariable').selectedOptions[0].innerHTML
     let cantidad = document.getElementById('cantidadVariable').value
     let unidad = document.getElementById('unidadVariable').value
-    console.log(`${tipo} - ${cantidad} - ${unidad}`)
-    console.log("funcion llamada")
+    idMedidaTomada.push(tipo)
+    cantidadTomada.push(cantidad)
+    unidadTomada.push(unidad)
+
+    let li = `<li id="LIM${tipo}">${nombreTipo} - ${cantidad}${unidad} <button type="button" onclick="borrarMedicion('${tipo}')">❌</button></li>`;
+    document.getElementById('listaMediciones').innerHTML += li
+}
+function borrarMedicion(tipo){
+    let lista = document.getElementById('listaMediciones');
+    let IDFila = `LIM${tipo}`
+    let fila = document.getElementById(IDFila);
+    lista.removeChild(fila);
+
+    for(let a = 0; a<metaUnidades.length; a++){
+        if(tipo == idMedidaTomada[a]){
+            idMedidaTomada.splice(a,1)
+            cantidadTomada.splice(a,1)
+            cantidadTomada.splice(a,1)
+            break;
+        }
+    }
+}
+
+async function guardarMedidas(){
+    let idEnfermero = await getIDEnfermero(dniEnfermeroActual)
+    let url = `/api/enfermero/${idEnfermero}/guardarMedidasPaciente/${idPacienteCita}`
+    let datos = {
+        ids : idMedidaTomada,
+        cantidades : cantidadTomada,
+        unidades : unidadTomada,
+        fecha : fecha()
+    }
+    let peticion = {
+        method: 'POST',
+        body: JSON.stringify(datos),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    let respuesta = await peticionREST(url,peticion)
+    console.log(respuesta)
+    
 }
 
 function verGraficasPaciente(){
@@ -1733,9 +1781,8 @@ async function getTiposVariables(){
     let respuesta = await peticionREST(url, peticion)
     let tipos = respuesta[0]
     unidades = respuesta[1]
-    console.log(tipos)
-    console.log(unidades)
     let selectTipo = document.getElementById('tipoVariable')
+    selectTipo.innerHTML = '<option hidden selected value="placeholderVariable">Escoge un parámetro</option>'
     for (let a = 0; a < tipos.length; a++) {
         let option = document.createElement('option')
         option.setAttribute('id',`VAR${tipos[a].IDVariable}`)
@@ -1752,7 +1799,7 @@ document.getElementById('tipoVariable').addEventListener('change', ()=>{
         if(unidades[a].IDVariable == tipo){
             let option = document.createElement('option')
             option.setAttribute('id',`U${unidades[a].Abreviatura}`)
-            option.setAttribute('value',`U${unidades[a].Abreviatura}`)
+            option.setAttribute('value',`${unidades[a].Abreviatura}`)
             option.innerHTML = `${unidades[a].Abreviatura}`
             abreviatura.appendChild(option)
         }

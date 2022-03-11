@@ -834,6 +834,28 @@ app.get("/api/enfermero/:id/getTiposVariables", (req,res) => {
     })
 })
 
+app.post('/api/enfermero/:id/guardarMedidasPaciente/:idPaciente', (req,res) => {
+    let idPaciente = req.params.idPaciente
+    let mediciones = req.body
+    let idParametros = mediciones.ids
+    let cantidades = mediciones.cantidades
+    let unidades = mediciones.unidades
+    console.log(idPaciente)
+    console.log(mediciones)
+    for (let a = 0; a < idParametros.length; a++) {
+        let petBBDD = `INSERT INTO VariableFisica (IDVariable, IDPaciente, Tipo, Valor, Unidades, Fecha, IDEnfermero) VALUES (NULL,'${idPaciente}','${idParametros[a]}','${cantidades[a]}','${unidades[a]}','${mediciones.fecha}','${req.params.id}')`
+        console.log(petBBDD)
+        baseDatos.query(petBBDD, (err,respuesta) => {
+            if(err){
+                res.status(502).json("Fallo BBDD"+err);
+                return;
+            }
+        })
+    }
+    res.status(201).json("Mediciones guardadas correctamente")
+
+})
+
 
 //RELLENADO MONITOR RENDIMIENTO
 //Obtencion de ciclos de test
