@@ -657,14 +657,11 @@ app.post(`/api/admin/:id/crearCita`, (req,res) => {
 
 
 app.get('/api/enfermero/getIDEnfermero/:dni', (req,res) => {
-    console.log("buscando id")
     let petBBDD = `SELECT ID FROM Enfermero WHERE DNI ='${req.params.dni}'`
     baseDatos.query(petBBDD, (err,idEnfermero)=>{
         if(err){
             res.status(502).json("Error en BBDD"+ err)
         }else{
-            console.log("mandando id")
-            console.log(idEnfermero)
             res.status(201).json(idEnfermero)
         }
     })
@@ -810,6 +807,33 @@ app.post("/api/enfermero/:id/createVariable", (req,res)=>{
         }
     })
 })
+
+app.get("/api/enfermero/:id/getTiposVariables", (req,res) => {
+    let petBBDD = "SELECT * FROM TiposVariables"
+    var contestacion = []
+    baseDatos.query(petBBDD, (err,tipos) =>  {
+        if(err){
+            res.status(502).json("Error en BBDD"+err)
+        }else{
+            contestacion.push(tipos)
+            let listaIDS = [];
+            for (let a = 0; a < tipos.length; a++) {
+                listaIDS.push(tipos[a].IDVariable)
+            }
+            let listaPeticion = listaIDS.join()
+            let petBBDD2 = `SELECT * FROM UnidadesVariables WHERE IDVariable in (${listaPeticion})`
+            baseDatos.query(petBBDD2, (err,datos) => {
+                if(err){
+                    res.status(502).json("Error BBDD"+ err)
+                }else{
+                    contestacion.push(datos)
+                    res.status(201).json(contestacion)
+                }
+            })
+        }
+    })
+})
+
 
 //RELLENADO MONITOR RENDIMIENTO
 //Obtencion de ciclos de test

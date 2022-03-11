@@ -659,7 +659,7 @@
                         <select name="tipoVariable" id="tipoVariable">
                             <option hidden selected value="placeholderVariable">Escoge un parámetro médico</option>
                         </select>
-                        <input type="text" name="cantidadVariable" id="cantidadVariable" placeholder="Introduce la cantidad">
+                        <input type="number" name="cantidadVariable" id="cantidadVariable" placeholder="Introduce la cantidad">
                         <select name="unidadVariable" id="unidadVariable"></select><!--Deberia mostrar automaticamente la del SI y luego dar el resto de opciones-->
                         <button onclick="addMedicion()">Añadir</button>
                     </p>
@@ -676,7 +676,7 @@
                 </div>
             </div>
         </div>
-        <div id='mantenimientoCita' class='seccion'>
+        <div id='mantenimientoCita' class='seccion'><!-- PANTALLA PARA CREAR VARIABLES Y AÑADIR MEDICAMENTOS-->
             <div id='creacionVariablesPaciente'>
                 <form id='creacionVariable'>
                     <p><label for="nombreVariable">Nombre</label><input type="text" name="nombreVariable" id="nombreVariable"></p>

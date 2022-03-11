@@ -1617,6 +1617,7 @@ async function verCita(idCita){
     }
 
     cambiarPantalla('menuCita')
+    getTiposVariables();
 }
 
 function calcularEdad(fechaNacimiento){
@@ -1640,6 +1641,10 @@ async function cerrarLactancia(idLactancia){
 }
 
 function addMedicion(){
+    let tipo = document.getElementById('tipoVariable').value
+    let cantidad = document.getElementById('cantidadVariable').value
+    let unidad = document.getElementById('unidadVariable').value
+    console.log(`${tipo} - ${cantidad} - ${unidad}`)
     console.log("funcion llamada")
 }
 
@@ -1699,6 +1704,7 @@ function borrarUnidad(abreviatura){
         }
     }
 }
+
 async function crearVariable(){
     //obtencion de datos de la variable
     let nombreVariable = document.getElementById('nombreVariable').value;
@@ -1718,6 +1724,40 @@ async function crearVariable(){
     console.log(respuesta)
 }
 
+var unidades = []
+async function getTiposVariables(){
+    let url = "/api/enfermero/:id/getTiposVariables"
+    let peticion = {
+        method : "GET"
+    }
+    let respuesta = await peticionREST(url, peticion)
+    let tipos = respuesta[0]
+    unidades = respuesta[1]
+    console.log(tipos)
+    console.log(unidades)
+    let selectTipo = document.getElementById('tipoVariable')
+    for (let a = 0; a < tipos.length; a++) {
+        let option = document.createElement('option')
+        option.setAttribute('id',`VAR${tipos[a].IDVariable}`)
+        option.setAttribute('value',`${tipos[a].IDVariable}`)
+        option.innerHTML = `${tipos[a].Nombre}`
+        selectTipo.appendChild(option);
+    }
+}
+document.getElementById('tipoVariable').addEventListener('change', ()=>{
+    let tipo = document.getElementById('tipoVariable').value
+    let abreviatura = document.getElementById('unidadVariable')
+    abreviatura.innerHTML = ""
+    for (let a = 0; a < unidades.length; a++) {
+        if(unidades[a].IDVariable == tipo){
+            let option = document.createElement('option')
+            option.setAttribute('id',`U${unidades[a].Abreviatura}`)
+            option.setAttribute('value',`U${unidades[a].Abreviatura}`)
+            option.innerHTML = `${unidades[a].Abreviatura}`
+            abreviatura.appendChild(option)
+        }
+    }
+})
 
 
 
