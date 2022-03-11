@@ -1601,8 +1601,8 @@ async function verCita(idCita){
         let embarazosPaciente = await peticionREST(urlEmbarazos, peticionServer);
         let lactanciaPaciente = await peticionREST(urlLactancia, peticionServer);
 
-        document.getElementById('citaListaMaternidad').innerHTML += `<li id ="citaPacienteEmbarazada" onclick="abrirEmbarazo(${data.NIdentidad})">No Embarazada</li>`
-        document.getElementById('citaListaMaternidad').innerHTML += `<li id="citaPacienteLactancia" onclick="abrirLactancia(${data.NIdentidad})">No da Lactancia</li>`
+        document.getElementById('citaListaMaternidad').innerHTML += `<li id ="citaPacienteEmbarazada" onclick="abrirEmbarazo('${data.NIdentidad}')">No Embarazada</li>`
+        document.getElementById('citaListaMaternidad').innerHTML += `<li id="citaPacienteLactancia" onclick="abrirLactancia('${data.NIdentidad}')">No da Lactancia</li>`
         for (let a = 0; a < embarazosPaciente.length; a++) {
             if(embarazosPaciente[a].Activo == 1){
                 document.getElementById('citaListaMaternidad').removeChild(document.getElementById('citaPacienteEmbarazada'))
@@ -1636,13 +1636,78 @@ function calcularEdad(fechaNacimiento){
     return edad
 }
 
+async function abrirEmbarazo(idPaciente){
+    console.log(idPaciente)
+    let url = `/api/enfermero/:id/abrirEmbarazo/${idPaciente}`
+    let fechaInicio = fecha();
+    let datos = {fecha: fechaInicio}
+    let peticion = {
+        method: 'POST',
+        body: JSON.stringify(datos),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    let respuesta = await peticionREST(url,peticion);
+    if(respuesta.serverStatus == 2){
+        document.getElementById('citaListaMaternidad').removeChild(document.getElementById('citaPacienteEmbarazada'));
+        document.getElementById('citaListaMaternidad').innerHTML += `<li id="citaPacienteEmbarazada" onclick="cerrarEmbarazo(${respuesta.insertId})">Embarazada</li>`
+    }
+} 
+
 async function cerrarEmbarazo(idEmbarazo){
-
+    let url = `/api/enfermero/:id/cerrarEmbarazo/${idEmbarazo}`
+    let datos = {fechaFin : fecha()}
+    let peticion = { 
+        method: 'PUT',
+        body :  JSON.stringify(datos),
+        headers : {
+            'Content-Type': 'application/json'
+        }
+    }
+    let respuesta = await peticionREST(url,peticion)
+    if(respuesta.serverStatus == 2){
+        document.getElementById('citaListaMaternidad').removeChild(document.getElementById('citaPacienteEmbarazada'))
+        document.getElementById('citaListaMaternidad').innerHTML += `<li id ="citaPacienteEmbarazada" onclick="abrirEmbarazo('${idPacienteCita}')">No Embarazada</li>`
+    }
 }
 
-async function cerrarLactancia(idLactancia){
+async function abrirLactancia(idPaciente){
+    console.log(idPaciente)
+    let url = `/api/enfermero/:id/abrirLactancia/${idPaciente}`
+    let fechaInicio = fecha();
+    let datos = {fecha: fechaInicio}
+    let peticion = {
+        method: 'POST',
+        body: JSON.stringify(datos),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    let respuesta = await peticionREST(url,peticion);
+    if(respuesta.serverStatus == 2){
+        document.getElementById('citaListaMaternidad').removeChild(document.getElementById('citaPacienteLactancia'));
+        document.getElementById('citaListaMaternidad').innerHTML += `<li id="citaPacienteLactancia" onclick="cerrarLactancia(${respuesta.insertId})">En lactancia</li>`
+    }
+} 
 
+async function cerrarLactancia(idEmbarazo){
+    let url = `/api/enfermero/:id/cerrarLactancia/${idEmbarazo}`
+    let peticion = { 
+        method: 'PUT',
+        headers : {
+            'Content-Type': 'application/json'
+        }
+    }
+    let respuesta = await peticionREST(url,peticion)
+    if(respuesta.serverStatus == 2){
+        document.getElementById('citaListaMaternidad').removeChild(document.getElementById('citaPacienteLactancia'))
+        document.getElementById('citaListaMaternidad').innerHTML += `<li id ="citaPacienteLactancia" onclick="abrirLactancia('${idPacienteCita}')">No da lactancia</li>`
+    }
 }
+
+
+
 
 var idMedidaTomada = []
 var cantidadTomada = []
@@ -1659,6 +1724,7 @@ function addMedicion(){
     let li = `<li id="LIM${tipo}">${nombreTipo} - ${cantidad}${unidad} <button type="button" onclick="borrarMedicion('${tipo}')">❌</button></li>`;
     document.getElementById('listaMediciones').innerHTML += li
 }
+
 function borrarMedicion(tipo){
     let lista = document.getElementById('listaMediciones');
     let IDFila = `LIM${tipo}`

@@ -856,6 +856,54 @@ app.post('/api/enfermero/:id/guardarMedidasPaciente/:idPaciente', (req,res) => {
 
 })
 
+app.put("/api/enfermero/:id/cerrarEmbarazo/:idEmbarazo",(req,res) => {
+    let fechaFin = req.body.fechaFin
+    let petBBDD = `UPDATE Embarazo SET Activo = '0', FechaFin = '${fechaFin}' WHERE IDEmbarazo = '${req.params.idEmbarazo}'`
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        if(err){
+            res.status(502).json("Error base de datos"+err)
+        }else{
+            res.status(201).json(respuesta);
+        }
+    })
+})
+
+app.post('/api/enfermero/:id/abrirEmbarazo/:idPaciente', (req,res) => {
+    let fecha = req.body.fecha
+    let petBBDD = `INSERT INTO Embarazo (IDEmbarazo, IdPaciente, Activo, FechaInicio, FechaFin) VALUES (NULL, '${req.params.idPaciente}','1','${fecha}',NULL)`
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        if(err){
+            res.status(502).json(err)
+        }else{
+            res.status(201).json(respuesta);
+        }
+    })
+})
+
+
+app.put("/api/enfermero/:id/cerrarLactancia/:idLactancia",(req,res) => {
+    let petBBDD = `UPDATE Lactancia SET Activa = '0' WHERE IDLactancia = '${req.params.idLactancia}'`
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        if(err){
+            res.status(502).json("Error base de datos"+err)
+        }else{
+            res.status(201).json(respuesta);
+        }
+    })
+})
+
+app.post('/api/enfermero/:id/abrirLactancia/:idPaciente', (req,res) => {
+    let petBBDD = `INSERT INTO Lactancia (IDLactancia, IdPaciente, Activa) VALUES (NULL, '${req.params.idPaciente}','1')`
+    baseDatos.query(petBBDD, (err,respuesta) => {
+        if(err){
+            res.status(502).json(err)
+        }else{
+            res.status(201).json(respuesta);
+        }
+    })
+})
+
+
 
 //RELLENADO MONITOR RENDIMIENTO
 //Obtencion de ciclos de test
