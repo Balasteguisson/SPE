@@ -1092,6 +1092,11 @@ async function crearCita(){
         }
     }
     let respuesta = await peticionREST(url, petServer)
+    if(respuesta ==="Cita creada"){
+        alert("Cita creada")
+    }else{
+        alert("No se ha podido crear la cita")
+    }
 }
 //RELLENAR MONITOR RENDIMIENTO
 //Insertar ciclos en el select
@@ -1717,6 +1722,7 @@ function addMedicion(){
     let nombreTipo = document.getElementById('tipoVariable').selectedOptions[0].innerHTML
     let cantidad = document.getElementById('cantidadVariable').value
     let unidad = document.getElementById('unidadVariable').value
+    cantidad = cantidad.replace(",",".")
     idMedidaTomada.push(tipo)
     cantidadTomada.push(cantidad)
     unidadTomada.push(unidad)
@@ -1791,7 +1797,10 @@ function addUnidad(){
     let abreviatura = document.getElementById('abreviaturaUnidad').value
     let maxU = document.getElementById('rangoHabitualMax').value
     let minU = document.getElementById('rangoHabitualMin').value
-
+    maxU = maxU.replace(',','.')
+    minU = minU.replace(',','.')
+    console.log(maxU)
+    console.log(minU)
     metaUnidades.push(unidad)
     metaAbreviaturas.push(abreviatura)
     metaRangosMax.push(maxU)

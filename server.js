@@ -795,7 +795,7 @@ app.post("/api/enfermero/:id/createVariable", (req,res)=>{
             console.log(respuesta.insertId);
             for (let a = 0; a < datos.datosVariable[0].length; a++) {
                 console.log(datos.datosVariable[0][a])
-                petBBDD2 = `INSERT INTO UnidadesVariables (IDVariable, NombreUnidad, Abreviatura, ValorMax, ValorMin) VALUES ('${respuesta.insertId}','${datos.datosVariable[0][a]}','${datos.datosVariable[1][a]}','${datos.datosVariable[2][a]}','${datos.datosVariable[3][a]}')`
+                petBBDD2 = `INSERT INTO UnidadesVariables (IDUnidad, IDVariable, NombreUnidad, Abreviatura, ValorMax, ValorMin) VALUES (NULL,'${respuesta.insertId}','${datos.datosVariable[0][a]}','${datos.datosVariable[1][a]}','${datos.datosVariable[2][a]}','${datos.datosVariable[3][a]}')`
                 baseDatos.query(petBBDD2, (err,respuesta) => {
                     if(err){
                         console.log(err)
