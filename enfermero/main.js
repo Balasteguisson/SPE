@@ -1808,7 +1808,6 @@ function addUnidad(){
 
     let li = `<li id="LI${abreviatura}">${unidad} - ${abreviatura} - (${maxU}:${minU}) <button type="button" onclick="borrarUnidad('${abreviatura}')">❌</button></li>`;
     document.getElementById('listaUnidadesVariable').innerHTML += li
-
 }
 
 function borrarUnidad(abreviatura){

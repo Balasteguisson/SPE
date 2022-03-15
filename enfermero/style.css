@@ -1,5 +1,129 @@
-.seccion{display: none;}
-.visible {display: block;}
+/* Visibilidad de pantallas */
+.seccion{display: none !important}
+.visible {display: block !important}
+
+/* Fuente */
+body {
+    font-family: Ubuntu, "times new roman", times, roman, serif;
+    background-color: #ddfaf7;
+}
+/* --------------- */
+
+
+/* LOGIN */
+#login {
+    text-align: center;
+	margin: auto;
+	border: 4px solid black;
+    width: 55%;
+    padding:50px 12px;
+    border-radius: 10px;
+    background-color: #00b0a5;
+	/* -webkit-border-radius: 10px; */
+	/* -moz-border-radius: 10px; */
+	/* padding: 20px; */
+	/* background: rgba(86, 190, 159, 0.404); */
+	/* box-shadow: inset 0px 0px 15px #2c6b77; */
+	/* -moz-box-shadow: inset 0px 0px 15px #2c6b77; */
+    /* -webkit-box-shadow: inset 0px 0px 15px #2c6b77; */
+}
+
+.inputLog {
+    width: 55%;
+    padding: 12px;
+    border-color: #072445;
+    border-radius: 4px;
+    font-size: 12px;
+    max-width: 250px;
+}
+.inputLog:hover {
+    background-color: rgb(222, 243, 242);
+    
+}
+.inputLog:hover::placeholder{
+    color: black;
+}
+
+/* 
+//////////////////////////////////////////////////////////////
+ */
+
+
+
+/* MENU ENFERMERO */
+.seccionMEnf{
+    
+}
+#formacion {
+    max-width: 35%;
+}
+.contenedor1 {
+    display: grid;
+    grid : ;
+}
+
+
+
+/* PANELES DE LOS TEST */
+.test {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+	display: flex;
+	max-width: 80%;
+	margin: 20px;
+	overflow: hidden;
+	width: 70%;
+    max-height: 7em;
+}
+
+.test-info{
+    background-color: #2A265F;
+	color: #fff;
+	padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+	max-width: 45%;
+    width: 45%;
+}
+
+.test-status{
+    padding: 15px;
+	position: relative;
+    max-width: 100%;
+	width: 100%;
+    font-size: 0.5em;
+}
+
+/* TABLA DE CITAS */
+#horarioCitas{
+    border: 1px solid;
+    width: 100%;
+    background-color: aliceblue;
+}
+#horarioCitas thead tr th{
+    border: 1px solid;
+}
+
+
+.tipo0{
+    background-color: mediumspringgreen;
+}
+
+.tipo1{
+    background-color: aqua;
+
+}
+.casillaHora{
+    border: 1px solid;
+    background-color: turquoise;
+}
+.celdaCita{
+    border: 1px solid;
+}
+
+
 table{
     border: 1;
 }
@@ -33,6 +157,98 @@ table{
     box-sizing: border-box;
 }
 
+
+
+
+
+
+
+ul:before{
+    content:attr(aria-label);
+    font-size:120%;
+    font-weight:bold;
+    margin-left:-15px;
+}
+
+#citaDatosPaciente{
+    border: 1px solid;
+    background-color: lightblue;
+    width: 35%;
+    float: left;
+}
+#derechaCita{
+    float:left;
+    width: 40%;
+}
+
+#citaSeguimientoVariables{
+    border: 1px solid;
+}
+#citaTratamiento{
+    border: 1px solid;
+}
+
+
+/* BOTONES */
+.botonAvance{
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.25;
+    font-weight: 500;
+    margin: 0;
+    min-height: 2rem;
+    padding: calc(.725rem - 1px) calc(1.1rem - 1px);
+    position: relative;
+    transition: all 250ms;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    width: auto;
+    border-radius: 4px;
+    border-color: #072445;
+    background-color: #ddeefa;
+}
+
+.botonAvance:hover{
+  transform: translateY(-1.5px);
+}
+.botonAvance:active {
+    transform: translateY(0);
+}
+
+
+.botonRetroceso{
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.25;
+    font-weight: 500;
+    margin: 0;
+    min-height: 2rem;
+    padding: calc(.725rem - 1px) calc(1.1rem - 1px);
+    position: relative;
+    transition: all 250ms;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    width: auto;
+    border-radius: 4px;
+    border-color: #2a7ddb;
+    background-color: #f7fadd;
+}
+
+.botonRetroceso:hover{
+  transform: translateY(-1.5px);
+}
+.botonRetroceso:active {
+    transform: translateY(0);
+}
+
+
+/* AUTOCOMPLETADO */
 .autocomplete {
     /*the container must be positioned relative:*/
     position: relative;
@@ -64,97 +280,3 @@ table{
     background-color: DodgerBlue !important;
     color: #ffffff;
 }
-
-
-/* PANELES DE LOS TEST */
-.test {
-	background-color: #fff;
-	border-radius: 10px;
-	box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
-	display: flex;
-	max-width: 80%;
-	margin: 20px;
-	overflow: hidden;
-	width: 80%;
-    max-height: fit-content;
-}
-
-.test-info{
-    background-color: #2A265F;
-	color: #fff;
-	padding: 14px;
-	max-width: 25%;
-}
-
-.test-status{
-    padding: 15px;
-	position: relative;
-    max-width: 100%;
-	width: 100%;
-}
-.btn {
-	/* background-color: #2A265F;
-	border: 0;
-	border-radius: 50px;
-	box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
-	color: #fff;
-	font-size: 14px;
-	padding: 12px 18px;
-	position: absolute;
-	bottom: 20px;
-	right: 20px;
-	letter-spacing: 1px; */
-}
-
-#horarioCitas{
-    border: 1px solid;
-    width: 100%;
-    background-color: aliceblue;
-}
-#horarioCitas thead tr th{
-    border: 1px solid;
-}
-
-
-.tipo0{
-    background-color: mediumspringgreen;
-}
-
-.tipo1{
-    background-color: aqua;
-
-}
-.casillaHora{
-    border: 1px solid;
-    background-color: turquoise;
-}
-.celdaCita{
-    border: 1px solid;
-}
-
-ul:before{
-    content:attr(aria-label);
-    font-size:120%;
-    font-weight:bold;
-    margin-left:-15px;
-}
-
-#citaDatosPaciente{
-    border: 1px solid;
-    background-color: lightblue;
-    width: 35%;
-    float: left;
-}
-#derechaCita{
-    float:left;
-    width: 40%;
-}
-
-#citaSeguimientoVariables{
-    border: 1px solid;
-}
-#citaTratamiento{
-    border: 1px solid;
-}
-
-

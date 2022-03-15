@@ -5,68 +5,70 @@
         <title>App SPE</title>
         <link rel="stylesheet" href="style.css" rel='stylesheet' type="text/css">
         <link rel="shortcut icon" href="#" />
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
+        
     </head>
     <body>
         
         <div id = 'login' class='seccion visible'><!--LOGIN-->
             <h1>Login</h1>
-            <p><strong>Usuario:</strong><input type="text" class='inputLog' id='user' placeholder="Usuario"/></p>
-            <p><strong>Contraseña:</strong><input type="password" class='inputLog' id='password' placeholder="Contraseña"></p>
-            <p><button onclick="log()">Entrar</button></p>
+            <p><input type="text" class='inputLog' id='user' placeholder="Usuario"/></p>
+            <p><input type="password" class='inputLog' id='password' placeholder="Contraseña"></p>
+            <p><button onclick="log()" class="botonAvance">Entrar</button></p>
         </div>
         <div id = 'menuEleccion' class = 'seccion'>
             <h2 id = 'bienvenidaEleccion'></h2>
             <button type="submit" onclick="cambiarPantalla('menuEnfermero')">Menu enfermero</button>
             <button type='submit' onclick="cambiarPantalla('menuAdmin')">Menu Administrador</button>
         </div>
-        <div id= 'menuEnfermero' class = 'seccion'><!--MENU ENFERMERO-->
+        <div id= 'menuEnfermero' class = 'seccion contenedor1'><!--MENU ENFERMERO-->
             <p><h1>Menú Principal</h1></p>
             <p><h2 id = "bienvenida"></h2></p>
-            <p><button class="botonMenu" onclick="logout()">Cerrar sesión</button></p>
+            <p><button class="botonMenu botonRetroceso" onclick="logout()">Cerrar sesión</button></p>
             <section id = 'formacion' class="seccionMEnf">
                 <h3>Formación</h3>
                 <div id="formacionPropia">
                     <div id="test0" class="test">
                         <div class="test-info">
-                            <h6>Test</h6>
+                            <p>Test</p>
                             <h3>Diabetes</h2>
                         </div>
                         <div class="test-status">
-                            <div class="barra-progreso">
+                            <!-- <div class="barra-progreso">
                                 <div class="progress-bar">
                                     <progress max="100" value="100">100%</progress>
                                 </div>
-                            </div>
+                            </div> -->
                             <h2>Febrero</h2>
                             <button class="btn" onclick="verTest0()">Realizar test</button>
                         </div>
                     </div>
                     <div id="test1" class="test">
                         <div class="test-info">
-                            <h6>Test</h6>
-                            <h3>Anticoagulantes Orales</h2>
+                            <p>Test</p>
+                            <h3>ACOs</h2>
                         </div>
                         <div class="test-status">
-                            <div class="barra-progreso">
+                            <!-- <div class="barra-progreso">
                                 <div class="progress-bar">
                                     <progress max="100" value="10">10%</progress>
                                 </div>
-                            </div>
+                            </div> -->
                             <h2>Febrero</h2>
                             <button class="btn" onclick="verTest1()">Realizar test</button>
                         </div>
                     </div>
                     <div id="test2" class="test">
                         <div class="test-info">
-                            <h6>Test</h6>
+                            <p>Test</p>
                             <h3>Riesgo Vascular</h2>
                         </div>
                         <div class="test-status">
-                            <div class="barra-progreso">
+                            <!-- <div class="barra-progreso">
                                 <div class="progress-bar">
                                     <progress max="100" value="40">40%</progress>
                                 </div>
-                            </div>
+                            </div> -->
                             <h2>Febrero</h2>
                             <button class="btn" onclick="verTest2()">Realizar test</button>
                         </div>
