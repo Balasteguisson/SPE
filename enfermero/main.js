@@ -36,6 +36,8 @@ function cambiarPantalla(destino){
 
 
 
+
+
 //Funciones de pantalla
 function logout(){
     cambiarPantalla('login');
@@ -1140,6 +1142,13 @@ function verMenuEnfermeroHTML(dniEnfermero = dniEnfermeroActual){
     document.getElementById('h9').innerHTML = `<td id="ch9" class="casillaHora"></td>`
     document.getElementById('h10').innerHTML = `<td id="ch10" class="casillaHora"></td>`
     document.getElementById('h11').innerHTML = `<td id="ch11" class="casillaHora"></td>`
+    let hoy = new Date()
+    let mes = hoy.toLocaleString("es", { month: "long" }).toUpperCase()
+    let displays = document.getElementsByName('monthDisplay')
+    console.log(displays)
+    for (let a = 0; a<displays.length; a++){
+        displays[a].innerHTML = mes
+    }
     verMenuEnfermero(dniEnfermero)
 }
 async function verMenuEnfermero(dniEnfermero){
@@ -1147,8 +1156,6 @@ async function verMenuEnfermero(dniEnfermero){
     await getCitas(dniEnfermero); //aqui tengo las citas del enfermero
     let resultados = await getResultados(dniEnfermero); //aqui tengo los resultados de sus test actuales
     dniEnfermeroActual = dniEnfermero
-    
-
     //ajustar fechas y horas de la tabla
 
     cambiarPantalla('menuEnfermero')

@@ -21,12 +21,14 @@
             <button type="submit" onclick="cambiarPantalla('menuEnfermero')">Menu enfermero</button>
             <button type='submit' onclick="cambiarPantalla('menuAdmin')">Menu Administrador</button>
         </div>
-        <div id= 'menuEnfermero' class = 'seccion contenedor1'><!--MENU ENFERMERO-->
-            <p><h1>Menú Principal</h1></p>
-            <p><h2 id = "bienvenida"></h2></p>
-            <p><button class="botonMenu botonRetroceso" onclick="logout()">Cerrar sesión</button></p>
-            <section id = 'formacion' class="seccionMEnf">
-                <h3>Formación</h3>
+        <div id= 'menuEnfermero' class = 'seccion contenedorEnfermero'><!--MENU ENFERMERO-->
+            <div class="headerEnfermero">
+                <p><h1>Menú Principal</h1></p>
+                <p><h2 id = "bienvenida"></h2></p>
+                <p><button class="botonMenu botonRetroceso" onclick="logout()">Cerrar sesión</button></p>
+            </div>
+            <div id = 'formacion' class="seccionMEnf">
+                <h3 class="sectionTitleEnf">Formación</h3>
                 <div id="formacionPropia">
                     <div id="test0" class="test">
                         <div class="test-info">
@@ -39,8 +41,8 @@
                                     <progress max="100" value="100">100%</progress>
                                 </div>
                             </div> -->
-                            <h2>Febrero</h2>
-                            <button class="btn" onclick="verTest0()">Realizar test</button>
+                            <h2 name="monthDisplay"></h2>
+                            <button class="botonAbrirTest" onclick="verTest0()">Realizar test</button>
                         </div>
                     </div>
                     <div id="test1" class="test">
@@ -54,8 +56,8 @@
                                     <progress max="100" value="10">10%</progress>
                                 </div>
                             </div> -->
-                            <h2>Febrero</h2>
-                            <button class="btn" onclick="verTest1()">Realizar test</button>
+                            <h2 name="monthDisplay"></h2>
+                            <button class="botonAbrirTest" onclick="verTest1()">Realizar test</button>
                         </div>
                     </div>
                     <div id="test2" class="test">
@@ -69,8 +71,8 @@
                                     <progress max="100" value="40">40%</progress>
                                 </div>
                             </div> -->
-                            <h2>Febrero</h2>
-                            <button class="btn" onclick="verTest2()">Realizar test</button>
+                            <h2 name="monthDisplay"></h2>
+                            <button class="botonAbrirTest" onclick="verTest2()">Realizar test</button>
                         </div>
                     </div>
                 </div>
@@ -88,9 +90,9 @@
                         <div class="test-status"></div>
                     </div>
                 </div> -->
-            </section>
-            <section id = 'citas' class="seccionMEnf">
-                <h3>Citas</h3>
+            </div>
+            <div id = 'citas' class="seccionMEnf2">
+                <h3 class="sectionTitleEnf">Citas</h3>
                 <table id = 'horarioCitas'>
                     <thead>
                         <tr>
@@ -122,7 +124,8 @@
                         <tr id="h11"><td id="ch11" class="casillaHora"></td></tr>
                     </tbody>
                 </table>
-            </section>
+            </div>
+            
         </div>
         <div id = 'menuAdmin' class = 'seccion'><!--MENU ADMIN-->
             <p><h2 id = 'bienvenidaAdmin'></h2><button class='botonMenu' onclick='logout()'>Cerrar sesión</button></p>
@@ -601,23 +604,23 @@
             <button type="button" onclick="crearCita()">Crear cita</button>
         </div>
         <div id='pantallaTest' class='seccion'><!--PANTALLA PARA MOSTRAR PREGUNTAS TEST-->
-            <section id='encabezadoTest'>
+            <div id='encabezadoTest' class="encabezadoTest">
                 <h1 id="nombreTest"></h1>
                 <h2 id="periodoTest"></h2>
                 <p id="preguntaActual"></p>
                 <div>Tiempo restante: <p id="testTimer"></p></div>
-            </section>
-            <section id='preguntaActual'>
-                <h3 id="enunciadoPregunta"></h3>
-                <p><input type="radio" value="1" name="respuestas" id="respuesta1T"><label for="respuesta1T" id="contenidoR1T"></label></p>
-                <p><input type="radio" value="2" name="respuestas" id="respuesta2T"><label for="respuesta2T" id="contenidoR2T"></label></p>
-                <p><input type="radio" value="3" name="respuestas" id="respuesta3T"><label for="respuesta3T" id="contenidoR3T"></label></p>
-                <p><input type="radio" value="4" name="respuestas" id="respuesta4T"><label for="respuesta4T" id="contenidoR4T"></label></p>
-            </section>
-            <section id='navegacionTest'>
+            </div>
+            <div id='preguntaActual' class="`preguntaTest">
+                <h3 id="enunciadoPregunta" class="enunciadoPregunta"></h3>
+                <p class="respuestaTest"><input type="radio" value="1" name="respuestas" id="respuesta1T"><label for="respuesta1T" id="contenidoR1T"></label></p>
+                <p class="respuestaTest"><input type="radio" value="2" name="respuestas" id="respuesta2T"><label for="respuesta2T" id="contenidoR2T"></label></p>
+                <p class="respuestaTest"><input type="radio" value="3" name="respuestas" id="respuesta3T"><label for="respuesta3T" id="contenidoR3T"></label></p>
+                <p class="respuestaTest"><input type="radio" value="4" name="respuestas" id="respuesta4T"><label for="respuesta4T" id="contenidoR4T"></label></p>
+            </div>
+            <div id='navegacionTest' class="navegacionTest">
                 <p><button onclick="preguntaAnterior()">Pregunta Previa</button> <button id="botonSiguientePregunta" onclick="siguientePregunta()">Pregunta Siguiente</button><button id="botonTerminarTest" onclick="terminarTest()">Terminar Test</button></p>
                 <p><button id="botonAbandonarTest" onclick="verMenuEnfermeroHTML()">Abandonar test</button></p>
-            </section>
+            </div>
         </div>
         <div id='pantallaReviewTest' class='seccion'> <!--PANTALLA REVIEW TEST FINALIZADO-->
             <h1>Test Finalizado</h1>
