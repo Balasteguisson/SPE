@@ -1249,7 +1249,7 @@ async function getCitas(dni) {
         let fila = document.getElementById(`h${a}`)
         for (let b = 0; b < horarioCitas[a].length; b++) {
             if(horarioCitas[a][b] == 0){
-                let td = `<td class="celdaVacia"> - </td>`
+                let td = `<td class="celdaVacia"></td>`
                 fila.innerHTML += td
             }else{
                 fila.innerHTML += horarioCitas[a][b]
