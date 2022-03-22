@@ -1049,14 +1049,18 @@ function verMenuListaPacientes(){
 //  --------------------------------
 
 // MENU DAR CITA
-function pantallaDarCita(){
+var listaPacientes = []
+var listaEnfermeros = []
+
+function pantallaDarCita() {
+    listaPacientes.splice(0, listaPacientes.length)
+    listaEnfermeros.splice(0, listaEnfermeros.length)
     document.getElementById('formularioCita').reset()
     llenarListasCita()
     cambiarPantalla('menuDarCita')
 }
-var listaPacientes = []
-var listaEnfermeros = []
-async function llenarListasCita(){
+
+async function llenarListasCita() {
     let url = `/api/admin/:id/getPacientesEnfermeros`
     let petGet = {
         method: 'GET'
@@ -1070,6 +1074,7 @@ async function llenarListasCita(){
         let entrada = `${respuesta[1][a].Nombre} ${respuesta[1][a].Apellidos} - ${respuesta[1][a].ID}`;
         listaEnfermeros.push(entrada)
     }
+    
 }
 
 async function crearCita(){
@@ -1096,6 +1101,7 @@ async function crearCita(){
     let respuesta = await peticionREST(url, petServer)
     if(respuesta ==="Cita creada"){
         alert("Cita creada")
+        document.getElementById('formularioCita').reset()
     }else{
         alert("No se ha podido crear la cita")
     }
@@ -1999,7 +2005,8 @@ function autocomplete(inp, arr) {
   document.addEventListener("click", function (e) {
       closeAllLists(e.target);
   });
-  } 
+} 
+
 autocomplete(document.getElementById("nombrePacienteCita"), listaPacientes);
-  
+
 autocomplete(document.getElementById("nombreEnfermeroCita"), listaEnfermeros);
