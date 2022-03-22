@@ -1151,7 +1151,6 @@ function verMenuEnfermeroHTML(dniEnfermero = dniEnfermeroActual){
     let hoy = new Date()
     let mes = hoy.toLocaleString("es", { month: "long" }).toUpperCase()
     let displays = document.getElementsByName('monthDisplay')
-    console.log(displays)
     for (let a = 0; a<displays.length; a++){
         displays[a].innerHTML = mes
     }
