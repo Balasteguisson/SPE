@@ -915,3 +915,10 @@ app.get("/api/enfermero/:id/getCiclos", function(req, res){
 app.listen(app.get('port'), () => {
     console.log(`Servidor en el puerto ${app.get('port')}`);
 });
+
+
+
+
+
+
+

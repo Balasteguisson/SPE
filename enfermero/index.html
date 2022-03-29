@@ -704,7 +704,15 @@
                 </form>
                 <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
             </div>
-            <div id='addMedicamentos'></div>
+            <div id='registroMedicamentos'>
+                <div id="busquedaMedicamento"><input type="text" name="nomMedicamento" id="nomMedicamento" placeholder="Nombre del medicamento"><input type="text" name="prActMed" id="prActMed" placeholder="Principio Activo del medicamento"><button onclick="buscarMedicamento()">Buscar medicamento</button></div>
+                <div id="resultBusqMed">
+
+                </div>
+                <div id="datosMedSeleccionado">
+                    
+                </div>
+            </div>
         </div>
         <script src="main.js"></script>
     </body>
