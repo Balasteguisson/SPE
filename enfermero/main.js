@@ -2017,36 +2017,13 @@ async function buscarMedicamento() {
     let nombre = document.getElementById('nomMedicamento').value;
     let prAct = document.getElementById('prActMed');
 
-    let busqueda = {
-        "seccion": "1",
-        "texto": nombre,
-        "contiene": 1
-    }
-    let busqueda2 = {
-        "seccion": "2",
-        "text": `${prAct}`,
-        "contiene": 1
-    }
-    let busqueda3 = [{
-        "seccion": "4.1",
-        "texto": "cáncer",
-        "contiene": 1
-    }]
-    let url = "https://cima.aemps.es/cima/rest/buscarEnFichaTecnica"
+    let url = `https://cima.aemps.es/cima/rest/medicamentos?nombre=${nombre}`
     let peticion = {
-        method: "POST",
-        body: [{
-            "seccion": "1",
-            "texto": nombre,
-            "contiene": 1
-        }],
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': http://localhost:8080/enfermero/
-        }
+        },
     }
-    console.log(peticion);
     let medicamentos = await peticionREST(url, peticion)
     console.log(medicamentos);
-
 }

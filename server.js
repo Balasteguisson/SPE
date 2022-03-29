@@ -3,8 +3,7 @@
 var express = require("express");
 const mysql = require('mysql')
 var morgan = require('morgan');
-
-
+var cors = require('cors')
 
 
 var app = express();
@@ -13,6 +12,10 @@ var app = express();
 app.use('/enfermero', express.static('enfermero'));
 app.use(express.json());
 app.use(morgan('dev'));
+const WL = ["http://localhost:8080","https://cima.aemps.es/cima/rest/medicamento"]
+app.use(cors(
+    {origin: WL}
+));
 
 
 //Ajustes
