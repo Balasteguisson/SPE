@@ -2020,10 +2020,13 @@ async function buscarMedicamento() {
     let url = `https://cima.aemps.es/cima/rest/medicamentos?nombre=${nombre}`
     let peticion = {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        // headers: {
+        //     'Content-Type': 'application/json',
+        // },
     }
     let medicamentos = await peticionREST(url, peticion)
     console.log(medicamentos);
 }
+
+
+//prueba git
