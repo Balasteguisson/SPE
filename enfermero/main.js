@@ -2014,17 +2014,18 @@ autocomplete(document.getElementById("nombreEnfermeroCita"), listaEnfermeros);
 
 //IMPLEMENTACION DE API REST CIMA
 async function buscarMedicamento() {
-    let nombre = document.getElementById('nomMedicamento').value;
-    let prAct = document.getElementById('prActMed');
-
-    let url = `https://cima.aemps.es/cima/rest/medicamentos?nombre=${nombre}`
+    let nombre = document.getElementById('nomMedicamento').value;   //nombre del medicamento pasado por el user
+    let prAct = document.getElementById('prActMed').value;          //principio activo del medicamento pasado por el user
+    let url1 = `https://cima.aemps.es/cima/rest/medicamentos?nombre=${nombre}`;
+    let url2 = `https://cima.aemps.es/cima/rest/medicamentos?practiv1=${prAct}`;
+    let url3 = `https://cima.aemps.es/cima/rest/medicamentos?nombre=${nombre}&practiv1=${prAct}`;
     let peticion = {
-        method: 'GET',
-        // headers: {
-        //     'Content-Type': 'application/json',
-        // },
+        method: 'GET'
     }
+    let url = nombre === null ? url2 : url1
+    url = nombre != null && prAct != null ?  url3 : url
     let medicamentos = await peticionREST(url, peticion)
+    console.log(url);
     console.log(medicamentos);
 }
 
