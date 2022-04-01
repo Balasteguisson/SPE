@@ -7,6 +7,50 @@ document.getElementById('password').value = ''
 let pantallaActual = 'login';
 
 
+//clases para mover informacion
+class Medicamento {
+    constructor({ nombre, prAct1, prAct2, formFarm, dosis, fotoCaja, fotoForma, viaAdmin }) {
+        this.nombre = nombre
+        this.prAct1 = prAct1
+        this.prAct2 = prAct2 || '' //puede tener solo un principio activo, porque lo que este campo puede quedar vacio
+        this.formFarm = formFarm
+        this.dosis = dosis
+        this.fotoCaja = fotoCaja
+        this.fotoForma = fotoForma
+        this.viaAdmin = viaAdmin
+    }
+    incomplete() {
+        //si algun campo necesario esta vacio devuelve true
+        return !(this.nombre && this.prAct1 && this.formFarm && this.dosis && this.fotoCaja && this.fotoForma && this.viaAdmin)
+    }
+    //funciones get
+    get getNombre() {
+        return this.nombre
+    }
+    get getPrAct1() {
+        return this.prAct1
+    }
+    get getPrAct2() {
+        return this.prAct2
+    }
+    get getFormFarm() {
+        return this.formFarm
+    }
+    get getDosis() {
+        return this.dosis
+    }
+    get getFotoCaja() {
+        return this.fotoCaja
+    }
+    get getFotoForma() {
+        return this.fotoForma
+    }
+    get getViaAdmin() {
+        return this.viaAdmin
+    }
+}
+
+
 //FUNCIONES MAS REUSABLES
 //funcion para evitar anidar FETCH y hacer codigo spaguetti
 const peticionREST = async (url,parametros) => {
@@ -2014,19 +2058,23 @@ autocomplete(document.getElementById("nombreEnfermeroCita"), listaEnfermeros);
 
 //IMPLEMENTACION DE API REST CIMA
 async function buscarMedicamento() {
+
     let nombre = document.getElementById('nomMedicamento').value;   //nombre del medicamento pasado por el user
     let prAct = document.getElementById('prActMed').value;          //principio activo del medicamento pasado por el user
+
     let url1 = `https://cima.aemps.es/cima/rest/medicamentos?nombre=${nombre}`;
     let url2 = `https://cima.aemps.es/cima/rest/medicamentos?practiv1=${prAct}`;
     let url3 = `https://cima.aemps.es/cima/rest/medicamentos?nombre=${nombre}&practiv1=${prAct}`;
     let peticion = {
         method: 'GET'
     }
-    let url = nombre === null ? url2 : url1
-    url = nombre != null && prAct != null ?  url3 : url
-    let medicamentos = await peticionREST(url, peticion)
-    console.log(url);
-    console.log(medicamentos);
+    let url = nombre === "" ? url2 : url1
+    url = nombre != "" && prAct != "" ?  url3 : url
+    let respuestaCIMA = await peticionREST(url, peticion)
+    let numeroResultados = respuestaCIMA.totalFilas; //indica la cantidad de medicamentos que cumplen los parametros de busqueda
+    let resultados = respuestaCIMA.resultados; // aqui se almacenan todos los medicamentos y sus datos
+    console.log(numeroResultados);
+    console.log(resultados);
 }
 
 

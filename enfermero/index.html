@@ -685,8 +685,10 @@
                 <p><button onclick="crearReceta()">Recetar medicamento</button></p>
             </div>
         </div>
-        <div id='mantenimientoCita' class='seccion'><!-- PANTALLA PARA CREAR VARIABLES Y AÑADIR MEDICAMENTOS-->
+        <div id='mantenimientoCita' class='seccion'><!-- PANTALLA PARA CREAR VARIABLES Y AÑADIR MEDICAMENTOS (MANTENIMIENTO CITA)-->
             <div id='creacionVariablesPaciente'>
+                <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
+
                 <form id='creacionVariable'>
                     <p><label for="nombreVariable">Nombre</label><input type="text" name="nombreVariable" id="nombreVariable"></p>
                     <p>
@@ -702,7 +704,6 @@
                     <ul id="listaUnidadesVariable" aria-label="Unidades"></ul>
                     <button type="button" onclick="crearVariable()">Crear variable</button>
                 </form>
-                <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
             </div>
             <div id='registroMedicamentos'>
                 <div id="busquedaMedicamento"><input type="text" name="nomMedicamento" id="nomMedicamento" placeholder="Nombre del medicamento"><input type="text" name="prActMed" id="prActMed" placeholder="Principio Activo del medicamento"><button onclick="buscarMedicamento()">Buscar medicamento</button></div>
