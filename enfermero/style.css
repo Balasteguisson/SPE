@@ -406,3 +406,22 @@ table{
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 25% 25% 25% 25%;
 }
+
+#listaMedicamentosEncontrados {
+    list-style-type:none;
+    border-top: 0.4em solid rgb(14, 13, 13);
+    border-bottom: 0.4em solid rgb(14, 13, 13);
+    border-left: 0.2em solid rgb(14, 13, 13);
+    border-right: 0.2em solid rgb(14, 13, 13);
+    width: 40%;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(184, 204, 200);
+    height: 250px;
+    max-height: 400px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+#listaMedicamentosEncontrados > li {
+    border-bottom: 0.1em solid black;
+}

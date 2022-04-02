@@ -9,45 +9,73 @@ let pantallaActual = 'login';
 
 //clases para mover informacion
 class Medicamento {
-    constructor({ nombre, prAct1, prAct2, formFarm, dosis, fotoCaja, fotoForma, viaAdmin }) {
+    constructor({ nombre, prAct1, formFarm, dosis, fotoCaja, fotoForma, viaAdmin , nRegistro}) {
         this.nombre = nombre
         this.prAct1 = prAct1
-        this.prAct2 = prAct2 || '' //puede tener solo un principio activo, porque lo que este campo puede quedar vacio
         this.formFarm = formFarm
         this.dosis = dosis
         this.fotoCaja = fotoCaja
         this.fotoForma = fotoForma
         this.viaAdmin = viaAdmin
+        this.nRegistro = nRegistro
     }
     incomplete() {
         //si algun campo necesario esta vacio devuelve true
         return !(this.nombre && this.prAct1 && this.formFarm && this.dosis && this.fotoCaja && this.fotoForma && this.viaAdmin)
     }
-    //funciones get
-    get getNombre() {
-        return this.nombre
+
+    //crear getters para la clase
+    get nombre() {
+        return this._nombre
     }
-    get getPrAct1() {
-        return this.prAct1
+    get prAct1() {
+        return this._prAct1
     }
-    get getPrAct2() {
-        return this.prAct2
+    get formFarm() {
+        return this._formFarm
     }
-    get getFormFarm() {
-        return this.formFarm
+    get dosis() {
+        return this._dosis
     }
-    get getDosis() {
-        return this.dosis
+    get fotoCaja() {
+        return this._fotoCaja
     }
-    get getFotoCaja() {
-        return this.fotoCaja
+    get fotoForma() {
+        return this._fotoForma
     }
-    get getFotoForma() {
-        return this.fotoForma
+    get viaAdmin() {
+        return this._viaAdmin
     }
-    get getViaAdmin() {
-        return this.viaAdmin
+    get nRegistro() {
+        return this._nRegistro
     }
+
+    //crear setter para la clase
+    set nombre(nombre) {
+        this._nombre = nombre
+    }
+    set prAct1(prAct1) {
+        this._prAct1 = prAct1
+    }
+    set formFarm(formFarm) {
+        this._formFarm = formFarm
+    }
+    set dosis(dosis) {
+        this._dosis = dosis
+    }
+    set fotoCaja(fotoCaja) {
+        this._fotoCaja = fotoCaja
+    }
+    set fotoForma(fotoForma) {
+        this._fotoForma = fotoForma
+    }
+    set viaAdmin(viaAdmin) {
+        this._viaAdmin = viaAdmin
+    }
+    set nRegistro(nRegistro) {
+        this._nRegistro = nRegistro
+    }
+
 }
 
 
@@ -2058,13 +2086,12 @@ autocomplete(document.getElementById("nombreEnfermeroCita"), listaEnfermeros);
 
 //IMPLEMENTACION DE API REST CIMA
 async function buscarMedicamento() {
-
     let nombre = document.getElementById('nomMedicamento').value;   //nombre del medicamento pasado por el user
     let prAct = document.getElementById('prActMed').value;          //principio activo del medicamento pasado por el user
-
-    let url1 = `https://cima.aemps.es/cima/rest/medicamentos?nombre=${nombre}`;
-    let url2 = `https://cima.aemps.es/cima/rest/medicamentos?practiv1=${prAct}`;
-    let url3 = `https://cima.aemps.es/cima/rest/medicamentos?nombre=${nombre}&practiv1=${prAct}`;
+    let listaEncontrados = document.getElementById('listaMedicamentosEncontrados');
+    let url1 = `https://cima.aemps.es/cima/rest/medicamentos?nombre=${nombre}&comerc=1`;
+    let url2 = `https://cima.aemps.es/cima/rest/medicamentos?practiv1=${prAct}&comerc=1`;
+    let url3 = `https://cima.aemps.es/cima/rest/medicamentos?nombre=${nombre}&practiv1=${prAct}&comerc=1`;
     let peticion = {
         method: 'GET'
     }
@@ -2073,9 +2100,39 @@ async function buscarMedicamento() {
     let respuestaCIMA = await peticionREST(url, peticion)
     let numeroResultados = respuestaCIMA.totalFilas; //indica la cantidad de medicamentos que cumplen los parametros de busqueda
     let resultados = respuestaCIMA.resultados; // aqui se almacenan todos los medicamentos y sus datos
-    console.log(numeroResultados);
-    console.log(resultados);
+    console.log(respuestaCIMA);
+    if (numeroResultados == 0) {
+        console.log("no hay resultados");
+        //COMPRUEBA QUE SE HAYAN ENCONTRADO RESULTADOS
+        listaEncontrados.innerHTML += `<li style="color:red">No se han encontrado resultados</li>`;
+        setTimeout(() => {
+            listaEncontrados.innerHTML = "";
+        }, 5000)
+        return
+    } else {
+        let Medicamentos = [];
+        Medicamentos = resultados.map(
+            resultado => new Medicamento({ nombre: resultado.nombre, prAct1: resultado.vtm.nombre, formFarm: resultado.formaFarmaceuticaSimplificada.nombre, dosis: resultado.dosis, fotoCaja: resultado.fotos[0].url, fotoForma: resultado.fotos[1].url, viaAdmin: resultado.viasAdministracion[0].nombre, nRegistro: resultado.nregistro })
+        )
+        listaEncontrados.innerHTML = "";
+        for (let i = 0; i < Medicamentos.length; i++) {
+            let elementoLista = `<li id="${Medicamentos[i].nRegistro}" onclick="seleccionarMedicamento('${Medicamentos[i]}')">${Medicamentos[i].nombre}</li>`;
+            listaEncontrados.innerHTML += elementoLista;
+        } 
+    }       
 }
 
+function seleccionarMedicamento(Medicamento) {
+    /*Permite al usuario ver la informacion mas importante del medicamento seleccionado */
+    console.log(Medicamento.getnombre);
+    document.getElementById('nomSeleccion').innerHTML = Medicamento.nombre;
+    document.getElementById('prActSeleccion').innerHTML = Medicamento.prAct1;
+    document.getElementById('formFarmSeleccion').innerHTML = Medicamento.formFarm;
+    document.getElementById('dosisSeleccion').innerHTML = Medicamento.dosis;
+    document.getElementById('viaAdminSeleccion').innerHTML = Medicamento.viaAdmin;
+    document.getElementById('imgCajaSeleccion').src = Medicamento.fotoCaja;
+    document.getElementById('imgFormaSeleccion').src = Medicamento.fotoForma;
+    document.getElementById('nRegistroSeleccion').innerHTML = Medicamento.nRegistro;
+}
 
 //prueba git

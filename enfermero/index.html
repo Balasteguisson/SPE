@@ -686,9 +686,10 @@
             </div>
         </div>
         <div id='mantenimientoCita' class='seccion'><!-- PANTALLA PARA CREAR VARIABLES Y AÑADIR MEDICAMENTOS (MANTENIMIENTO CITA)-->
+            <h1>Variables médicas del paciente y Medicamentos</h1>
+            <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
             <div id='creacionVariablesPaciente'>
-                <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
-
+                <h2>Crear variables</h2>
                 <form id='creacionVariable'>
                     <p><label for="nombreVariable">Nombre</label><input type="text" name="nombreVariable" id="nombreVariable"></p>
                     <p>
@@ -706,12 +707,23 @@
                 </form>
             </div>
             <div id='registroMedicamentos'>
-                <div id="busquedaMedicamento"><input type="text" name="nomMedicamento" id="nomMedicamento" placeholder="Nombre del medicamento"><input type="text" name="prActMed" id="prActMed" placeholder="Principio Activo del medicamento"><button onclick="buscarMedicamento()">Buscar medicamento</button></div>
+                <h2>Buscar medicamentos</h2>
+                <div id="busquedaMedicamento">
+                    <input type="text" name="nomMedicamento" id="nomMedicamento" placeholder="Nombre del medicamento">
+                    <input type="text" name="prActMed" id="prActMed" placeholder="Principio Activo del medicamento">
+                    <button onclick="buscarMedicamento()">Buscar medicamento</button></div>
                 <div id="resultBusqMed">
 
                 </div>
+                <div id="medicamentosEncontrados">
+                    <h2>Medicamentos encontrados</h2>
+                    <ul id="listaMedicamentosEncontrados" aria-label="Medicamentos encontrados"></ul>
+                </div>
                 <div id="datosMedSeleccionado">
-                    
+                    <p><span id="nomSeleccion"></span> <span id="prActSeleccion"></span></p>
+                    <p><span id="formFarmSeleccion"></span> <span id="dosisSeleccion"></span> <span id="viaAdminSeleccion"></span></p>
+                    <p><span id="nRegistroSeleccion"></span></p>
+                    <p><img id="imgCajaSeleccion"><img id="imgFormaSeleccion"></p>
                 </div>
             </div>
         </div>
