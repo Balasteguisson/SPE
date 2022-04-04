@@ -2083,7 +2083,8 @@ autocomplete(document.getElementById("nombrePacienteCita"), listaPacientes);
 autocomplete(document.getElementById("nombreEnfermeroCita"), listaEnfermeros);
 
 
-
+let medicamentoSeleccionado;
+let medicamentos = [];
 //IMPLEMENTACION DE API REST CIMA
 async function buscarMedicamento() {
     let nombre = document.getElementById('nomMedicamento').value;   //nombre del medicamento pasado por el user
@@ -2110,29 +2111,29 @@ async function buscarMedicamento() {
         }, 5000)
         return
     } else {
-        let Medicamentos = [];
-        Medicamentos = resultados.map(
+        medicamentos = resultados.map(
             resultado => new Medicamento({ nombre: resultado.nombre, prAct1: resultado.vtm.nombre, formFarm: resultado.formaFarmaceuticaSimplificada.nombre, dosis: resultado.dosis, fotoCaja: resultado.fotos[0].url, fotoForma: resultado.fotos[1].url, viaAdmin: resultado.viasAdministracion[0].nombre, nRegistro: resultado.nregistro })
         )
         listaEncontrados.innerHTML = "";
-        for (let i = 0; i < Medicamentos.length; i++) {
-            let elementoLista = `<li id="${Medicamentos[i].nRegistro}" onclick="seleccionarMedicamento('${Medicamentos[i]}')">${Medicamentos[i].nombre}</li>`;
+        for (let i = 0; i < medicamentos.length; i++) {
+            let elementoLista = `<li id="${medicamentos[i].nRegistro}" onclick="seleccionarMedicamento('${medicamentos[i].nRegistro}')">${medicamentos[i].nombre}</li>`;
             listaEncontrados.innerHTML += elementoLista;
         } 
     }       
 }
 
-function seleccionarMedicamento(Medicamento) {
+function seleccionarMedicamento(nRegistro) {
     /*Permite al usuario ver la informacion mas importante del medicamento seleccionado */
-    console.log(Medicamento.getnombre);
-    document.getElementById('nomSeleccion').innerHTML = Medicamento.nombre;
-    document.getElementById('prActSeleccion').innerHTML = Medicamento.prAct1;
-    document.getElementById('formFarmSeleccion').innerHTML = Medicamento.formFarm;
-    document.getElementById('dosisSeleccion').innerHTML = Medicamento.dosis;
-    document.getElementById('viaAdminSeleccion').innerHTML = Medicamento.viaAdmin;
-    document.getElementById('imgCajaSeleccion').src = Medicamento.fotoCaja;
-    document.getElementById('imgFormaSeleccion').src = Medicamento.fotoForma;
-    document.getElementById('nRegistroSeleccion').innerHTML = Medicamento.nRegistro;
+    console.log(nRegistro);
+    medicamentoSeleccionado = medicamentos.find(medicamento => medicamento.nRegistro === nRegistro);
+    document.getElementById('nomSeleccion').innerHTML = medicamentoSeleccionado.nombre;
+    document.getElementById('prActSeleccion').innerHTML = medicamentoSeleccionado.prAct1;
+    document.getElementById('formFarmSeleccion').innerHTML = medicamentoSeleccionado.formFarm;
+    document.getElementById('dosisSeleccion').innerHTML = medicamentoSeleccionado.dosis;
+    document.getElementById('viaAdminSeleccion').innerHTML = medicamentoSeleccionado.viaAdmin;
+    document.getElementById('imgCajaSeleccion').src = medicamentoSeleccionado.fotoCaja;
+    document.getElementById('imgFormaSeleccion').src = medicamentoSeleccionado.fotoForma;
+    document.getElementById('nRegistroSeleccion').innerHTML = medicamentoSeleccionado.nRegistro;
 }
 
 //prueba git
