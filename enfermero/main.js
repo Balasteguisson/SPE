@@ -9,7 +9,7 @@ let pantallaActual = 'login';
 
 //clases para mover informacion
 class Medicamento {
-    constructor({ nombre, prAct1, formFarm, dosis, fotoCaja, fotoForma, viaAdmin , nRegistro}) {
+    constructor({ nombre, prAct1, formFarm, dosis, fotoCaja, fotoForma, viaAdmin , nRegistro, fichaTecnica}) {
         this.nombre = nombre
         this.prAct1 = prAct1
         this.formFarm = formFarm
@@ -18,6 +18,7 @@ class Medicamento {
         this.fotoForma = fotoForma
         this.viaAdmin = viaAdmin
         this.nRegistro = nRegistro
+        this.fichaTecnica = fichaTecnica
     }
     incomplete() {
         //si algun campo necesario esta vacio devuelve true
@@ -49,7 +50,9 @@ class Medicamento {
     get nRegistro() {
         return this._nRegistro
     }
-
+    get fichaTecnica() {
+        return this._fichaTecnica
+    }
     //crear setter para la clase
     set nombre(nombre) {
         this._nombre = nombre
@@ -74,6 +77,9 @@ class Medicamento {
     }
     set nRegistro(nRegistro) {
         this._nRegistro = nRegistro
+    }
+    set fichaTecnica(fichaTecnica) {
+        this._fichaTecnica = fichaTecnica
     }
 
 }
@@ -1869,6 +1875,8 @@ function pantallaMantenimientoCita(){
     metaRangosMin.splice(0,metaRangosMin.length)
     document.getElementById('listaUnidadesVariable').innerHTML = ""
     document.getElementById('creacionVariable').reset();
+    document.getElementById('formMedicamentoSeleccionado').reset();
+    document.getElementById('nomMedicamento').value = ""
     cambiarPantalla('mantenimientoCita')
 }
 var metaUnidades = []
@@ -2112,7 +2120,7 @@ async function buscarMedicamento() {
         return
     } else {
         medicamentos = resultados.map(
-            resultado => new Medicamento({ nombre: resultado.nombre, prAct1: resultado.vtm.nombre, formFarm: resultado.formaFarmaceuticaSimplificada.nombre, dosis: resultado.dosis, fotoCaja: resultado.fotos[0].url, fotoForma: resultado.fotos[1].url, viaAdmin: resultado.viasAdministracion[0].nombre, nRegistro: resultado.nregistro })
+            resultado => new Medicamento({ nombre: resultado.nombre, prAct1: resultado.vtm.nombre, formFarm: resultado.formaFarmaceuticaSimplificada.nombre, dosis: resultado.dosis, fotoCaja: resultado.fotos[0].url, fotoForma: resultado.fotos[1].url, viaAdmin: resultado.viasAdministracion[0].nombre, nRegistro: resultado.nregistro, fichaTecnica: resultado.docs[0].url })
         )
         listaEncontrados.innerHTML = "";
         for (let i = 0; i < medicamentos.length; i++) {
@@ -2124,16 +2132,20 @@ async function buscarMedicamento() {
 
 function seleccionarMedicamento(nRegistro) {
     /*Permite al usuario ver la informacion mas importante del medicamento seleccionado */
-    console.log(nRegistro);
     medicamentoSeleccionado = medicamentos.find(medicamento => medicamento.nRegistro === nRegistro);
-    document.getElementById('nomSeleccion').innerHTML = medicamentoSeleccionado.nombre;
-    document.getElementById('prActSeleccion').innerHTML = medicamentoSeleccionado.prAct1;
-    document.getElementById('formFarmSeleccion').innerHTML = medicamentoSeleccionado.formFarm;
-    document.getElementById('dosisSeleccion').innerHTML = medicamentoSeleccionado.dosis;
-    document.getElementById('viaAdminSeleccion').innerHTML = medicamentoSeleccionado.viaAdmin;
+    document.getElementById('nomSeleccion').value = medicamentoSeleccionado.nombre;
+    document.getElementById('prActSeleccion').value = medicamentoSeleccionado.prAct1;
+    document.getElementById('formFarmSeleccion').value = medicamentoSeleccionado.formFarm;
+    document.getElementById('dosisSeleccion').value = medicamentoSeleccionado.dosis;
+    document.getElementById('viaAdminSeleccion').value = medicamentoSeleccionado.viaAdmin;
     document.getElementById('imgCajaSeleccion').src = medicamentoSeleccionado.fotoCaja;
     document.getElementById('imgFormaSeleccion').src = medicamentoSeleccionado.fotoForma;
-    document.getElementById('nRegistroSeleccion').innerHTML = medicamentoSeleccionado.nRegistro;
+    document.getElementById('nRegistroSeleccion').value = medicamentoSeleccionado.nRegistro;
+    document.getElementById('linkFT').href = medicamentoSeleccionado.fichaTecnica;
+}
+async function registrarMedicamento() {
+    console.log("medicamento enviado a la base de datos");
+    // let datosMedicamento = ;
 }
 
 //prueba git

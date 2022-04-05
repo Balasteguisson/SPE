@@ -2,10 +2,10 @@
 -- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost
--- Tiempo de generación: 18-03-2022 a las 11:42:09
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 05-04-2022 a las 10:12:29
 -- Versión del servidor: 10.4.21-MariaDB
--- Versión de PHP: 8.1.1
+-- Versión de PHP: 7.3.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,16 +18,16 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `bbddSPE`
+-- Base de datos: `bbddspe`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Acciones`
+-- Estructura de tabla para la tabla `acciones`
 --
 
-CREATE TABLE `Acciones` (
+CREATE TABLE `acciones` (
   `IDUsuario` int(11) NOT NULL,
   `Accion` varchar(50) NOT NULL,
   `FechaHora` varchar(20) NOT NULL,
@@ -37,20 +37,20 @@ CREATE TABLE `Acciones` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Alergias`
+-- Estructura de tabla para la tabla `alergias`
 --
 
-CREATE TABLE `Alergias` (
+CREATE TABLE `alergias` (
   `IDAlergia` int(10) NOT NULL,
   `IdPaciente` varchar(30) NOT NULL,
   `Alergeno` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `Alergias`
+-- Volcado de datos para la tabla `alergias`
 --
 
-INSERT INTO `Alergias` (`IDAlergia`, `IdPaciente`, `Alergeno`) VALUES
+INSERT INTO `alergias` (`IDAlergia`, `IdPaciente`, `Alergeno`) VALUES
 (30, '34468343S', 'polvo'),
 (31, '34468343S', 'marisco'),
 (32, '49213961P', 'Gliclazida'),
@@ -60,10 +60,10 @@ INSERT INTO `Alergias` (`IDAlergia`, `IdPaciente`, `Alergeno`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Cita`
+-- Estructura de tabla para la tabla `cita`
 --
 
-CREATE TABLE `Cita` (
+CREATE TABLE `cita` (
   `IDCita` int(10) NOT NULL,
   `IdPaciente` varchar(30) NOT NULL,
   `IDEnfermero` int(10) NOT NULL,
@@ -76,10 +76,10 @@ CREATE TABLE `Cita` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `Cita`
+-- Volcado de datos para la tabla `cita`
 --
 
-INSERT INTO `Cita` (`IDCita`, `IdPaciente`, `IDEnfermero`, `TipoRevision`, `Online`, `Sintomas`, `Signos`, `FechaHora`, `Realizada`) VALUES
+INSERT INTO `cita` (`IDCita`, `IdPaciente`, `IDEnfermero`, `TipoRevision`, `Online`, `Sintomas`, `Signos`, `FechaHora`, `Realizada`) VALUES
 (4, '123487718234', 5, 'Diabetes', 0, '', '', '2022-03-08 12:00', 0),
 (7, '34468343S', 4, 'RV', 0, '', '', '2022-03-03 10:00', 0),
 (8, '34468343S', 5, 'Diabetes', 0, '', '', '2022-03-08 12:15', 0),
@@ -106,15 +106,20 @@ INSERT INTO `Cita` (`IDCita`, `IdPaciente`, `IDEnfermero`, `TipoRevision`, `Onli
 (30, '49213961P', 5, 'RV', 0, '', '', '2022-03-16 12:13', 0),
 (31, '49213961P', 5, 'Diabetes', 0, '', '', '2022-03-16 16:20', 0),
 (32, '34468343S', 5, 'RV', 1, '', '', '2022-03-16 15:04', 0),
-(33, '49213961P', 5, 'RV', 0, '', '', '2022-03-17 16:27', 0);
+(33, '49213961P', 5, 'RV', 0, '', '', '2022-03-17 16:27', 0),
+(34, '49213961P', 5, 'Diabetes', 1, '', '', ' ', 0),
+(35, '49213961P', 5, 'Diabetes', 1, '', '', '2022-03-22 16:00', 0),
+(36, '49213961P', 5, 'Diabetes', 1, '', '', '2022-03-30 16:34', 0),
+(37, '49213961P', 5, 'RV', 0, '', '', '2022-03-30 17:17', 0),
+(38, '49213961P', 5, 'ACOs', 1, '', '', '2022-03-30 17:16', 0);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `ContestacionEnfermero`
+-- Estructura de tabla para la tabla `contestacionenfermero`
 --
 
-CREATE TABLE `ContestacionEnfermero` (
+CREATE TABLE `contestacionenfermero` (
   `IDEnfermero` int(11) NOT NULL,
   `IDPregunta` int(11) NOT NULL,
   `Respuesta` int(1) NOT NULL COMMENT 'Numero de la respuesta',
@@ -122,10 +127,10 @@ CREATE TABLE `ContestacionEnfermero` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `ContestacionEnfermero`
+-- Volcado de datos para la tabla `contestacionenfermero`
 --
 
-INSERT INTO `ContestacionEnfermero` (`IDEnfermero`, `IDPregunta`, `Respuesta`, `FechaContestado`) VALUES
+INSERT INTO `contestacionenfermero` (`IDEnfermero`, `IDPregunta`, `Respuesta`, `FechaContestado`) VALUES
 (5, 33, 2, '2022-03-04'),
 (5, 37, 2, '2022-03-04'),
 (5, 38, 3, '2022-03-04'),
@@ -160,10 +165,10 @@ INSERT INTO `ContestacionEnfermero` (`IDEnfermero`, `IDPregunta`, `Respuesta`, `
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Contraindicaciones`
+-- Estructura de tabla para la tabla `contraindicaciones`
 --
 
-CREATE TABLE `Contraindicaciones` (
+CREATE TABLE `contraindicaciones` (
   `IDFarmaco` int(11) NOT NULL,
   `Contraindicacion` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -171,10 +176,10 @@ CREATE TABLE `Contraindicaciones` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `DatosUsuarios`
+-- Estructura de tabla para la tabla `datosusuarios`
 --
 
-CREATE TABLE `DatosUsuarios` (
+CREATE TABLE `datosusuarios` (
   `ID` int(10) NOT NULL,
   `IDUsuario` int(11) NOT NULL,
   `Nombre` varchar(20) NOT NULL,
@@ -186,10 +191,10 @@ CREATE TABLE `DatosUsuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `DatosUsuarios`
+-- Volcado de datos para la tabla `datosusuarios`
 --
 
-INSERT INTO `DatosUsuarios` (`ID`, `IDUsuario`, `Nombre`, `Apellidos`, `DNI`, `IDFoto`, `FechaNacimiento`, `EmailContacto`) VALUES
+INSERT INTO `datosusuarios` (`ID`, `IDUsuario`, `Nombre`, `Apellidos`, `DNI`, `IDFoto`, `FechaNacimiento`, `EmailContacto`) VALUES
 (1, 1, 'Guillermo', 'Balastegui Garcia', '34468343S', 1, '2000-02-29', 'gbg.balas@gmail.com'),
 (2, 2, 'Enfermero1', 'Prueba', '12312312A', 2, '1993-02-05', 'enfermero1@gmail.com'),
 (3, 3, 'Administrador1', 'Prueba', '12312312B', 3, '1995-02-16', 'admin1@gmail.com'),
@@ -199,10 +204,10 @@ INSERT INTO `DatosUsuarios` (`ID`, `IDUsuario`, `Nombre`, `Apellidos`, `DNI`, `I
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `DosisRecomendada`
+-- Estructura de tabla para la tabla `dosisrecomendada`
 --
 
-CREATE TABLE `DosisRecomendada` (
+CREATE TABLE `dosisrecomendada` (
   `IDFarmaco` int(11) NOT NULL,
   `Peso` int(4) DEFAULT NULL,
   `IMC` varchar(5) DEFAULT NULL,
@@ -213,10 +218,10 @@ CREATE TABLE `DosisRecomendada` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Embarazo`
+-- Estructura de tabla para la tabla `embarazo`
 --
 
-CREATE TABLE `Embarazo` (
+CREATE TABLE `embarazo` (
   `IDEmbarazo` int(10) NOT NULL,
   `IdPaciente` varchar(30) NOT NULL,
   `Activo` tinyint(1) NOT NULL,
@@ -225,19 +230,19 @@ CREATE TABLE `Embarazo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `Embarazo`
+-- Volcado de datos para la tabla `embarazo`
 --
 
-INSERT INTO `Embarazo` (`IDEmbarazo`, `IdPaciente`, `Activo`, `FechaInicio`, `FechaFin`) VALUES
+INSERT INTO `embarazo` (`IDEmbarazo`, `IdPaciente`, `Activo`, `FechaInicio`, `FechaFin`) VALUES
 (16, '49213961P', 0, '2022-03-11', '2022-03-11');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Enfermero`
+-- Estructura de tabla para la tabla `enfermero`
 --
 
-CREATE TABLE `Enfermero` (
+CREATE TABLE `enfermero` (
   `ID` int(11) NOT NULL,
   `DNI` varchar(10) NOT NULL COMMENT 'Poner completo',
   `Nombre` varchar(20) NOT NULL,
@@ -245,10 +250,10 @@ CREATE TABLE `Enfermero` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `Enfermero`
+-- Volcado de datos para la tabla `enfermero`
 --
 
-INSERT INTO `Enfermero` (`ID`, `DNI`, `Nombre`, `Apellidos`) VALUES
+INSERT INTO `enfermero` (`ID`, `DNI`, `Nombre`, `Apellidos`) VALUES
 (1, '', 'Paco', 'Gomis'),
 (2, '34468343S', 'Guillermo', 'Balastegui García'),
 (4, '12312312A', 'Enf1', 'Prueba'),
@@ -257,10 +262,10 @@ INSERT INTO `Enfermero` (`ID`, `DNI`, `Nombre`, `Apellidos`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `EnfermeroTest`
+-- Estructura de tabla para la tabla `enfermerotest`
 --
 
-CREATE TABLE `EnfermeroTest` (
+CREATE TABLE `enfermerotest` (
   `IDEnfermero` int(11) NOT NULL,
   `IDTest` int(11) NOT NULL,
   `FechaRealizado` date NOT NULL,
@@ -272,33 +277,30 @@ CREATE TABLE `EnfermeroTest` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Farmacos`
+-- Estructura de tabla para la tabla `farmacos`
 --
 
-CREATE TABLE `Farmacos` (
+CREATE TABLE `farmacos` (
   `IDFarmaco` int(10) NOT NULL,
   `Nombre` varchar(100) NOT NULL,
-  `PrincipioActivo` varchar(40) NOT NULL,
-  `Alergenos` varchar(100) NOT NULL,
+  `PrincipioActivo` varchar(50) NOT NULL,
+  `FormaFarm` text NOT NULL,
+  `Dosis` varchar(25) NOT NULL,
+  `ViaAdministracion` varchar(30) NOT NULL,
+  `NRegistro` int(10) NOT NULL,
   `RiesgoEmbarazo` varchar(11) NOT NULL,
-  `RiesgoLactancia` varchar(10) NOT NULL
+  `RiesgoLactancia` varchar(10) NOT NULL,
+  `ImgCaja` varchar(100) DEFAULT NULL,
+  `ImgForma` varchar(120) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `Farmacos`
---
-
-INSERT INTO `Farmacos` (`IDFarmaco`, `Nombre`, `PrincipioActivo`, `Alergenos`, `RiesgoEmbarazo`, `RiesgoLactancia`) VALUES
-(1, 'Metformina STADA 850 mg comprimidos recubiertos con película EFG', 'Metformina', 'Povidona. Estereato de magnesio. Hipromelosa/macrogol 400/macrogol 6000.', 'No', 'Medio'),
-(2, 'Apixaban Teva 5 mg comprimidos recubiertos con película EFG', 'Apixabán', 'Lactosa', 'No', 'Sí');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Fotos`
+-- Estructura de tabla para la tabla `fotos`
 --
 
-CREATE TABLE `Fotos` (
+CREATE TABLE `fotos` (
   `IDFoto` int(10) NOT NULL,
   `IDDatos` int(11) NOT NULL,
   `RutaFoto` varchar(100) NOT NULL
@@ -307,42 +309,32 @@ CREATE TABLE `Fotos` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Indicaciones`
+-- Estructura de tabla para la tabla `lactancia`
 --
 
-CREATE TABLE `Indicaciones` (
-  `IDFarmaco` int(11) NOT NULL,
-  `Indicacion` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `Lactancia`
---
-
-CREATE TABLE `Lactancia` (
+CREATE TABLE `lactancia` (
   `IDLactancia` int(10) NOT NULL,
   `IdPaciente` varchar(30) NOT NULL,
   `Activa` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `Lactancia`
+-- Volcado de datos para la tabla `lactancia`
 --
 
-INSERT INTO `Lactancia` (`IDLactancia`, `IdPaciente`, `Activa`) VALUES
+INSERT INTO `lactancia` (`IDLactancia`, `IdPaciente`, `Activa`) VALUES
 (12, '49213961P', 0),
 (13, '49213961P', 0),
-(14, '49213961P', 0);
+(14, '49213961P', 0),
+(15, '49213961P', 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Pacientes`
+-- Estructura de tabla para la tabla `pacientes`
 --
 
-CREATE TABLE `Pacientes` (
+CREATE TABLE `pacientes` (
   `NIdentidad` varchar(30) NOT NULL,
   `Nombre` text NOT NULL,
   `Apellidos` text NOT NULL,
@@ -353,10 +345,10 @@ CREATE TABLE `Pacientes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `Pacientes`
+-- Volcado de datos para la tabla `pacientes`
 --
 
-INSERT INTO `Pacientes` (`NIdentidad`, `Nombre`, `Apellidos`, `FechaNacimiento`, `Sexo`, `Talla`, `Peso`) VALUES
+INSERT INTO `pacientes` (`NIdentidad`, `Nombre`, `Apellidos`, `FechaNacimiento`, `Sexo`, `Talla`, `Peso`) VALUES
 ('123487718234', 'Rodrigo', 'Cifuentes', '1991-02-01', 'M', 177, 70),
 ('34468343S', 'Guillermo', 'BG', '2000-08-29', 'M', 177, 76),
 ('49213961P', 'Cecilia ', 'Marcus', '1998-02-21', 'F', 165, 67),
@@ -366,10 +358,10 @@ INSERT INTO `Pacientes` (`NIdentidad`, `Nombre`, `Apellidos`, `FechaNacimiento`,
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `PatologiasPrevias`
+-- Estructura de tabla para la tabla `patologiasprevias`
 --
 
-CREATE TABLE `PatologiasPrevias` (
+CREATE TABLE `patologiasprevias` (
   `IDPatologia` int(10) NOT NULL,
   `IdPaciente` varchar(30) NOT NULL,
   `Nombre` varchar(50) NOT NULL,
@@ -380,20 +372,20 @@ CREATE TABLE `PatologiasPrevias` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `PatologiasPrevias`
+-- Volcado de datos para la tabla `patologiasprevias`
 --
 
-INSERT INTO `PatologiasPrevias` (`IDPatologia`, `IdPaciente`, `Nombre`, `Descripcion`, `Activo`, `FechaInicio`, `FechaFin`) VALUES
+INSERT INTO `patologiasprevias` (`IDPatologia`, `IdPaciente`, `Nombre`, `Descripcion`, `Activo`, `FechaInicio`, `FechaFin`) VALUES
 (9, '34468343S', 'Neumonia', 'Faringitis mal tratada', 0, '2003-11-01', '2004-01-05'),
 (10, '49213961P', 'Hipotensión', 'Es ligeramente hipotensa, no requiere tratamiento por ahora', 1, '2021-07-13', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Preguntas`
+-- Estructura de tabla para la tabla `preguntas`
 --
 
-CREATE TABLE `Preguntas` (
+CREATE TABLE `preguntas` (
   `IDPregunta` int(11) NOT NULL,
   `Tipo` varchar(20) NOT NULL,
   `Pregunta` varchar(100) NOT NULL,
@@ -406,10 +398,10 @@ CREATE TABLE `Preguntas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `Preguntas`
+-- Volcado de datos para la tabla `preguntas`
 --
 
-INSERT INTO `Preguntas` (`IDPregunta`, `Tipo`, `Pregunta`, `FechaCreacion`, `Respuesta1`, `Respuesta2`, `Respuesta3`, `Respuesta4`, `RespuestaCorrecta`) VALUES
+INSERT INTO `preguntas` (`IDPregunta`, `Tipo`, `Pregunta`, `FechaCreacion`, `Respuesta1`, `Respuesta2`, `Respuesta3`, `Respuesta4`, `RespuestaCorrecta`) VALUES
 (32, 'RV', 'Prueba 2 dia 9 edit 2', '2022-02-10', 'Respuesta 1', 'Respuesta 2', 'Respuesta 3', 'Respuesta correcta', 1),
 (33, 'Diabetes', 'Prueba 24 dia 9', '2022-02-09', 'Respuesta 1', 'Respuesta 2', 'Respuesta 3', 'Respuesta correcta', 2),
 (34, 'ACOs', 'Prueba 24 dia 9', '2022-02-10', 'Respuesta 1', 'Respuesta 2', 'Mala', 'Buena', 4),
@@ -426,19 +418,19 @@ INSERT INTO `Preguntas` (`IDPregunta`, `Tipo`, `Pregunta`, `FechaCreacion`, `Res
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `PreguntasTest`
+-- Estructura de tabla para la tabla `preguntastest`
 --
 
-CREATE TABLE `PreguntasTest` (
+CREATE TABLE `preguntastest` (
   `IDTest` int(11) NOT NULL,
   `IDPregunta` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `PreguntasTest`
+-- Volcado de datos para la tabla `preguntastest`
 --
 
-INSERT INTO `PreguntasTest` (`IDTest`, `IDPregunta`) VALUES
+INSERT INTO `preguntastest` (`IDTest`, `IDPregunta`) VALUES
 (1, 33),
 (2, 33),
 (2, 37),
@@ -458,10 +450,10 @@ INSERT INTO `PreguntasTest` (`IDTest`, `IDPregunta`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `RAM`
+-- Estructura de tabla para la tabla `ram`
 --
 
-CREATE TABLE `RAM` (
+CREATE TABLE `ram` (
   `IDFarmaco` int(11) NOT NULL,
   `Medicamento` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -469,10 +461,10 @@ CREATE TABLE `RAM` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Test`
+-- Estructura de tabla para la tabla `test`
 --
 
-CREATE TABLE `Test` (
+CREATE TABLE `test` (
   `IDTest` int(10) NOT NULL,
   `Tipo` varchar(10) NOT NULL COMMENT 'Diabetes, RV o ACOs',
   `FechaCreacion` date NOT NULL,
@@ -480,10 +472,10 @@ CREATE TABLE `Test` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `Test`
+-- Volcado de datos para la tabla `test`
 --
 
-INSERT INTO `Test` (`IDTest`, `Tipo`, `FechaCreacion`, `Periodo`) VALUES
+INSERT INTO `test` (`IDTest`, `Tipo`, `FechaCreacion`, `Periodo`) VALUES
 (1, 'Diabetes', '2022-03-01', '2-2022'),
 (2, 'Diabetes', '2022-03-02', '2-2022'),
 (3, 'Diabetes', '2022-03-03', '2-2022'),
@@ -493,19 +485,19 @@ INSERT INTO `Test` (`IDTest`, `Tipo`, `FechaCreacion`, `Periodo`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `TiposVariables`
+-- Estructura de tabla para la tabla `tiposvariables`
 --
 
-CREATE TABLE `TiposVariables` (
+CREATE TABLE `tiposvariables` (
   `IDVariable` int(10) NOT NULL,
   `Nombre` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `TiposVariables`
+-- Volcado de datos para la tabla `tiposvariables`
 --
 
-INSERT INTO `TiposVariables` (`IDVariable`, `Nombre`) VALUES
+INSERT INTO `tiposvariables` (`IDVariable`, `Nombre`) VALUES
 (12, 'Pulso'),
 (13, 'Tensión Sistólica'),
 (14, 'Tensión Diastólica'),
@@ -515,10 +507,10 @@ INSERT INTO `TiposVariables` (`IDVariable`, `Nombre`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Tratamiento`
+-- Estructura de tabla para la tabla `tratamiento`
 --
 
-CREATE TABLE `Tratamiento` (
+CREATE TABLE `tratamiento` (
   `IDTratamiento` int(10) NOT NULL,
   `IdPaciente` varchar(30) NOT NULL,
   `IDFarmaco` int(11) DEFAULT NULL,
@@ -533,20 +525,20 @@ CREATE TABLE `Tratamiento` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `Tratamiento`
+-- Volcado de datos para la tabla `tratamiento`
 --
 
-INSERT INTO `Tratamiento` (`IDTratamiento`, `IdPaciente`, `IDFarmaco`, `Farmaco`, `FechaInicio`, `FechaFin`, `IntervaloTomas`, `Cantidad`, `Anotaciones`, `EfectosSecundarios`, `IDCita`) VALUES
+INSERT INTO `tratamiento` (`IDTratamiento`, `IdPaciente`, `IDFarmaco`, `Farmaco`, `FechaInicio`, `FechaFin`, `IntervaloTomas`, `Cantidad`, `Anotaciones`, `EfectosSecundarios`, `IDCita`) VALUES
 (10, '34468343S', NULL, 'Respir', '2022-02-21', '2022-02-27', NULL, NULL, NULL, NULL, NULL),
 (11, '49213961P', NULL, 'Cetirizina Cinfa 10 mg', '2022-02-23', '2022-07-30', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `UnidadesVariables`
+-- Estructura de tabla para la tabla `unidadesvariables`
 --
 
-CREATE TABLE `UnidadesVariables` (
+CREATE TABLE `unidadesvariables` (
   `IDUnidad` int(10) NOT NULL,
   `IDVariable` int(11) NOT NULL,
   `NombreUnidad` varchar(50) NOT NULL,
@@ -556,10 +548,10 @@ CREATE TABLE `UnidadesVariables` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `UnidadesVariables`
+-- Volcado de datos para la tabla `unidadesvariables`
 --
 
-INSERT INTO `UnidadesVariables` (`IDUnidad`, `IDVariable`, `NombreUnidad`, `Abreviatura`, `ValorMax`, `ValorMin`) VALUES
+INSERT INTO `unidadesvariables` (`IDUnidad`, `IDVariable`, `NombreUnidad`, `Abreviatura`, `ValorMax`, `ValorMin`) VALUES
 (1, 12, 'Pulsaciones por minuto', 'ppm', 80, 60),
 (2, 13, 'Milimetro de mercurio', 'mmHg', 125, 1100),
 (3, 14, 'Milimetro de mercurio', 'mmHg', 85, 70),
@@ -570,10 +562,10 @@ INSERT INTO `UnidadesVariables` (`IDUnidad`, `IDVariable`, `NombreUnidad`, `Abre
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Usuarios`
+-- Estructura de tabla para la tabla `usuarios`
 --
 
-CREATE TABLE `Usuarios` (
+CREATE TABLE `usuarios` (
   `ID` int(10) NOT NULL,
   `Usuario` varchar(20) NOT NULL,
   `Password` varchar(20) NOT NULL,
@@ -581,10 +573,10 @@ CREATE TABLE `Usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `Usuarios`
+-- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `Usuarios` (`ID`, `Usuario`, `Password`, `Tipo`) VALUES
+INSERT INTO `usuarios` (`ID`, `Usuario`, `Password`, `Tipo`) VALUES
 (1, 'guillermo', 'guillermo1234', 'ambos'),
 (2, 'enfermero1', 'enfermero1', 'enfermero'),
 (3, 'admin1', 'admin1', 'administrador'),
@@ -594,10 +586,10 @@ INSERT INTO `Usuarios` (`ID`, `Usuario`, `Password`, `Tipo`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `VariableFisica`
+-- Estructura de tabla para la tabla `variablefisica`
 --
 
-CREATE TABLE `VariableFisica` (
+CREATE TABLE `variablefisica` (
   `IDVariable` int(10) NOT NULL,
   `IDPaciente` varchar(30) NOT NULL,
   `Tipo` int(10) NOT NULL,
@@ -608,10 +600,10 @@ CREATE TABLE `VariableFisica` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `VariableFisica`
+-- Volcado de datos para la tabla `variablefisica`
 --
 
-INSERT INTO `VariableFisica` (`IDVariable`, `IDPaciente`, `Tipo`, `Valor`, `Unidades`, `Fecha`, `IDEnfermero`) VALUES
+INSERT INTO `variablefisica` (`IDVariable`, `IDPaciente`, `Tipo`, `Valor`, `Unidades`, `Fecha`, `IDEnfermero`) VALUES
 (2, '49213961P', 13, 120, 'mmHg', '2022-03-11', 5),
 (3, '49213961P', 14, 80, 'mmHg', '2022-03-11', 5),
 (4, '49213961P', 12, 53, 'ppm', '2022-03-11', 5),
@@ -625,169 +617,164 @@ INSERT INTO `VariableFisica` (`IDVariable`, `IDPaciente`, `Tipo`, `Valor`, `Unid
 --
 
 --
--- Indices de la tabla `Acciones`
+-- Indices de la tabla `acciones`
 --
-ALTER TABLE `Acciones`
+ALTER TABLE `acciones`
   ADD PRIMARY KEY (`IDUsuario`);
 
 --
--- Indices de la tabla `Alergias`
+-- Indices de la tabla `alergias`
 --
-ALTER TABLE `Alergias`
+ALTER TABLE `alergias`
   ADD PRIMARY KEY (`IDAlergia`),
   ADD KEY `SufridaPor` (`IdPaciente`);
 
 --
--- Indices de la tabla `Cita`
+-- Indices de la tabla `cita`
 --
-ALTER TABLE `Cita`
+ALTER TABLE `cita`
   ADD PRIMARY KEY (`IDCita`),
   ADD KEY `Trata` (`IDEnfermero`),
   ADD KEY `PacienteTratado` (`IdPaciente`);
 
 --
--- Indices de la tabla `ContestacionEnfermero`
+-- Indices de la tabla `contestacionenfermero`
 --
-ALTER TABLE `ContestacionEnfermero`
+ALTER TABLE `contestacionenfermero`
   ADD KEY `ContestadoPor` (`IDEnfermero`),
   ADD KEY `Interrogacion` (`IDPregunta`);
 
 --
--- Indices de la tabla `Contraindicaciones`
+-- Indices de la tabla `contraindicaciones`
 --
-ALTER TABLE `Contraindicaciones`
+ALTER TABLE `contraindicaciones`
   ADD PRIMARY KEY (`IDFarmaco`);
 
 --
--- Indices de la tabla `DatosUsuarios`
+-- Indices de la tabla `datosusuarios`
 --
-ALTER TABLE `DatosUsuarios`
+ALTER TABLE `datosusuarios`
   ADD PRIMARY KEY (`ID`),
   ADD UNIQUE KEY `DNI` (`DNI`),
   ADD KEY `IDUsuario` (`IDUsuario`);
 
 --
--- Indices de la tabla `DosisRecomendada`
+-- Indices de la tabla `dosisrecomendada`
 --
-ALTER TABLE `DosisRecomendada`
+ALTER TABLE `dosisrecomendada`
   ADD PRIMARY KEY (`IDFarmaco`);
 
 --
--- Indices de la tabla `Embarazo`
+-- Indices de la tabla `embarazo`
 --
-ALTER TABLE `Embarazo`
+ALTER TABLE `embarazo`
   ADD PRIMARY KEY (`IDEmbarazo`),
   ADD KEY `Embarazada` (`IdPaciente`);
 
 --
--- Indices de la tabla `Enfermero`
+-- Indices de la tabla `enfermero`
 --
-ALTER TABLE `Enfermero`
+ALTER TABLE `enfermero`
   ADD PRIMARY KEY (`ID`),
   ADD UNIQUE KEY `DNI` (`DNI`);
 
 --
--- Indices de la tabla `EnfermeroTest`
+-- Indices de la tabla `enfermerotest`
 --
-ALTER TABLE `EnfermeroTest`
+ALTER TABLE `enfermerotest`
   ADD KEY `HechoPor` (`IDEnfermero`),
   ADD KEY `ProcedeDe` (`IDTest`);
 
 --
--- Indices de la tabla `Farmacos`
+-- Indices de la tabla `farmacos`
 --
-ALTER TABLE `Farmacos`
-  ADD PRIMARY KEY (`IDFarmaco`);
+ALTER TABLE `farmacos`
+  ADD PRIMARY KEY (`IDFarmaco`),
+  ADD UNIQUE KEY `NRegistro` (`NRegistro`);
 
 --
--- Indices de la tabla `Fotos`
+-- Indices de la tabla `fotos`
 --
-ALTER TABLE `Fotos`
+ALTER TABLE `fotos`
   ADD PRIMARY KEY (`IDFoto`);
 
 --
--- Indices de la tabla `Indicaciones`
+-- Indices de la tabla `lactancia`
 --
-ALTER TABLE `Indicaciones`
-  ADD PRIMARY KEY (`IDFarmaco`);
-
---
--- Indices de la tabla `Lactancia`
---
-ALTER TABLE `Lactancia`
+ALTER TABLE `lactancia`
   ADD PRIMARY KEY (`IDLactancia`),
   ADD KEY `Madre` (`IdPaciente`);
 
 --
--- Indices de la tabla `Pacientes`
+-- Indices de la tabla `pacientes`
 --
-ALTER TABLE `Pacientes`
+ALTER TABLE `pacientes`
   ADD PRIMARY KEY (`NIdentidad`);
 
 --
--- Indices de la tabla `PatologiasPrevias`
+-- Indices de la tabla `patologiasprevias`
 --
-ALTER TABLE `PatologiasPrevias`
+ALTER TABLE `patologiasprevias`
   ADD PRIMARY KEY (`IDPatologia`),
   ADD KEY `PadecidaPor` (`IdPaciente`);
 
 --
--- Indices de la tabla `Preguntas`
+-- Indices de la tabla `preguntas`
 --
-ALTER TABLE `Preguntas`
+ALTER TABLE `preguntas`
   ADD PRIMARY KEY (`IDPregunta`);
 
 --
--- Indices de la tabla `PreguntasTest`
+-- Indices de la tabla `preguntastest`
 --
-ALTER TABLE `PreguntasTest`
+ALTER TABLE `preguntastest`
   ADD KEY `ApareceEn` (`IDTest`),
   ADD KEY `Cuestion` (`IDPregunta`);
 
 --
--- Indices de la tabla `RAM`
+-- Indices de la tabla `ram`
 --
-ALTER TABLE `RAM`
+ALTER TABLE `ram`
   ADD KEY `ReaccionaCon` (`IDFarmaco`);
 
 --
--- Indices de la tabla `Test`
+-- Indices de la tabla `test`
 --
-ALTER TABLE `Test`
+ALTER TABLE `test`
   ADD PRIMARY KEY (`IDTest`);
 
 --
--- Indices de la tabla `TiposVariables`
+-- Indices de la tabla `tiposvariables`
 --
-ALTER TABLE `TiposVariables`
+ALTER TABLE `tiposvariables`
   ADD PRIMARY KEY (`IDVariable`);
 
 --
--- Indices de la tabla `Tratamiento`
+-- Indices de la tabla `tratamiento`
 --
-ALTER TABLE `Tratamiento`
+ALTER TABLE `tratamiento`
   ADD PRIMARY KEY (`IDTratamiento`),
   ADD KEY `RecetadoEn` (`IDCita`),
   ADD KEY `Medicamento` (`IDFarmaco`),
   ADD KEY `TomadoPor` (`IdPaciente`);
 
 --
--- Indices de la tabla `UnidadesVariables`
+-- Indices de la tabla `unidadesvariables`
 --
-ALTER TABLE `UnidadesVariables`
+ALTER TABLE `unidadesvariables`
   ADD PRIMARY KEY (`IDUnidad`),
   ADD KEY `CorrespondeA` (`IDVariable`);
 
 --
--- Indices de la tabla `Usuarios`
+-- Indices de la tabla `usuarios`
 --
-ALTER TABLE `Usuarios`
+ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`ID`);
 
 --
--- Indices de la tabla `VariableFisica`
+-- Indices de la tabla `variablefisica`
 --
-ALTER TABLE `VariableFisica`
+ALTER TABLE `variablefisica`
   ADD PRIMARY KEY (`IDVariable`),
   ADD KEY `TomadaPor` (`IDEnfermero`),
   ADD KEY `PerteneceA` (`IDPaciente`),
@@ -798,99 +785,99 @@ ALTER TABLE `VariableFisica`
 --
 
 --
--- AUTO_INCREMENT de la tabla `Alergias`
+-- AUTO_INCREMENT de la tabla `alergias`
 --
-ALTER TABLE `Alergias`
+ALTER TABLE `alergias`
   MODIFY `IDAlergia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
--- AUTO_INCREMENT de la tabla `Cita`
+-- AUTO_INCREMENT de la tabla `cita`
 --
-ALTER TABLE `Cita`
-  MODIFY `IDCita` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+ALTER TABLE `cita`
+  MODIFY `IDCita` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
--- AUTO_INCREMENT de la tabla `DatosUsuarios`
+-- AUTO_INCREMENT de la tabla `datosusuarios`
 --
-ALTER TABLE `DatosUsuarios`
+ALTER TABLE `datosusuarios`
   MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT de la tabla `Embarazo`
+-- AUTO_INCREMENT de la tabla `embarazo`
 --
-ALTER TABLE `Embarazo`
+ALTER TABLE `embarazo`
   MODIFY `IDEmbarazo` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT de la tabla `Enfermero`
+-- AUTO_INCREMENT de la tabla `enfermero`
 --
-ALTER TABLE `Enfermero`
+ALTER TABLE `enfermero`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT de la tabla `Farmacos`
+-- AUTO_INCREMENT de la tabla `farmacos`
 --
-ALTER TABLE `Farmacos`
+ALTER TABLE `farmacos`
   MODIFY `IDFarmaco` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `Fotos`
+-- AUTO_INCREMENT de la tabla `fotos`
 --
-ALTER TABLE `Fotos`
+ALTER TABLE `fotos`
   MODIFY `IDFoto` int(10) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `Lactancia`
+-- AUTO_INCREMENT de la tabla `lactancia`
 --
-ALTER TABLE `Lactancia`
-  MODIFY `IDLactancia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+ALTER TABLE `lactancia`
+  MODIFY `IDLactancia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT de la tabla `PatologiasPrevias`
+-- AUTO_INCREMENT de la tabla `patologiasprevias`
 --
-ALTER TABLE `PatologiasPrevias`
+ALTER TABLE `patologiasprevias`
   MODIFY `IDPatologia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT de la tabla `Preguntas`
+-- AUTO_INCREMENT de la tabla `preguntas`
 --
-ALTER TABLE `Preguntas`
+ALTER TABLE `preguntas`
   MODIFY `IDPregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
--- AUTO_INCREMENT de la tabla `Test`
+-- AUTO_INCREMENT de la tabla `test`
 --
-ALTER TABLE `Test`
+ALTER TABLE `test`
   MODIFY `IDTest` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT de la tabla `TiposVariables`
+-- AUTO_INCREMENT de la tabla `tiposvariables`
 --
-ALTER TABLE `TiposVariables`
+ALTER TABLE `tiposvariables`
   MODIFY `IDVariable` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
--- AUTO_INCREMENT de la tabla `Tratamiento`
+-- AUTO_INCREMENT de la tabla `tratamiento`
 --
-ALTER TABLE `Tratamiento`
+ALTER TABLE `tratamiento`
   MODIFY `IDTratamiento` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT de la tabla `UnidadesVariables`
+-- AUTO_INCREMENT de la tabla `unidadesvariables`
 --
-ALTER TABLE `UnidadesVariables`
+ALTER TABLE `unidadesvariables`
   MODIFY `IDUnidad` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT de la tabla `Usuarios`
+-- AUTO_INCREMENT de la tabla `usuarios`
 --
-ALTER TABLE `Usuarios`
+ALTER TABLE `usuarios`
   MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT de la tabla `VariableFisica`
+-- AUTO_INCREMENT de la tabla `variablefisica`
 --
-ALTER TABLE `VariableFisica`
+ALTER TABLE `variablefisica`
   MODIFY `IDVariable` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
@@ -898,114 +885,67 @@ ALTER TABLE `VariableFisica`
 --
 
 --
--- Filtros para la tabla `Acciones`
+-- Filtros para la tabla `acciones`
 --
-ALTER TABLE `Acciones`
-  ADD CONSTRAINT `RealizadoPor` FOREIGN KEY (`IDUsuario`) REFERENCES `Usuarios` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `acciones`
+  ADD CONSTRAINT `RealizadoPor` FOREIGN KEY (`IDUsuario`) REFERENCES `usuarios` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Filtros para la tabla `Alergias`
+-- Filtros para la tabla `alergias`
 --
-ALTER TABLE `Alergias`
-  ADD CONSTRAINT `SufridaPor` FOREIGN KEY (`IdPaciente`) REFERENCES `Pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `alergias`
+  ADD CONSTRAINT `SufridaPor` FOREIGN KEY (`IdPaciente`) REFERENCES `pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `Cita`
+-- Filtros para la tabla `cita`
 --
-ALTER TABLE `Cita`
-  ADD CONSTRAINT `PacienteTratado` FOREIGN KEY (`IdPaciente`) REFERENCES `Pacientes` (`NIdentidad`),
-  ADD CONSTRAINT `Trata` FOREIGN KEY (`IDEnfermero`) REFERENCES `Enfermero` (`ID`);
+ALTER TABLE `cita`
+  ADD CONSTRAINT `PacienteTratado` FOREIGN KEY (`IdPaciente`) REFERENCES `pacientes` (`NIdentidad`),
+  ADD CONSTRAINT `Trata` FOREIGN KEY (`IDEnfermero`) REFERENCES `enfermero` (`ID`);
 
 --
--- Filtros para la tabla `ContestacionEnfermero`
+-- Filtros para la tabla `contestacionenfermero`
 --
-ALTER TABLE `ContestacionEnfermero`
-  ADD CONSTRAINT `ContestadoPor` FOREIGN KEY (`IDEnfermero`) REFERENCES `Enfermero` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `Interrogacion` FOREIGN KEY (`IDPregunta`) REFERENCES `Preguntas` (`IDPregunta`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `contestacionenfermero`
+  ADD CONSTRAINT `ContestadoPor` FOREIGN KEY (`IDEnfermero`) REFERENCES `enfermero` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `Interrogacion` FOREIGN KEY (`IDPregunta`) REFERENCES `preguntas` (`IDPregunta`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Filtros para la tabla `Contraindicaciones`
+-- Filtros para la tabla `contraindicaciones`
 --
-ALTER TABLE `Contraindicaciones`
-  ADD CONSTRAINT `NoUsar` FOREIGN KEY (`IDFarmaco`) REFERENCES `Farmacos` (`IDFarmaco`);
+ALTER TABLE `contraindicaciones`
+  ADD CONSTRAINT `NoUsar` FOREIGN KEY (`IDFarmaco`) REFERENCES `farmacos` (`IDFarmaco`);
 
 --
--- Filtros para la tabla `DatosUsuarios`
+-- Filtros para la tabla `datosusuarios`
 --
-ALTER TABLE `DatosUsuarios`
-  ADD CONSTRAINT `IDUsuario` FOREIGN KEY (`IDUsuario`) REFERENCES `Usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `datosusuarios`
+  ADD CONSTRAINT `IDUsuario` FOREIGN KEY (`IDUsuario`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `DosisRecomendada`
+-- Filtros para la tabla `dosisrecomendada`
 --
-ALTER TABLE `DosisRecomendada`
-  ADD CONSTRAINT `Dosificar` FOREIGN KEY (`IDFarmaco`) REFERENCES `Farmacos` (`IDFarmaco`);
+ALTER TABLE `dosisrecomendada`
+  ADD CONSTRAINT `Dosificar` FOREIGN KEY (`IDFarmaco`) REFERENCES `farmacos` (`IDFarmaco`);
 
 --
--- Filtros para la tabla `Embarazo`
+-- Filtros para la tabla `embarazo`
 --
-ALTER TABLE `Embarazo`
-  ADD CONSTRAINT `Embarazada` FOREIGN KEY (`IdPaciente`) REFERENCES `Pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `embarazo`
+  ADD CONSTRAINT `Embarazada` FOREIGN KEY (`IdPaciente`) REFERENCES `pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `EnfermeroTest`
+-- Filtros para la tabla `enfermerotest`
 --
-ALTER TABLE `EnfermeroTest`
-  ADD CONSTRAINT `HechoPor` FOREIGN KEY (`IDEnfermero`) REFERENCES `Enfermero` (`ID`),
-  ADD CONSTRAINT `ProcedeDe` FOREIGN KEY (`IDTest`) REFERENCES `Test` (`IDTest`);
+ALTER TABLE `enfermerotest`
+  ADD CONSTRAINT `HechoPor` FOREIGN KEY (`IDEnfermero`) REFERENCES `enfermero` (`ID`),
+  ADD CONSTRAINT `ProcedeDe` FOREIGN KEY (`IDTest`) REFERENCES `test` (`IDTest`);
 
 --
--- Filtros para la tabla `Indicaciones`
+-- Filtros para la tabla `lactancia`
 --
-ALTER TABLE `Indicaciones`
-  ADD CONSTRAINT `Para` FOREIGN KEY (`IDFarmaco`) REFERENCES `Fármacos` (`IDFarmaco`);
-
---
--- Filtros para la tabla `Lactancia`
---
-ALTER TABLE `Lactancia`
-  ADD CONSTRAINT `Madre` FOREIGN KEY (`IdPaciente`) REFERENCES `Pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `PatologiasPrevias`
---
-ALTER TABLE `PatologiasPrevias`
-  ADD CONSTRAINT `PadecidaPor` FOREIGN KEY (`IdPaciente`) REFERENCES `Pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `PreguntasTest`
---
-ALTER TABLE `PreguntasTest`
-  ADD CONSTRAINT `ApareceEn` FOREIGN KEY (`IDTest`) REFERENCES `Test` (`IDTest`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `Cuestion` FOREIGN KEY (`IDPregunta`) REFERENCES `Preguntas` (`IDPregunta`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `RAM`
---
-ALTER TABLE `RAM`
-  ADD CONSTRAINT `ReaccionaCon` FOREIGN KEY (`IDFarmaco`) REFERENCES `Farmacos` (`IDFarmaco`);
-
---
--- Filtros para la tabla `Tratamiento`
---
-ALTER TABLE `Tratamiento`
-  ADD CONSTRAINT `Medicamento` FOREIGN KEY (`IDFarmaco`) REFERENCES `Farmacos` (`IDFarmaco`),
-  ADD CONSTRAINT `RecetadoEn` FOREIGN KEY (`IDCita`) REFERENCES `Cita` (`IDCita`),
-  ADD CONSTRAINT `TomadoPor` FOREIGN KEY (`IdPaciente`) REFERENCES `Pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `UnidadesVariables`
---
-ALTER TABLE `UnidadesVariables`
-  ADD CONSTRAINT `CorrespondeA` FOREIGN KEY (`IDVariable`) REFERENCES `TiposVariables` (`IDVariable`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `VariableFisica`
---
-ALTER TABLE `VariableFisica`
-  ADD CONSTRAINT `PerteneceA` FOREIGN KEY (`IdPaciente`) REFERENCES `Pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `TipoMedida` FOREIGN KEY (`Tipo`) REFERENCES `TiposVariables` (`IDVariable`),
-  ADD CONSTRAINT `TomadaPor` FOREIGN KEY (`IDEnfermero`) REFERENCES `Enfermero` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `lactancia`
+  ADD CONSTRAINT `Madre` FOREIGN KEY (`IdPaciente`) REFERENCES `pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -720,10 +720,24 @@
                     <ul id="listaMedicamentosEncontrados" aria-label="Medicamentos encontrados"></ul>
                 </div>
                 <div id="datosMedSeleccionado">
-                    <p><span id="nomSeleccion"></span> <span id="prActSeleccion"></span></p>
-                    <p><span id="formFarmSeleccion"></span> <span id="dosisSeleccion"></span> <span id="viaAdminSeleccion"></span></p>
-                    <p><span id="nRegistroSeleccion"></span></p>
+                    <form id="formMedicamentoSeleccionado">
+                        <p><input type="text" name="nomSeleccion" id="nomSeleccion" placeholder="Nombre"><input type="text" name="prActSeleccion" id="prActSeleccion" placeholder="Principio Activo"></p>
+                        <p><input type="text" name="formFarmSeleccion" id="formFarmSeleccion" placeholder="Forma farmacéutica"><input type="text" name="viaAdminSeleccion" id="viaAdminSeleccion" placeholder="Via Administración"><input type="text" name="dosisSeleccion" id="dosisSeleccion" placeholder="Dosis"></p>
+                        <p><input type="text" name="nRegistroSeleccion" id="nRegistroSeleccion" placeholder="Nº Registro"></p>
+                        <p>Consulte la ficha técnica para rellenar los dos siguientes campos: <a href="" id="linkFT" target="_blank" rel="noreferrer noopener">Ficha Técnica</a></p>
+                        <p>Riesgo embarazo: </p>
+                        <p>
+                            <input type="radio" name="rEmbarazo" id="siREmbarazo"><label for="siREmbarazo">Si</label>
+                            <input type="radio" name="rEmbarazo" id="noREmbarazo"><label for="noREmbarazo">No</label>
+                        </p>
+                        <p>Riesgo lactancia:</p>
+                        <p>
+                            <input type="radio" name="rLactancia" id="siRLactancia"><label for="siRLactancia">Si</label>
+                            <input type="radio" name="rLactancia" id="noRLactancia"><label for="noRLactancia">No</label>
+                        </p>
+                    </form>
                     <p><img id="imgCajaSeleccion"><img id="imgFormaSeleccion"></p>
+                    <button onclick="registrarMedicamento()">Registrar medicamento</button>
                 </div>
             </div>
         </div>
