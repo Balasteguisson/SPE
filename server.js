@@ -900,6 +900,7 @@ app.post('/api/enfermero/:id/abrirLactancia/:idPaciente', (req,res) => {
     baseDatos.query(petBBDD, (err,respuesta) => {
         if(err){
             res.status(502).json(err)
+            return;
         }else{
             res.status(201).json(respuesta);
         }
@@ -908,10 +909,18 @@ app.post('/api/enfermero/:id/abrirLactancia/:idPaciente', (req,res) => {
 
 
 
-//RELLENADO MONITOR RENDIMIENTO
-//Obtencion de ciclos de test
-app.get("/api/enfermero/:id/getCiclos", function(req, res){
+app.post('/api/admin/:id/registrarMedicamento', (req, res) => {
+    let datosMedicamento = req.body;
+    console.log(datosMedicamento);
 
+    let petBBDD = `INSERT INTO farmacos (IDFarmaco, Nombre, PrincipioActivo, FormaFarm, Dosis, ViaAdministracion, NRegistro, RiesgoEmbarazo, RiesgoLactancia, ImgCaja, ImgForma) VALUES (NULL, '${datosMedicamento.nombre}', '${datosMedicamento.prAct1}', '${datosMedicamento.formFarm}', '${datosMedicamento.dosis}', '${datosMedicamento.viaAdmin}', '${datosMedicamento.nRegistro}', '${datosMedicamento.rEmbarazo}', '${datosMedicamento.rLactancia}', '${datosMedicamento.imgCaja}', '${datosMedicamento.imgForma}')`;
+    baseDatos.query(petBBDD, (err, respuesta) => {
+        if (err) {
+            res.status(502).json("Error en BBDD" + err);
+            return;
+        }
+        res.status(201).json(respuesta);
+    });
 })
 
 //INICIO DEL SERVIDOR

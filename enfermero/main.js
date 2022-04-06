@@ -2109,7 +2109,6 @@ async function buscarMedicamento() {
     let respuestaCIMA = await peticionREST(url, peticion)
     let numeroResultados = respuestaCIMA.totalFilas; //indica la cantidad de medicamentos que cumplen los parametros de busqueda
     let resultados = respuestaCIMA.resultados; // aqui se almacenan todos los medicamentos y sus datos
-    console.log(respuestaCIMA);
     if (numeroResultados == 0) {
         console.log("no hay resultados");
         //COMPRUEBA QUE SE HAYAN ENCONTRADO RESULTADOS
@@ -2120,7 +2119,7 @@ async function buscarMedicamento() {
         return
     } else {
         medicamentos = resultados.map(
-            resultado => new Medicamento({ nombre: resultado.nombre, prAct1: resultado.vtm.nombre, formFarm: resultado.formaFarmaceuticaSimplificada.nombre, dosis: resultado.dosis, fotoCaja: resultado.fotos[0].url, fotoForma: resultado.fotos[1].url, viaAdmin: resultado.viasAdministracion[0].nombre, nRegistro: resultado.nregistro, fichaTecnica: resultado.docs[0].url })
+            resultado => new Medicamento({ nombre: resultado.nombre, prAct1: resultado.vtm.nombre, formFarm: resultado.formaFarmaceuticaSimplificada.nombre, dosis: resultado.dosis, fotoCaja: resultado.fotos?.[0].url, fotoForma: resultado.fotos?.[1].url, viaAdmin: resultado.viasAdministracion[0].nombre, nRegistro: resultado.nregistro, fichaTecnica: resultado.docs[0].url })
         )
         listaEncontrados.innerHTML = "";
         for (let i = 0; i < medicamentos.length; i++) {
@@ -2132,20 +2131,70 @@ async function buscarMedicamento() {
 
 function seleccionarMedicamento(nRegistro) {
     /*Permite al usuario ver la informacion mas importante del medicamento seleccionado */
+    document.getElementById("datosMedSeleccionado").style.display = "grid";
     medicamentoSeleccionado = medicamentos.find(medicamento => medicamento.nRegistro === nRegistro);
     document.getElementById('nomSeleccion').value = medicamentoSeleccionado.nombre;
     document.getElementById('prActSeleccion').value = medicamentoSeleccionado.prAct1;
     document.getElementById('formFarmSeleccion').value = medicamentoSeleccionado.formFarm;
     document.getElementById('dosisSeleccion').value = medicamentoSeleccionado.dosis;
     document.getElementById('viaAdminSeleccion').value = medicamentoSeleccionado.viaAdmin;
-    document.getElementById('imgCajaSeleccion').src = medicamentoSeleccionado.fotoCaja;
-    document.getElementById('imgFormaSeleccion').src = medicamentoSeleccionado.fotoForma;
+    document.getElementById('imgCajaSeleccion').src = medicamentoSeleccionado.fotoCaja || "";
+    document.getElementById('imgFormaSeleccion').src = medicamentoSeleccionado.fotoForma|| "";
     document.getElementById('nRegistroSeleccion').value = medicamentoSeleccionado.nRegistro;
     document.getElementById('linkFT').href = medicamentoSeleccionado.fichaTecnica;
 }
+function undoSelectMedicamento() {
+    /*Permite al usuario deseleccionar el medicamento seleccionado */
+    //hacer invisible la seccion con id "datosMedSeleccionado"
+    document.getElementById('datosMedSeleccionado').style.display = "none";
+    //poner el valor de los campos de texto a vacio
+    document.getElementById('nomSeleccion').value = "";
+    document.getElementById('prActSeleccion').value = "";
+    document.getElementById('formFarmSeleccion').value = "";
+    document.getElementById('dosisSeleccion').value = "";
+    document.getElementById('viaAdminSeleccion').value = "";
+    document.getElementById('imgCajaSeleccion').src = "";
+    document.getElementById('imgFormaSeleccion').src = "";
+    document.getElementById('nRegistroSeleccion').value = "";
+    document.getElementById('linkFT').href = "";
+}
+
 async function registrarMedicamento() {
     console.log("medicamento enviado a la base de datos");
-    // let datosMedicamento = ;
+    let rEmb = document.getElementById('rEmbarazo').checked;
+    let rLac = document.getElementById('rLactancia').checked;
+    rEmb ? rEmb = 1 : rEmb = 0;
+    rLac ? rLac = 1 : rLac = 0;
+
+    let fotoCaja = document.getElementById('imgCajaSeleccion').src;
+    let fotoForma = document.getElementById('imgFormaSeleccion').src;
+    fotoCaja ? fotoCaja = fotoCaja : fotoCaja = "";
+    fotoForma ? fotoForma = fotoForma : fotoForma = "";
+
+    let datosMedicamento = {
+        nombre: document.getElementById('nomSeleccion').value,
+        prAct1: document.getElementById('prActSeleccion').value,
+        formFarm: document.getElementById('formFarmSeleccion').value,
+        dosis: document.getElementById('dosisSeleccion').value,
+        viaAdmin: document.getElementById('viaAdminSeleccion').value,
+        fotoCaja: fotoCaja,
+        fotoForma: fotoForma,
+        nRegistro: document.getElementById('nRegistroSeleccion').value,
+        rEmbarazo: rEmb,
+        rLactancia: rLac
+    };
+    
+    let url = "/api/admin/:id/registrarMedicamento";
+    let peticion = {
+        method: 'POST',
+        body: JSON.stringify(datosMedicamento),
+        headers: {
+            "content-type": "application/json"
+        }
+    }
+    console.log(peticion);
+    let respuestaServer = await peticionREST(url, peticion);
+    console.log(respuestaServer);
 }
 
 //prueba git
