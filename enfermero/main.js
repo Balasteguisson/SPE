@@ -794,6 +794,13 @@ function deletePatologiaE(idFila){
     }
 }
 var metaListaTratamientos = [];
+var listaFarmacos = [];
+
+async function fillListaFarmacos() {
+    let url = "/api/enfermero/:id/getFarmacos"
+    let peticion = 
+}
+
 function addTratamiento(){
     let listaTratamientos = document.getElementById('listaTratamientos');
     let farmaco = document.getElementById('farmaco').value;
@@ -2089,6 +2096,9 @@ function autocomplete(inp, arr) {
 autocomplete(document.getElementById("nombrePacienteCita"), listaPacientes);
 
 autocomplete(document.getElementById("nombreEnfermeroCita"), listaEnfermeros);
+
+autocomplete(document.getElementById('farmaco'), listaFarmacos);
+
 
 
 let medicamentoSeleccionado;
