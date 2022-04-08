@@ -528,6 +528,8 @@ function verMenuRegistroPaciente(){
     metaListaPatologias.splice(0,metaListaPatologias.length)
     metaListaTratamientos.splice(0,metaListaTratamientos.length)
     cambiarPantalla('menuRegistrarPaciente');
+    listaFarmacos.splice(0, listaFarmacos.length);
+    fillListaFarmacos()
 }
 
 //ajusta las entradas de lactancia y embarazo segun sexo del paciente
@@ -798,7 +800,14 @@ var listaFarmacos = [];
 
 async function fillListaFarmacos() {
     let url = "/api/enfermero/:id/getFarmacos"
-    let peticion = 
+    let peticion = {
+        method: "GET"
+    }
+    let respuesta = await peticionREST(url, peticion);
+    for (let a = 0; a < respuesta.length; a++) {
+        listaFarmacos.push(`${respuesta[a].Nombre} - ${respuesta[a].IDFarmaco}`);
+    }
+    console.log(listaFarmacos);
 }
 
 function addTratamiento(){
@@ -967,7 +976,9 @@ async function deleteTratamientoBBDD(idTratamiento){
     }
 }
 
-async function verMenuEditarPaciente(idPaciente){
+async function verMenuEditarPaciente(idPaciente) {
+    listaFarmacos.splice(0,listaFarmacos.length);
+    fillListaFarmacos();
     document.getElementById('embarazoDesdeE').disabled = true;
     document.getElementById('formularioEditarPaciente').reset();
     document.getElementById('listaTratamientosE').innerHTML = "";
@@ -1142,6 +1153,8 @@ function pantallaDarCita() {
     listaEnfermeros.splice(0, listaEnfermeros.length)
     document.getElementById('formularioCita').reset()
     llenarListasCita()
+    console.log(listaPacientes);
+    console.log(listaEnfermeros);
     cambiarPantalla('menuDarCita')
 }
 
@@ -2099,6 +2112,8 @@ autocomplete(document.getElementById("nombreEnfermeroCita"), listaEnfermeros);
 
 autocomplete(document.getElementById('farmaco'), listaFarmacos);
 
+autocomplete(document.getElementById('farmacoE'), listaFarmacos);
+
 
 
 let medicamentoSeleccionado;
@@ -2128,8 +2143,9 @@ async function buscarMedicamento() {
         }, 5000)
         return
     } else {
+        console.log(resultados);
         medicamentos = resultados.map(
-            resultado => new Medicamento({ nombre: resultado.nombre, prAct1: resultado.vtm.nombre, formFarm: resultado.formaFarmaceuticaSimplificada.nombre, dosis: resultado.dosis, fotoCaja: resultado.fotos?.[0].url, fotoForma: resultado.fotos?.[1].url, viaAdmin: resultado.viasAdministracion[0].nombre, nRegistro: resultado.nregistro, fichaTecnica: resultado.docs[0].url })
+            resultado => new Medicamento({ nombre: resultado.nombre, prAct1: resultado.vtm.nombre, formFarm: resultado.formaFarmaceuticaSimplificada.nombre, dosis: resultado.dosis, fotoCaja: resultado.fotos?.[0].url, fotoForma: resultado.fotos?.[1].url, viaAdmin: resultado.viasAdministracion[0].nombre, nRegistro: resultado.nregistro, fichaTecnica: resultado.docs[0]?.url })
         )
         listaEncontrados.innerHTML = "";
         for (let i = 0; i < medicamentos.length; i++) {

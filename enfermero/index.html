@@ -395,6 +395,25 @@
                         <option value="NO">No</option>
                     </select>
                 </section>
+                <section id="formularioTratamientos">
+                    <p>
+                    <h3>Tratamiento en curso</h3>
+                    </p>
+                    <section class="autocomplete" style="width:300px;">
+                        <p>
+                            <label for="farmaco">Fármaco</label>
+                            <input type="text" name="farmaco" id="farmaco">
+                        </p>
+                    </section>
+                    <p>
+                        <label for="fechaInicioTratamiento">Inicio del tratamiento:</label>
+                        <input type="date" name="fechaInicioTratamiento" id="fechaInicioTratamiento">
+                        <label for="fechaFinTratamiento">Fin del tratamiento:</label>
+                        <input type="date" name="fechaFinTratamiento" id="fechaFinTratamiento">
+                    </p>
+                    <p><button type="button" onclick="addTratamiento()">Añadir tratamiento</button></p>
+                    <ul id="listaTratamientos"></ul>
+                </section>
                 <section id="formularioPatologiasPrevias">
                     <p><h3>¿Sufre o ha sufrido alguna enfermedad antes?</h3></p>
                     <label for="enfermedadPrevia">¿Qué enfermedad?</label>
@@ -417,19 +436,7 @@
                     <button type="button" onclick="addPatologia()">Añadir enfermedad</button>
                     <ul id="listaPatologiasPrevias"></ul>
                 </section>
-                <section id="formularioTratamientos">
-                    <p><h3>Tratamiento en curso</h3></p>
-                    <p><label for="farmaco">Fármaco</label>
-                    <input type="text" name="farmaco" id="farmaco"></p>
-                    <p>
-                        <label for="fechaInicioTratamiento">Inicio del tratamiento:</label>
-                        <input type="date" name="fechaInicioTratamiento" id="fechaInicioTratamiento">
-                        <label for="fechaFinTratamiento">Fin del tratamiento:</label>
-                        <input type="date" name="fechaFinTratamiento" id="fechaFinTratamiento">
-                    </p>
-                    <p><button type="button" onclick="addTratamiento()">Añadir tratamiento</button></p>
-                    <ul id="listaTratamientos"></ul>
-                </section>
+                
             </form>
         </div>
         <div id='menuListaPacientes' class='seccion'><!--LISTA DE PACIENTES-->
@@ -501,6 +508,22 @@
                         <option value="0">No</option>
                     </select>
                 </section>
+                <section id="formularioTratamientosE">
+                    <p>
+                    <h3>Tratamiento en curso</h3>
+                    </p>
+                    <p><label for="farmacoE">Fármaco</label>
+                        <input type="text" name="farmacoE" id="farmacoE">
+                    </p>
+                    <p>
+                        <label for="fechaInicioTratamientoE">Inicio del tratamiento:</label>
+                        <input type="date" name="fechaInicioTratamientoE" id="fechaInicioTratamientoE">
+                        <label for="fechaFinTratamientoE">Fin del tratamiento:</label>
+                        <input type="date" name="fechaFinTratamientoE" id="fechaFinTratamientoE">
+                    </p>
+                    <p><button type="button" onclick="addTratamientoE()">Añadir tratamiento</button></p>
+                    <ul id="listaTratamientosE"></ul>
+                </section>
                 <section id="formularioPatologiasPreviasE">
                     <p><h3>¿Sufre o ha sufrido alguna enfermedad antes?</h3></p>
                     <label for="enfermedadPreviaE">¿Qué enfermedad?</label>
@@ -522,19 +545,6 @@
                     <p><textarea name="descripcionEnfermedadE" id="descripcionEnfermedadE" cols="30" rows="5" placeholder="Pequeña descripción"></textarea></p>
                     <button type="button" onclick="addPatologiaE()">Añadir enfermedad</button>
                     <ul id="listaPatologiasPreviasE"></ul>
-                </section>
-                <section id="formularioTratamientosE">
-                    <p><h3>Tratamiento en curso</h3></p>
-                    <p><label for="farmacoE">Fármaco</label>
-                    <input type="text" name="farmacoE" id="farmacoE"></p>
-                    <p>
-                        <label for="fechaInicioTratamientoE">Inicio del tratamiento:</label>
-                        <input type="date" name="fechaInicioTratamientoE" id="fechaInicioTratamientoE">
-                        <label for="fechaFinTratamientoE">Fin del tratamiento:</label>
-                        <input type="date" name="fechaFinTratamientoE" id="fechaFinTratamientoE">
-                    </p>
-                    <p><button type="button" onclick="addTratamientoE()">Añadir tratamiento</button></p>
-                    <ul id="listaTratamientosE"></ul>
                 </section>
             </form>
         </div>

@@ -923,6 +923,18 @@ app.post('/api/admin/:id/registrarMedicamento', (req, res) => {
     });
 })
 
+
+app.get('/api/enfermero/:id/getFarmacos', (req, res) => {
+    let petBBDD = "SELECT IDFarmaco, Nombre FROM farmacos";
+    baseDatos.query(petBBDD, (err, respuesta) => {
+        if (err) {
+            res.status(502).json("Error en BBDD" + err);
+            return;
+        }
+        res.status(201).json(respuesta);
+    });
+})
+
 //INICIO DEL SERVIDOR
 app.listen(app.get('port'), () => {
     console.log(`Servidor en el puerto ${app.get('port')}`);
