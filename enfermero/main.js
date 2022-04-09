@@ -1077,7 +1077,6 @@ async function verMenuEditarPaciente(idPaciente) {
         listaPatologiasPrevias.innerHTML += `<li id="LI${patologia.IDPatologia}">${patologia.Nombre}<button type="button" onclick="deletePatologiaBBDD('${patologia.IDPatologia}')">❌</button></li>`
     }
     let listaTratamientos = document.getElementById('listaTratamientosE');
-    console.log(tratamientos);
     for(let a  = 0; a<tratamientos.length; a++){
         let tratamiento = tratamientos[a];
         listaTratamientos.innerHTML += `<li id="LI${tratamiento.idTratamiento}">${tratamiento.nombre}<button type="button" onclick="deleteTratamientoBBDD('${tratamiento.idTratamiento}')">❌</button></li>`
@@ -1088,6 +1087,7 @@ async function verMenuEditarPaciente(idPaciente) {
 async function editarPaciente(idPaciente){
     let url = `/api/admin/:id/editPaciente/${idPaciente}`
     let formSexoPaciente = document.getElementById('sexoPacienteE').value;
+
     if(formSexoPaciente =='F'){
         //si es femenino, se lee la parte de embarazo y lactancia
         let lactanciaValue = document.getElementById('lactanciaE').value;
@@ -1099,7 +1099,8 @@ async function editarPaciente(idPaciente){
             embarazos : extraerEmbarazos(),
             lactancia : lactanciaValue
         }   
-    }else if(formSexoPaciente =='M'){
+    }
+    else if (formSexoPaciente == 'M') {
         var datosPaciente = {
             info : extraerDatosTablaPacienteE(),
             alergias : extraerAlergiasE(),

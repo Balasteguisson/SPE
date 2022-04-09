@@ -590,7 +590,7 @@ app.put("/api/admin/:id/editPaciente/:idPaciente", (req,res) => {
     //insert de tratamientos
     for(let a = 0; a< tratamientos.length; a++){
         let tratamiento = tratamientos[a];
-        let petBBDDtratamiento = `INSERT INTO Tratamiento (IDTratamiento, IdPaciente, IDFarmaco,Farmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, EfectosSecundarios, IDCita) VALUES (NULL, '${info[2]}',NULL,'${tratamiento[0]}','${tratamiento[1]}', '${tratamiento[2]}', NULL, NULL, NULL, NULL, NULL);`
+        let petBBDDtratamiento = `INSERT INTO Tratamiento (IDTratamiento, IdPaciente, IDFarmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, EfectosSecundarios, IDCita) VALUES (NULL, '${info[2]}','${tratamiento[0].substring(tratamiento[0].indexOf("-") + 2)}','${tratamiento[1]}', '${tratamiento[2]}', NULL, NULL, NULL, NULL, NULL);`
         baseDatos.query(petBBDDtratamiento,(err)=>{
             if(err){
                 console.log(err)
