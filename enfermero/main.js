@@ -807,7 +807,6 @@ async function fillListaFarmacos() {
     for (let a = 0; a < respuesta.length; a++) {
         listaFarmacos.push(`${respuesta[a].Nombre} - ${respuesta[a].IDFarmaco}`);
     }
-    console.log(listaFarmacos);
 }
 
 function addTratamiento(){
