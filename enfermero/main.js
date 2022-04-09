@@ -1077,9 +1077,10 @@ async function verMenuEditarPaciente(idPaciente) {
         listaPatologiasPrevias.innerHTML += `<li id="LI${patologia.IDPatologia}">${patologia.Nombre}<button type="button" onclick="deletePatologiaBBDD('${patologia.IDPatologia}')">❌</button></li>`
     }
     let listaTratamientos = document.getElementById('listaTratamientosE');
+    console.log(tratamientos);
     for(let a  = 0; a<tratamientos.length; a++){
         let tratamiento = tratamientos[a];
-        listaTratamientos.innerHTML += `<li id="LI${tratamiento.IDTratamiento}">${tratamiento.Farmaco}<button type="button" onclick="deleteTratamientoBBDD('${tratamiento.IDTratamiento}')">❌</button></li>`
+        listaTratamientos.innerHTML += `<li id="LI${tratamiento.idTratamiento}">${tratamiento.nombre}<button type="button" onclick="deleteTratamientoBBDD('${tratamiento.idTratamiento}')">❌</button></li>`
     }
     cambiarPantalla("menuEditarPaciente");
 }

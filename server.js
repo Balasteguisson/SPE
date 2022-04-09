@@ -463,9 +463,33 @@ app.get("/api/admin/:id/getPatPreviasPaciente/:idPaciente", (req,res) => {
 
 app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req,res) => {
     let petTratamiento = `SELECT * FROM Tratamiento WHERE IdPaciente = '${req.params.idPaciente}'`
-    baseDatos.query(petTratamiento, (err,respuesta) => {
-        err ? (res.status(502).json("Fallo en la bbdd" + err)) : (res.status(201).json(respuesta));
+    let respuesta = baseDatos.query(petTratamiento, (err, respuesta) => {
+        let listaTratamientos = [];
+        let listaFarmacos = "";
+        for (let a = 0; a < respuesta.length; a++) {
+            let idFarmaco = respuesta[a].IDFarmaco;
+            a === 0 ? (listaFarmacos += `'${idFarmaco}'`):(listaFarmacos += `,'${idFarmaco}'`);
+        }
+        let petFarmaco = `SELECT Nombre FROM farmacos WHERE IDFarmaco = ${listaFarmacos}`
+        baseDatos.query(petFarmaco, (err, nombres) => {
+            if (err) {
+                res.status(502).json("Fallo en la bbdd" + err);
+                return;
+            }
+            else {
+                for (let a = 0; a < respuesta.length; a++) {
+                    let tratamiento = {
+                        idTratamiento: respuesta[a].IDTratamiento,
+                        nombre: nombres[a].Nombre,
+                    }
+                    listaTratamientos.push(tratamiento);
+                }
+                res.status(201).json(listaTratamientos);
+            }
+        })
     })
+    
+
 })
 app.get("/api/admin/:id/getEmbarazosPaciente/:idPaciente", (req,res) => {
     let petEmbarazos = `SELECT * FROM Embarazo WHERE IdPaciente = '${req.params.idPaciente}'`
