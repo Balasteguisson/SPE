@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-04-2022 a las 10:12:29
+-- Tiempo de generación: 11-04-2022 a las 10:33:20
 -- Versión del servidor: 10.4.21-MariaDB
 -- Versión de PHP: 7.3.30
 
@@ -55,7 +55,8 @@ INSERT INTO `alergias` (`IDAlergia`, `IdPaciente`, `Alergeno`) VALUES
 (31, '34468343S', 'marisco'),
 (32, '49213961P', 'Gliclazida'),
 (33, '49213961P', 'Lactosa'),
-(34, '49213961P', 'Polen');
+(34, '49213961P', 'Polen'),
+(37, '683947298B', 'Polen');
 
 -- --------------------------------------------------------
 
@@ -80,8 +81,6 @@ CREATE TABLE `cita` (
 --
 
 INSERT INTO `cita` (`IDCita`, `IdPaciente`, `IDEnfermero`, `TipoRevision`, `Online`, `Sintomas`, `Signos`, `FechaHora`, `Realizada`) VALUES
-(4, '123487718234', 5, 'Diabetes', 0, '', '', '2022-03-08 12:00', 0),
-(7, '34468343S', 4, 'RV', 0, '', '', '2022-03-03 10:00', 0),
 (8, '34468343S', 5, 'Diabetes', 0, '', '', '2022-03-08 12:15', 0),
 (9, '34468343S', 5, 'RV', 0, '', '', '2022-03-08 13:45', 0),
 (10, '34468343S', 5, 'Diabetes', 0, '', '', '2022-03-08 16:00', 0),
@@ -111,7 +110,8 @@ INSERT INTO `cita` (`IDCita`, `IdPaciente`, `IDEnfermero`, `TipoRevision`, `Onli
 (35, '49213961P', 5, 'Diabetes', 1, '', '', '2022-03-22 16:00', 0),
 (36, '49213961P', 5, 'Diabetes', 1, '', '', '2022-03-30 16:34', 0),
 (37, '49213961P', 5, 'RV', 0, '', '', '2022-03-30 17:17', 0),
-(38, '49213961P', 5, 'ACOs', 1, '', '', '2022-03-30 17:16', 0);
+(38, '49213961P', 5, 'ACOs', 1, '', '', '2022-03-30 17:16', 0),
+(39, '49213961P', 5, 'Diabetes', 0, '', '', '2022-04-11 15:23', 0);
 
 -- --------------------------------------------------------
 
@@ -285,14 +285,26 @@ CREATE TABLE `farmacos` (
   `Nombre` varchar(100) NOT NULL,
   `PrincipioActivo` varchar(50) NOT NULL,
   `FormaFarm` text NOT NULL,
-  `Dosis` varchar(25) NOT NULL,
+  `Dosis` varchar(30) NOT NULL,
   `ViaAdministracion` varchar(30) NOT NULL,
   `NRegistro` int(10) NOT NULL,
-  `RiesgoEmbarazo` varchar(11) NOT NULL,
-  `RiesgoLactancia` varchar(10) NOT NULL,
+  `RiesgoEmbarazo` tinyint(1) NOT NULL,
+  `RiesgoLactancia` tinyint(1) NOT NULL,
   `ImgCaja` varchar(100) DEFAULT NULL,
   `ImgForma` varchar(120) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `farmacos`
+--
+
+INSERT INTO `farmacos` (`IDFarmaco`, `Nombre`, `PrincipioActivo`, `FormaFarm`, `Dosis`, `ViaAdministracion`, `NRegistro`, `RiesgoEmbarazo`, `RiesgoLactancia`, `ImgCaja`, `ImgForma`) VALUES
+(5, 'FRENADOL DESCONGESTIVO CAPSULAS DURAS', 'paracetamol + clorfenamina + dextrometorfano + pse', 'CAPSULA', '500 mg/30 mg/15 mg/2 mg', 'VÍA ORAL', 56682, 1, 1, 'undefined', 'undefined'),
+(6, 'DOLOSTOP 1 G COMPRIMIDOS', 'paracetamol', 'COMPRIMIDO', '1000 mg', 'VÍA ORAL', 77667, 0, 0, 'undefined', 'undefined'),
+(8, 'DORMIDINA DOXILAMINA 12,5 mg COMPRIMIDOS RECUBIERTOS CON PELICULA', 'doxilamina', 'COMPRIMIDO', '12,5 mg', 'VÍA ORAL', 60154, 1, 1, 'undefined', 'undefined'),
+(9, 'GELOCATIL 1 g COMPRIMIDOS', 'paracetamol', 'COMPRIMIDO', '1 g paracetamol', 'VÍA ORAL', 66204, 0, 0, 'undefined', 'undefined'),
+(10, 'DIANBEN 850 mg COMPRIMIDOS RECUBIERTOS CON PELICULA', 'metformina', 'COMPRIMIDO', '850 mg', 'VÍA ORAL', 55211, 1, 1, 'undefined', 'undefined'),
+(11, 'GLUCOLON 5 MG COMPRIMIDOS', 'glibenclamida', 'COMPRIMIDO', '5 mg', 'VÍA ORAL', 50337, 1, 1, 'undefined', 'undefined');
 
 -- --------------------------------------------------------
 
@@ -326,7 +338,7 @@ INSERT INTO `lactancia` (`IDLactancia`, `IdPaciente`, `Activa`) VALUES
 (12, '49213961P', 0),
 (13, '49213961P', 0),
 (14, '49213961P', 0),
-(15, '49213961P', 1);
+(15, '49213961P', 0);
 
 -- --------------------------------------------------------
 
@@ -351,9 +363,10 @@ CREATE TABLE `pacientes` (
 INSERT INTO `pacientes` (`NIdentidad`, `Nombre`, `Apellidos`, `FechaNacimiento`, `Sexo`, `Talla`, `Peso`) VALUES
 ('123487718234', 'Rodrigo', 'Cifuentes', '1991-02-01', 'M', 177, 70),
 ('34468343S', 'Guillermo', 'BG', '2000-08-29', 'M', 177, 76),
-('49213961P', 'Cecilia ', 'Marcus', '1998-02-21', 'F', 165, 67),
+('49213961P', 'Cecilia ', 'Marcus', '1998-02-07', 'F', 165, 67),
 ('6578493', 'alvaro', 'ejemplo', '1995-01-03', 'M', 160, 70),
-('675849758493', 'ejemplo', 'dia1', '1998-02-01', 'M', 190, 80);
+('675849758493', 'ejemplo', 'dia1', '1998-02-01', 'M', 190, 80),
+('683947298B', 'Pepito', 'Ramirez', '1994-02-05', 'M', 183, 78);
 
 -- --------------------------------------------------------
 
@@ -377,7 +390,8 @@ CREATE TABLE `patologiasprevias` (
 
 INSERT INTO `patologiasprevias` (`IDPatologia`, `IdPaciente`, `Nombre`, `Descripcion`, `Activo`, `FechaInicio`, `FechaFin`) VALUES
 (9, '34468343S', 'Neumonia', 'Faringitis mal tratada', 0, '2003-11-01', '2004-01-05'),
-(10, '49213961P', 'Hipotensión', 'Es ligeramente hipotensa, no requiere tratamiento por ahora', 1, '2021-07-13', NULL);
+(10, '49213961P', 'Hipotensión', 'Es ligeramente hipotensa, no requiere tratamiento por ahora', 1, '2021-07-13', NULL),
+(11, '00033345t', 'Celíaco', '', 1, '2006-11-22', NULL);
 
 -- --------------------------------------------------------
 
@@ -514,7 +528,6 @@ CREATE TABLE `tratamiento` (
   `IDTratamiento` int(10) NOT NULL,
   `IdPaciente` varchar(30) NOT NULL,
   `IDFarmaco` int(11) DEFAULT NULL,
-  `Farmaco` varchar(100) DEFAULT NULL,
   `FechaInicio` date NOT NULL,
   `FechaFin` date NOT NULL,
   `IntervaloTomas` varchar(50) DEFAULT NULL,
@@ -528,9 +541,11 @@ CREATE TABLE `tratamiento` (
 -- Volcado de datos para la tabla `tratamiento`
 --
 
-INSERT INTO `tratamiento` (`IDTratamiento`, `IdPaciente`, `IDFarmaco`, `Farmaco`, `FechaInicio`, `FechaFin`, `IntervaloTomas`, `Cantidad`, `Anotaciones`, `EfectosSecundarios`, `IDCita`) VALUES
-(10, '34468343S', NULL, 'Respir', '2022-02-21', '2022-02-27', NULL, NULL, NULL, NULL, NULL),
-(11, '49213961P', NULL, 'Cetirizina Cinfa 10 mg', '2022-02-23', '2022-07-30', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `tratamiento` (`IDTratamiento`, `IdPaciente`, `IDFarmaco`, `FechaInicio`, `FechaFin`, `IntervaloTomas`, `Cantidad`, `Anotaciones`, `EfectosSecundarios`, `IDCita`) VALUES
+(14, '683947298B', 5, '2022-04-08', '2022-04-15', NULL, NULL, NULL, NULL, NULL),
+(16, '49213961P', 6, '2022-04-11', '2022-04-18', NULL, NULL, NULL, NULL, NULL),
+(17, '49213961P', 10, '2022-04-04', '2022-04-25', NULL, NULL, NULL, NULL, NULL),
+(18, '49213961P', 5, '2022-04-04', '2022-04-08', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -610,7 +625,9 @@ INSERT INTO `variablefisica` (`IDVariable`, `IDPaciente`, `Tipo`, `Valor`, `Unid
 (5, '123487718234', 12, 56, 'ppm', '2022-03-14', 5),
 (6, '123487718234', 13, 119, 'mmHg', '2022-03-14', 5),
 (7, '123487718234', 14, 83, 'mmHg', '2022-03-14', 5),
-(8, '123487718234', 16, 110, 'mg/dL', '2022-03-14', 5);
+(8, '123487718234', 16, 110, 'mg/dL', '2022-03-14', 5),
+(9, '49213961P', 16, 95, 'mg/dL', '2022-04-11', 5),
+(10, '49213961P', 12, 73, 'ppm', '2022-04-11', 5);
 
 --
 -- Índices para tablas volcadas
@@ -788,13 +805,13 @@ ALTER TABLE `variablefisica`
 -- AUTO_INCREMENT de la tabla `alergias`
 --
 ALTER TABLE `alergias`
-  MODIFY `IDAlergia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `IDAlergia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `IDCita` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `IDCita` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de la tabla `datosusuarios`
@@ -818,7 +835,7 @@ ALTER TABLE `enfermero`
 -- AUTO_INCREMENT de la tabla `farmacos`
 --
 ALTER TABLE `farmacos`
-  MODIFY `IDFarmaco` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `IDFarmaco` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `fotos`
@@ -836,7 +853,7 @@ ALTER TABLE `lactancia`
 -- AUTO_INCREMENT de la tabla `patologiasprevias`
 --
 ALTER TABLE `patologiasprevias`
-  MODIFY `IDPatologia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `IDPatologia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `preguntas`
@@ -860,7 +877,7 @@ ALTER TABLE `tiposvariables`
 -- AUTO_INCREMENT de la tabla `tratamiento`
 --
 ALTER TABLE `tratamiento`
-  MODIFY `IDTratamiento` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `IDTratamiento` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `unidadesvariables`
@@ -878,7 +895,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `variablefisica`
 --
 ALTER TABLE `variablefisica`
-  MODIFY `IDVariable` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `IDVariable` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Restricciones para tablas volcadas
@@ -946,6 +963,13 @@ ALTER TABLE `enfermerotest`
 --
 ALTER TABLE `lactancia`
   ADD CONSTRAINT `Madre` FOREIGN KEY (`IdPaciente`) REFERENCES `pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `tratamiento`
+--
+ALTER TABLE `tratamiento`
+  ADD CONSTRAINT `Medicacion` FOREIGN KEY (`IDFarmaco`) REFERENCES `farmacos` (`IDFarmaco`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `PacienteMedicado` FOREIGN KEY (`IdPaciente`) REFERENCES `pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

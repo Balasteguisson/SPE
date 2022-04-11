@@ -3,7 +3,8 @@
 var express = require("express");
 const mysql = require('mysql')
 var morgan = require('morgan');
-var cors = require('cors')
+var cors = require('cors');
+const { CLIENT_PLUGIN_AUTH } = require("mysql/lib/protocol/constants/client");
 
 
 var app = express();
@@ -461,32 +462,40 @@ app.get("/api/admin/:id/getPatPreviasPaciente/:idPaciente", (req,res) => {
     })
 })
 
-app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req,res) => {
-    let petTratamiento = `SELECT * FROM Tratamiento WHERE IdPaciente = '${req.params.idPaciente}'`
-    let respuesta = baseDatos.query(petTratamiento, (err, respuesta) => {
-        let listaTratamientos = [];
-        let listaFarmacos = "";
-        for (let a = 0; a < respuesta.length; a++) {
-            let idFarmaco = respuesta[a].IDFarmaco;
-            a === 0 ? (listaFarmacos += `'${idFarmaco}'`):(listaFarmacos += `,'${idFarmaco}'`);
-        }
-        let petFarmaco = `SELECT Nombre FROM farmacos WHERE IDFarmaco = ${listaFarmacos}`
-        baseDatos.query(petFarmaco, (err, nombres) => {
-            if (err) {
-                res.status(502).json("Fallo en la bbdd" + err);
-                return;
+app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req, res) => {
+    let fechaHoy = new Date();
+    fechaHoy = fechaHoy.toISOString().substring(0, 10);
+    let petTratamiento = `SELECT * FROM tratamiento WHERE IdPaciente = '${req.params.idPaciente}' AND "${fechaHoy}" BETWEEN FechaInicio AND FechaFin`
+    baseDatos.query(petTratamiento, (err, respuesta) => {
+        if (err) {
+            res.status(502).json('Fallo en la bbdd.' + err);
+            return;
+        } else {
+            let listaTratamientos = [];
+            let listaFarmacos = [];
+            for (let a = 0; a < respuesta.length; a++) {
+                let idFarmaco = respuesta[a].IDFarmaco;
+                listaFarmacos.push(idFarmaco);
             }
-            else {
-                for (let a = 0; a < respuesta.length; a++) {
-                    let tratamiento = {
-                        idTratamiento: respuesta[a].IDTratamiento,
-                        nombre: nombres[a].Nombre,
-                    }
-                    listaTratamientos.push(tratamiento);
+            listaFarmacos = listaFarmacos.join(",")
+            let petFarmaco = `SELECT Nombre FROM farmacos WHERE IDFarmaco IN (${listaFarmacos})`
+            baseDatos.query(petFarmaco, (err, nombres) => {
+                if (err) {
+                    res.status(502).json("Fallo en la bbdd" + err);
+                    return;
                 }
-                res.status(201).json(listaTratamientos);
-            }
-        })
+                else {
+                    for (let a = 0; a < respuesta.length; a++) {
+                        let tratamiento = {
+                            idTratamiento: respuesta[a].IDTratamiento,
+                            nombre: nombres[a].Nombre,
+                        }
+                        listaTratamientos.push(tratamiento);
+                    }
+                    res.status(201).json(listaTratamientos);
+                }
+            })
+        }
     })
     
 
@@ -590,7 +599,7 @@ app.put("/api/admin/:id/editPaciente/:idPaciente", (req,res) => {
     //insert de tratamientos
     for(let a = 0; a< tratamientos.length; a++){
         let tratamiento = tratamientos[a];
-        let petBBDDtratamiento = `INSERT INTO Tratamiento (IDTratamiento, IdPaciente, IDFarmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, EfectosSecundarios, IDCita) VALUES (NULL, '${info[2]}','${tratamiento[0].substring(tratamiento[0].indexOf("-") + 2)}','${tratamiento[1]}', '${tratamiento[2]}', NULL, NULL, NULL, NULL, NULL);`
+        let petBBDDtratamiento = `INSERT INTO tratamiento (IDTratamiento, IdPaciente, IDFarmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, EfectosSecundarios, IDCita) VALUES (NULL, '${info[2]}','${tratamiento[0].substring(tratamiento[0].indexOf("-") + 2)}','${tratamiento[1]}', '${tratamiento[2]}', NULL, NULL, NULL, NULL, NULL);`
         baseDatos.query(petBBDDtratamiento,(err)=>{
             if(err){
                 console.log(err)
@@ -958,6 +967,22 @@ app.get('/api/enfermero/:id/getFarmacos', (req, res) => {
         res.status(201).json(respuesta);
     });
 })
+
+
+
+
+////////////////////
+//SISTEMA EXPERTO///
+///////////////////
+
+
+
+//DIABETES
+
+
+
+
+
 
 //INICIO DEL SERVIDOR
 app.listen(app.get('port'), () => {

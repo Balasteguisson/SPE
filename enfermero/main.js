@@ -1656,6 +1656,7 @@ async function verTest2(){
 
 //FUNCIONES PARA PANTALLA CITA
 var idPacienteCita;
+var tipoCita;
 async function verCita(idCita){
     //datos relacionados con el paciente
     //obtencion idPaciente
@@ -1672,7 +1673,7 @@ async function verCita(idCita){
     idMedidaTomada.splice(0,idMedidaTomada.length)
     cantidadTomada.splice(0,cantidadTomada.length)
     unidadTomada.splice(0,unidadTomada.length)
-
+    tipoCita = datosCita[0].TipoRevision;
 
     let urlPaciente = `/api/admin/:id/getPaciente/${idPaciente}`
     let urlAlergias = `/api/admin/:id/getAlergiasPaciente/${idPaciente}`
@@ -1687,6 +1688,8 @@ async function verCita(idCita){
     document.getElementById('indEdad').innerHTML = `${calcularEdad(data.FechaNacimiento)}`
     document.getElementById('indPeso').innerHTML = `${data.Peso}`
     document.getElementById('indMotivo').innerHTML = `${datosCita[0].TipoRevision}`
+
+    document.getElementById('cantidadVariable').value=""
 
 
 
@@ -1706,7 +1709,7 @@ async function verCita(idCita){
     let tratamientos = await peticionREST(urlTratamientos, peticionServer)
     document.getElementById('citaListaTratamientos').innerHTML = ""
     for (let a = 0; a < tratamientos.length; a++) {
-        document.getElementById('citaListaTratamientos').innerHTML += `<li>${tratamientos[a].Farmaco}</li>`        
+        document.getElementById('citaListaTratamientos').innerHTML += `<li>${tratamientos[a].nombre}</li>`        
     }
     //maternidad
     if (data.Sexo == "F"){
@@ -2224,4 +2227,10 @@ async function registrarMedicamento() {
     console.log(respuestaServer);
 }
 
-//prueba git
+
+
+////////////////////
+//SISTEMA EXPERTO///
+///////////////////
+
+//Primero hay que obtener el tratamiento actual del paciente para su patologia de visita
