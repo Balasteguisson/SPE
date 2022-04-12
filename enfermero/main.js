@@ -1573,8 +1573,9 @@ async function verTest0(){
     preguntaActual = 1
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
-    let test = await cargarTest({periodo:periodo,tipo: "Diabetes"})
-    if(test != "testRealizado"){
+    let test = await cargarTest({ periodo: periodo, tipo: "Diabetes" })
+    console.log(test);
+    if(test != 403 && test != 404){
         tipoTestActual = "Diabetes"
         periodoTestActual = periodo
         let idTest = test.IDTest
@@ -1590,8 +1591,10 @@ async function verTest0(){
         cargarPregunta()
         setTimer()
         cambiarPantalla("pantallaTest")
-    }else if(test == "testRealizado"){
+    }else if(test == 403){
         alert("Ya has hecho este test, debes esperar al siguiente");
+    } else if (test == 404) {
+        alert("No hay test para este periodo")
     }
 }
 

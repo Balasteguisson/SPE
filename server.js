@@ -4,7 +4,6 @@ var express = require("express");
 const mysql = require('mysql')
 var morgan = require('morgan');
 var cors = require('cors');
-const { CLIENT_PLUGIN_AUTH } = require("mysql/lib/protocol/constants/client");
 
 
 var app = express();
@@ -710,9 +709,12 @@ app.get("/api/enfermero/:id/getTest/:tipo/:periodo", (req,res) => {
     let idEnfermero = req.params.id
     let petBBDD = `SELECT * FROM Test WHERE (Tipo = '${tipo}') AND (Periodo = '${periodo}')`
     baseDatos.query(petBBDD, (err,respuesta) => {
-        if(err){
+        if (err) {
             res.status(502).json("Fallo en BBDD" + err)
-        }else{
+        } else if (respuesta.length == 0) {
+            res.status(404).json("testNotFound")
+        } else {
+            console.log(respuesta);
             let idTest = respuesta[respuesta.length-1].IDTest
             let petBBDD2 = `SELECT * FROM EnfermeroTest WHERE (IDTest = '${idTest}') AND (IDEnfermero = '${idEnfermero}')`
             baseDatos.query(petBBDD2, (err,testRealizados) => {
@@ -722,7 +724,7 @@ app.get("/api/enfermero/:id/getTest/:tipo/:periodo", (req,res) => {
                     if(testRealizados.length == 0){
                         res.status(201).json(respuesta[respuesta.length-1]);
                     }else{
-                        res.status(201).json("testRealizado")
+                        res.status(403).json("testRealizado")
                     }
                 }
             })
@@ -970,28 +972,7 @@ app.get('/api/enfermero/:id/getFarmacos', (req, res) => {
 
 
 
-
-////////////////////
-//SISTEMA EXPERTO///
-///////////////////
-
-
-
-//DIABETES
-
-
-
-
-
-
 //INICIO DEL SERVIDOR
 app.listen(app.get('port'), () => {
     console.log(`Servidor en el puerto ${app.get('port')}`);
 });
-
-
-
-
-
-
-
