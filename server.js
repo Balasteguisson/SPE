@@ -978,19 +978,33 @@ const sistExperto = require('./sistemaExperto')
 app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => {
     let idCita = req.params.idCita;
     //a partir de idCita se obtiene los datos del paciente, de su enfermedad y sus variables medicas mediante una llamada a la base de datos
-    let tipoRevision;
+    let idPaciente;
+    let enfermedadPrincipal;
+    let fechaCita;
     try {
-        let datos= await datosCita(idCita);
+        //Obtenemos toda la informacion que necesita el sistema experto
+        let datos = await datosCita(idCita);
+        let idPaciente = datos[0]?.IdPaciente;
+        let infoPaciente = await datosPaciente(idPaciente);
+        let tratPac = await tratamientos(idPaciente);
+        let lactPac = await lactancia(idPaciente);
+        let embPac = await embarazo(idPaciente);
+        let alergPac = await alergias(idPaciente);
+        let patPac = await patologias(idPaciente);
 
 
-        console.log(datos);
+
+        //Procesamos la informacion obtenida para enviarla al sistema experto
+        let emb = embPac.length > 0 ? 1 : 0;
+        let lact = lactPac.length > 0 ? 1 : 0;
+
         res.status(200).json(datos);
     }
     catch (err) {
         res.status(500).json("ERROR" + err);
     }
+    console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
-    
 
     
 
@@ -1005,11 +1019,73 @@ datosCita = (idCita) => {
     return new Promise((resolve, reject) => {
         baseDatos.query(petCita, (err, cita) => {
             if (err) return reject(err);
-            console.log(cita);
             return resolve(cita);
         });
     });
 }
+
+datosPaciente = (idPaciente) => {
+    let petPac = `SELECT * FROM pacientes WHERE NIdentidad = '${idPaciente}'`
+    return new Promise((resolve, reject) => {
+        baseDatos.query(petPac, (err, paciente) => {
+            if (err) return reject(err);
+            return resolve(paciente);
+        });
+    });
+}
+
+tratamientos = (idPaciente) => {
+    let fechaHoy = new Date();
+    fechaHoy = fechaHoy.toISOString().substring(0, 10);
+    let petTratamiento = `SELECT * FROM tratamiento WHERE IdPaciente = '${idPaciente}' AND "${fechaHoy}" BETWEEN FechaInicio AND FechaFin`
+    return new Promise((resolve, reject) => {
+        baseDatos.query(petTratamiento, (err, tratamiento) => {
+            if (err) return reject(err);
+            return resolve(tratamiento);
+        });
+    })
+}
+
+lactancia = (idPaciente) => {
+    let petLactancia = `SELECT * FROM lactancia WHERE IdPaciente = '${idPaciente}' AND Activa = '1'`
+    return new Promise((resolve, reject) => {
+        baseDatos.query(petLactancia, (err, lactancia) => {
+            if (err) return reject(err);
+            return resolve(lactancia);
+        });
+    })
+}
+
+embarazo = (idPaciente) => {
+    let petEmbarazo = `SELECT * FROM embarazo WHERE IdPaciente = '${idPaciente}' AND Activo = '1'`
+    return new Promise((resolve, reject) => {
+        baseDatos.query(petEmbarazo, (err, embarazo) => {
+            if (err) return reject(err);
+            return resolve(embarazo);
+        });
+    })
+}
+
+alergias = (idPaciente) => {
+    let petAlergias = `SELECT * FROM alergias WHERE IdPaciente = '${idPaciente}'`
+    return new Promise((resolve, reject) => {
+        baseDatos.query(petAlergias, (err, alergias) => {
+            if (err) return reject(err);
+            return resolve(alergias);
+        });
+    })
+}
+
+patologias = (idPaciente) => {
+    let petPatologia = `SELECT * FROM patologiasprevias WHERE IdPaciente = '${idPaciente}'`
+    return new Promise((resolve, reject) => {
+        baseDatos.query(petPatologia, (err, patologia) => {
+            if (err) return reject(err);
+            return resolve(patologia);
+        });
+    });
+}
+
 
 
 
