@@ -972,6 +972,47 @@ app.get('/api/enfermero/:id/getFarmacos', (req, res) => {
 
 
 
+//SISTEMA EXPERTO
+
+const sistExperto = require('./sistemaExperto')
+app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => {
+    let idCita = req.params.idCita;
+    //a partir de idCita se obtiene los datos del paciente, de su enfermedad y sus variables medicas mediante una llamada a la base de datos
+    let tipoRevision;
+    try {
+        let datos= await datosCita(idCita);
+
+
+        console.log(datos);
+        res.status(200).json(datos);
+    }
+    catch (err) {
+        res.status(500).json("ERROR" + err);
+    }
+
+    
+
+    
+
+
+
+    // console.log("llamando a sistema experto");
+    // sistExperto.prescripcion({ emb: 1, lact: 1, edad: 32 });
+})
+
+datosCita = (idCita) => {
+    let petCita = `SELECT * FROM cita WHERE IDCita = '${idCita}'`
+    return new Promise((resolve, reject) => {
+        baseDatos.query(petCita, (err, cita) => {
+            if (err) return reject(err);
+            console.log(cita);
+            return resolve(cita);
+        });
+    });
+}
+
+
+
 //INICIO DEL SERVIDOR
 app.listen(app.get('port'), () => {
     console.log(`Servidor en el puerto ${app.get('port')}`);

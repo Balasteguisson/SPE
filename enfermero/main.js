@@ -1660,9 +1660,11 @@ async function verTest2(){
 //FUNCIONES PARA PANTALLA CITA
 var idPacienteCita;
 var tipoCita;
+var idCitaActual;
 async function verCita(idCita){
     //datos relacionados con el paciente
     //obtencion idPaciente
+    idCitaActual = idCita;
     let urlCita = `/api/enfermero/:id/getCita/${idCita}`
     let peticionServer = {
         method : 'GET',
@@ -1889,7 +1891,8 @@ function verGraficasPaciente(){
     console.log("cargando graficas")
 }
 
-function crearReceta(){
+function crearReceta() {
+    solicitarPrescripcion(idCitaActual);
     console.log("creando receta")
 }
 
@@ -2236,4 +2239,27 @@ async function registrarMedicamento() {
 //SISTEMA EXPERTO///
 ///////////////////
 
-//Primero hay que obtener el tratamiento actual del paciente para su patologia de visita
+async function solicitarPrescripcion(idCitaActual) {
+
+    console.log(idCitaActual);
+    // let datosPaciente = {
+    //     enfPrin: ,
+    //     edad: ,
+    //     sexo: ,
+    //     emb: ,
+    //     lact: ,
+    //     tratAct: ,
+    //     enfPrev: ,
+    //     varMed: 
+    // }
+
+    let url = `/api/enfermero/:id/solicitarPrescripcion/${idCitaActual}`;
+
+    let peticion = {
+        method: "GET",
+    }
+    let respuesta = await peticionREST(url, peticion);
+    console.log(respuesta);
+
+
+}
