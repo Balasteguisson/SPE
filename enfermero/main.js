@@ -1154,8 +1154,6 @@ function pantallaDarCita() {
     listaEnfermeros.splice(0, listaEnfermeros.length)
     document.getElementById('formularioCita').reset()
     llenarListasCita()
-    console.log(listaPacientes);
-    console.log(listaEnfermeros);
     cambiarPantalla('menuDarCita')
 }
 

@@ -1,4 +1,4 @@
-function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, varMed}) {
+function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, varMed, aler}) {
     
     let medicamentoRecomendado
 
@@ -9,17 +9,10 @@ function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, v
     let tratamientosActuales = tratAct;
     let enfermedadesPrevias = enfPrev;
     let variablesMedicas = varMed;
+    let alergias = aler;
 
     //imprime en consola todas las variables
-    console.log("enfermedadPrincipal: " + enfermedadPrincipal);
-    console.log("edad: " + edad);
-    console.log("sexo: " + sexo);
-    console.log("embarazo: " + embarazo);
-    console.log("lactancia: " + lactancia);
-    console.log("tratamientosActuales: " + tratamientosActuales);
-    console.log("enfermedadesPrevias: " + enfermedadesPrevias);
-    console.log("variablesMedicas: " + variablesMedicas);
-    console.log("peso: " + peso);
+    console.log(variablesMedicas);
 
 
 

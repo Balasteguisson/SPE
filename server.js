@@ -977,26 +977,34 @@ app.get('/api/enfermero/:id/getFarmacos', (req, res) => {
 const sistExperto = require('./sistemaExperto')
 app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => {
     let idCita = req.params.idCita;
-    //a partir de idCita se obtiene los datos del paciente, de su enfermedad y sus variables medicas mediante una llamada a la base de datos
+    //a partir de idCita se obtiene los datos del paciente, de su enfermedad 
+    //y sus variables medicas mediante una llamada a la base de datos
     let idPaciente;
     let enfermedadPrincipal;
     let fechaCita;
     try {
         //Obtenemos toda la informacion que necesita el sistema experto
         let datos = await datosCita(idCita);
-        let idPaciente = datos[0]?.IdPaciente;
+        enfermedadPrincipal = datos[0]?.TipoRevision;
+        fechaCita = datos[0]?.FechaHora;
+        idPaciente = datos[0]?.IdPaciente;
+
         let infoPaciente = await datosPaciente(idPaciente);
         let tratPac = await tratamientos(idPaciente);
         let lactPac = await lactancia(idPaciente);
         let embPac = await embarazo(idPaciente);
         let alergPac = await alergias(idPaciente);
         let patPac = await patologias(idPaciente);
+        let varMed = await variablesMedicas(idPaciente);
 
 
 
         //Procesamos la informacion obtenida para enviarla al sistema experto
         let emb = embPac.length > 0 ? 1 : 0;
         let lact = lactPac.length > 0 ? 1 : 0;
+
+        sistExperto.prescripcion({enfPrin : enfermedadPrincipal, edad: calcularEdad(infoPaciente[0]?.FechaNacimiento), peso: infoPaciente[0]?.Peso, sexo: infoPaciente[0]?.Sexo, emb: emb, lact: lact, tratAct: tratPac, enfPrev: patPac, varMed : varMed, aler: alergPac});
+
 
         res.status(200).json(datos);
     }
@@ -1086,6 +1094,28 @@ patologias = (idPaciente) => {
     });
 }
 
+variablesMedicas = (idPaciente) => {
+    let petVar = `SELECT * FROM variablefisica WHERE IdPaciente = '${idPaciente}'`
+    return new Promise ((resolve, reject) => {
+        baseDatos.query(petVar, (err, varMed) => {
+            if (err) return reject(err);
+            return resolve(varMed);
+        })
+    })
+}
+
+
+function calcularEdad(fechaNacimiento){
+    let nacimiento = new Date(fechaNacimiento)
+    let hoy = new Date()
+    var edad = hoy.getFullYear() - nacimiento.getFullYear()
+    var m = hoy.getMonth() - nacimiento.getMonth();
+
+    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+        edad--;
+    }
+    return edad
+}
 
 
 
