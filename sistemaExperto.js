@@ -1,4 +1,4 @@
-function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, varMed, aler}) {
+function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, varMed, aler, medAct}) {
     
     let medicamentoRecomendado
 
@@ -12,12 +12,19 @@ function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, v
     let alergias = aler;
     
 
-    console.log(tratamientosActuales);
-
     //base de conocimientos
+    // en primer lugar se emplea el campo enfermedad principal para saber sobre que tipo de tratamiento se va a tratar
+    // luego se busca entre los tratamientos del paciente el que coincida con uno de los principios activos que pueden tratar esta enfermedad
     
+    // let princActivos = {
+    //     1:
+    // }
 
-
+    let reglaEsquema = {
+        Diabetes: 1,
+        RV: 2,
+        ACOs: 3
+    }
     //motor de inferencia
 
 

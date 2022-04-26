@@ -1000,13 +1000,14 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
 
 
         //Procesado de tratamientos para mandar los principios activos por separado
-
+        let idMedTomados = tratPac.map(trat => trat.IDFarmaco);
+        let medPac = await medicamentos(idMedTomados);
 
         //Procesamos la informacion obtenida para enviarla al sistema experto
         let emb = embPac.length > 0 ? 1 : 0;
         let lact = lactPac.length > 0 ? 1 : 0;
 
-        sistExperto.prescripcion({enfPrin : enfermedadPrincipal, edad: calcularEdad(infoPaciente[0]?.FechaNacimiento), peso: infoPaciente[0]?.Peso, sexo: infoPaciente[0]?.Sexo, emb: emb, lact: lact, tratAct: tratPac, enfPrev: patPac, varMed : varMed, aler: alergPac});
+        sistExperto.prescripcion({enfPrin : enfermedadPrincipal, edad: calcularEdad(infoPaciente[0]?.FechaNacimiento), peso: infoPaciente[0]?.Peso, sexo: infoPaciente[0]?.Sexo, emb: emb, lact: lact, tratAct: tratPac, medAct: medPac, enfPrev: patPac, varMed : varMed, aler: alergPac});
 
 
         res.status(200).json(datos);
@@ -1104,6 +1105,17 @@ variablesMedicas = (idPaciente) => {
             return resolve(varMed);
         })
     })
+}
+
+medicamentos = (idMed) => {
+    let idMedString = idMed.join(',');
+    let petMed = `SELECT Nombre, PrincipioActivo FROM farmacos WHERE IDFarmaco IN (${idMed})`
+    return new Promise((resolve, reject) => {
+        baseDatos.query(petMed, (err, medicamentos) => {
+            if (err) return reject(err);
+            return resolve(medicamentos);
+        });
+    });
 }
 
 
