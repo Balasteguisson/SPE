@@ -809,29 +809,47 @@ async function fillListaFarmacos() {
     }
 }
 
-function addTratamiento(){
+function addTratamiento() {
+    //obtencion de datos
     let listaTratamientos = document.getElementById('listaTratamientos');
     let farmaco = document.getElementById('farmaco').value;
     let fechaInicio = document.getElementById('fechaInicioTratamiento').value;
     let fechaFin = document.getElementById('fechaFinTratamiento').value;
+    let dosis = document.getElementById('dosisConsumida').value;
+    let intervalos = document.getElementById('intervalosTratamiento').value;
+
+    //manejo de datos
     listaTratamientos.innerHTML += `<li id="LI${farmaco}">${farmaco} - ${fechaInicio} - ${fechaFin}<button type="button" onclick="deleteTratamiento('${farmaco}')">❌</li>`;
-    let pushTrat = [farmaco,fechaInicio,fechaFin];
+    let pushTrat = [farmaco,fechaInicio,fechaFin, intervalos, dosis];
     metaListaTratamientos.push(pushTrat);
+
+    //vaciado de campos
     document.getElementById('farmaco').value = "";
     document.getElementById('fechaInicioTratamiento').value = "";
     document.getElementById('fechaFinTratamiento').value = "";
+    document.getElementById('dosisConsumida').value = "";
+    document.getElementById('intervalosTratamiento').value = "";
 }
-function addTratamientoE(){
+function addTratamientoE() {
+    //obtencion de valores
     let listaTratamientos = document.getElementById('listaTratamientosE');
     let farmaco = document.getElementById('farmacoE').value;
     let fechaInicio = document.getElementById('fechaInicioTratamientoE').value;
     let fechaFin = document.getElementById('fechaFinTratamientoE').value;
+    let dosis = document.getElementById('dosisConsumidaE').value;
+    let intervalos = document.getElementById('intervaloTomasE').value;
+    
+    //manejo de datos
     listaTratamientos.innerHTML += `<li id="LI${farmaco}">${farmaco} - ${fechaInicio} - ${fechaFin}<button type="button" onclick="deleteTratamientoE('${farmaco}')">❌</li>`;
-    let pushTrat = [farmaco,fechaInicio,fechaFin];
+    let pushTrat = [farmaco, fechaInicio, fechaFin, intervalos, dosis];
     metaListaTratamientos.push(pushTrat);
-    document.getElementById('farmaco').value = "";
-    document.getElementById('fechaInicioTratamiento').value = "";
-    document.getElementById('fechaFinTratamiento').value = "";
+
+    //vaciado de campos
+    document.getElementById('farmacoE').value = "";
+    document.getElementById('fechaInicioTratamientoE').value = "";
+    document.getElementById('fechaFinTratamientoE').value = "";
+    document.getElementById('dosisConsumidaE').value = "";
+    document.getElementById('intervaloTomasE').value = "";
 }
 
 function deleteTratamiento(idFila){
@@ -1712,7 +1730,7 @@ async function verCita(idCita){
     let tratamientos = await peticionREST(urlTratamientos, peticionServer)
     document.getElementById('citaListaTratamientos').innerHTML = ""
     for (let a = 0; a < tratamientos.length; a++) {
-        document.getElementById('citaListaTratamientos').innerHTML += `<li>${tratamientos[a].nombre}</li>`        
+        document.getElementById('citaListaTratamientos').innerHTML += `<li>${tratamientos[a].nombre} - ${tratamientos[a].principioActivo}</li>`        
     }
     //maternidad
     if (data.Sexo == "F"){

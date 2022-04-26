@@ -410,6 +410,10 @@
                         <input type="date" name="fechaInicioTratamiento" id="fechaInicioTratamiento">
                         <label for="fechaFinTratamiento">Fin del tratamiento:</label>
                         <input type="date" name="fechaFinTratamiento" id="fechaFinTratamiento">
+                        <label for="dosisConsumida">Dosis</label>
+                        <input type="text" name="dosisConsumida" id="dosisConsumida" placeholder="Dosis">
+                        <label for="intervaloTomas">Intervalos</label>
+                        <input type="text" name="intervalosTratamiento" id="intervalosTratamiento" placeholder="Introducir nº horas entre tomas">
                     </p>
                     <p><button type="button" onclick="addTratamiento()">Añadir tratamiento</button></p>
                     <ul id="listaTratamientos"></ul>
@@ -453,7 +457,7 @@
                 <tbody id = "cuerpoListadoPacientes"></tbody>
             </table>
         </div>
-        <div id ='menuEditarPaciente' class='seccion'><!--REGISTRO DE PACIENTE-->
+        <div id ='menuEditarPaciente' class='seccion'><!--EDICIÓN DE PACIENTE-->
             <p><h1>Editar paciente</h1></p>
             <p>
                 <button onclick="verMenuListaPacientes()">Volver</button>
@@ -523,6 +527,10 @@
                         <input type="date" name="fechaInicioTratamientoE" id="fechaInicioTratamientoE">
                         <label for="fechaFinTratamientoE">Fin del tratamiento:</label>
                         <input type="date" name="fechaFinTratamientoE" id="fechaFinTratamientoE">
+                        <label for="dosisConsumidaE">Dosis</label>
+                        <input type="text" name="dosisConsumidaE" id="dosisConsumidaE" placeholder="Dosis">
+                        <label for="intervaloTomasE">Intervalos</label>
+                        <input type="text" name="intervaloTomasE" id="intervaloTomasE" placeholder="Introducir nº horas entre tomas">
                     </p>
                     <p><button type="button" onclick="addTratamientoE()">Añadir tratamiento</button></p>
                     <ul id="listaTratamientosE"></ul>

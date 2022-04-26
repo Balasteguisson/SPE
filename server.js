@@ -379,7 +379,7 @@ app.post("/api/admin/:id/nuevoPaciente", (req,res) =>{
     //insert de tratamientos
     for(let a = 0; a< tratamientos.length; a++){
         let tratamiento = tratamientos[a];
-        let petBBDDtratamiento = `INSERT INTO Tratamiento (IDTratamiento, IdPaciente, IDFarmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, EfectosSecundarios, IDCita) VALUES (NULL, '${info[2]}','${tratamiento[0].substring(tratamiento[0].indexOf("-")+2)}','${tratamiento[1]}', '${tratamiento[2]}', NULL, NULL, NULL, NULL, NULL);`
+        let petBBDDtratamiento = `INSERT INTO Tratamiento (IDTratamiento, IdPaciente, IDFarmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, EfectosSecundarios, IDCita) VALUES (NULL, '${info[2]}','${tratamiento[0].substring(tratamiento[0].indexOf("-") + 2)}','${tratamiento[1]}', '${tratamiento[2]}', '${tratamiento[3]}', '${tratamiento[4]}', NULL, NULL, NULL);`
         baseDatos.query(petBBDDtratamiento,(err)=>{
             if(err){
                 console.log(err)
@@ -477,7 +477,7 @@ app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req, res) => {
                 listaFarmacos.push(idFarmaco);
             }
             listaFarmacos = listaFarmacos.join(",")
-            let petFarmaco = `SELECT Nombre FROM farmacos WHERE IDFarmaco IN (${listaFarmacos})`
+            let petFarmaco = `SELECT Nombre, PrincipioActivo FROM farmacos WHERE IDFarmaco IN (${listaFarmacos})`
             baseDatos.query(petFarmaco, (err, nombres) => {
                 if (err) {
                     res.status(502).json("Fallo en la bbdd" + err);
@@ -488,6 +488,7 @@ app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req, res) => {
                         let tratamiento = {
                             idTratamiento: respuesta[a].IDTratamiento,
                             nombre: nombres[a].Nombre,
+                            principioActivo: nombres[a].PrincipioActivo,
                         }
                         listaTratamientos.push(tratamiento);
                     }
@@ -598,7 +599,7 @@ app.put("/api/admin/:id/editPaciente/:idPaciente", (req,res) => {
     //insert de tratamientos
     for(let a = 0; a< tratamientos.length; a++){
         let tratamiento = tratamientos[a];
-        let petBBDDtratamiento = `INSERT INTO tratamiento (IDTratamiento, IdPaciente, IDFarmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, EfectosSecundarios, IDCita) VALUES (NULL, '${info[2]}','${tratamiento[0].substring(tratamiento[0].indexOf("-") + 2)}','${tratamiento[1]}', '${tratamiento[2]}', NULL, NULL, NULL, NULL, NULL);`
+        let petBBDDtratamiento = `INSERT INTO tratamiento (IDTratamiento, IdPaciente, IDFarmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, EfectosSecundarios, IDCita) VALUES (NULL, '${info[2]}','${tratamiento[0].substring(tratamiento[0].indexOf("-") + 2)}','${tratamiento[1]}', '${tratamiento[2]}', '${tratamiento[3]}', '${tratamiento[4]}', NULL, NULL, NULL);`
         baseDatos.query(petBBDDtratamiento,(err)=>{
             if(err){
                 console.log(err)

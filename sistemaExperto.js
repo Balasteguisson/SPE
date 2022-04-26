@@ -10,9 +10,16 @@ function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, v
     let enfermedadesPrevias = enfPrev;
     let variablesMedicas = varMed;
     let alergias = aler;
+    
 
-    //imprime en consola todas las variables
-    console.log(variablesMedicas);
+    console.log(tratamientosActuales);
+
+    //base de conocimientos
+
+
+
+    //motor de inferencia
+
 
 
 
@@ -27,7 +34,15 @@ function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, v
 }
 
 
+////////////////////////////////////////////////////////
+//////////////////BASE DE CONOCIMIENTO//////////////////
+////////////////////////////////////////////////////////
+
+
 //Reglas diabetes
+
+//Toma de decision con METFORMINA
+
 
 
 
