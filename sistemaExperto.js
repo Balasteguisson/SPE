@@ -15,7 +15,7 @@ function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, v
     console.log(tratamientosActuales);
 
     //base de conocimientos
-
+    
 
 
     //motor de inferencia

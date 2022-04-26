@@ -2171,7 +2171,7 @@ async function buscarMedicamento() {
     } else {
         console.log(resultados);
         medicamentos = resultados.map(
-            resultado => new Medicamento({ nombre: resultado.nombre, prAct1: resultado.vtm.nombre, formFarm: resultado.formaFarmaceuticaSimplificada.nombre, dosis: resultado.dosis, fotoCaja: resultado.fotos?.[0].url, fotoForma: resultado.fotos?.[1].url, viaAdmin: resultado.viasAdministracion[0].nombre, nRegistro: resultado.nregistro, fichaTecnica: resultado.docs[0]?.url })
+            resultado => new Medicamento({ nombre: resultado.nombre, prAct1: resultado.vtm.nombre, formFarm: resultado.formaFarmaceuticaSimplificada.nombre, dosis: resultado.dosis, fotoCaja: resultado.fotos?.[0].url, fotoForma: resultado.fotos?.[1]?.url, viaAdmin: resultado.viasAdministracion[0].nombre, nRegistro: resultado.nregistro, fichaTecnica: resultado.docs[0]?.url })
         )
         listaEncontrados.innerHTML = "";
         for (let i = 0; i < medicamentos.length; i++) {
@@ -2247,6 +2247,11 @@ async function registrarMedicamento() {
     console.log(peticion);
     let respuestaServer = await peticionREST(url, peticion);
     console.log(respuestaServer);
+
+    if (respuestaServer.serverStatus === 2) {
+        console.log("Medicamento registrado");
+        undoSelectMedicamento();
+    }
 }
 
 

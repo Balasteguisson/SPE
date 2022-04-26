@@ -999,6 +999,8 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
         let varMed = await variablesMedicas(idPaciente);
 
 
+        //Procesado de tratamientos para mandar los principios activos por separado
+
 
         //Procesamos la informacion obtenida para enviarla al sistema experto
         let emb = embPac.length > 0 ? 1 : 0;
@@ -1012,7 +1014,6 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
     catch (err) {
         res.status(500).json("ERROR" + err);
     }
-    console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
 
     
