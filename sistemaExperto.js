@@ -34,7 +34,6 @@ function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, v
     }
 
     let principiosActivos = regla2[regla1[enfermedadPrincipal]]; //estos son los posibles principios activos que puede usar el paciente para su enfermedad
-    console.log(principiosActivos);
 
     //motor de inferencia
 

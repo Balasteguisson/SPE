@@ -1760,6 +1760,7 @@ async function verCita(idCita){
         document.getElementById('citaListaMaternidad').style.display = "none"
     }
 
+    solicitarPrescripcion(idCitaActual);
     cambiarPantalla('menuCita')
     getTiposVariables();
 }
@@ -1864,22 +1865,29 @@ function addMedicion(){
 
     let li = `<li id="LIM${tipo}">${nombreTipo} - ${cantidad}${unidad} <button type="button" onclick="borrarMedicion('${tipo}')">❌</button></li>`;
     document.getElementById('listaMediciones').innerHTML += li
+    console.log(idMedidaTomada);
+    console.log(cantidadTomada);
+    console.log(unidadTomada);
 }
 
-function borrarMedicion(tipo){
+function borrarMedicion(tipo) {
     let lista = document.getElementById('listaMediciones');
     let IDFila = `LIM${tipo}`
     let fila = document.getElementById(IDFila);
     lista.removeChild(fila);
 
-    for(let a = 0; a<metaUnidades.length; a++){
+    for (let a = 0; a < idMedidaTomada.length; a++){
+        console.log(tipo == idMedidaTomada[a]);
         if(tipo == idMedidaTomada[a]){
             idMedidaTomada.splice(a,1)
             cantidadTomada.splice(a,1)
-            cantidadTomada.splice(a,1)
+            unidadTomada.splice(a,1)
             break;
         }
     }
+    console.log(idMedidaTomada);
+    console.log(cantidadTomada);
+    console.log(unidadTomada);
 }
 
 async function guardarMedidas(){
@@ -1908,9 +1916,12 @@ function verGraficasPaciente(){
 }
 
 function crearReceta() {
-    solicitarPrescripcion(idCitaActual);
-    console.log("creando receta")
 }
+
+function prescribirMedicamento() {
+    solicitarPrescripcion(idCitaActual);
+}
+
 
 
 //funciones para crear medicamentos y variables de las mediciones
@@ -2262,7 +2273,6 @@ async function registrarMedicamento() {
 
 async function solicitarPrescripcion(idCitaActual) {
 
-    console.log(idCitaActual);
     // let datosPaciente = {
     //     enfPrin: ,
     //     edad: ,
@@ -2279,8 +2289,25 @@ async function solicitarPrescripcion(idCitaActual) {
     let peticion = {
         method: "GET",
     }
+
     let respuesta = await peticionREST(url, peticion);
-    console.log(respuesta);
+
+    let desplegable = document.getElementById("medicamentoSeleccionado");
+    let option = document.createElement("option");
+    option.value = respuesta.medicamento.IDFarmaco;
+    option.text = respuesta.medicamento.Nombre;
+    desplegable.appendChild(option);
+    desplegable.value = respuesta.medicamento.IDFarmaco;
+
+    document.getElementById("posologiaMedicamento").value = respuesta.dosis;
+    document.getElementById("intervaloTomas").value = `${respuesta.frecuencia} horas`;
+
+
+    document.getElementById("fechaInicioMedicacion").valueAsDate = new Date(respuesta.fechaInicio);
+    document.getElementById("fechaFinMedicacion").valueAsDate = new Date(respuesta.fechaFin);
 
 
 }
+document.getElementById("fechaInicioMedicacion").addEventListener("change", () => {
+    console.log(document.getElementById("fechaInicioMedicacion").value);
+});

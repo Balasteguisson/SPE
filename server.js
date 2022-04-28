@@ -1006,10 +1006,9 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
         let emb = embPac.length > 0 ? 1 : 0;
         let lact = lactPac.length > 0 ? 1 : 0;
 
-        prescripcion({enfPrin : enfermedadPrincipal, edad: calcularEdad(infoPaciente[0]?.FechaNacimiento), peso: infoPaciente[0]?.Peso, sexo: infoPaciente[0]?.Sexo, emb: emb, lact: lact, tratAct: tratPac, medAct: medPac, enfPrev: patPac, varMed : varMed, aler: alergPac});
+        let tratamientoObtenido = prescripcion({enfPrin : enfermedadPrincipal, edad: calcularEdad(infoPaciente[0]?.FechaNacimiento), peso: infoPaciente[0]?.Peso, sexo: infoPaciente[0]?.Sexo, emb: emb, lact: lact, tratAct: tratPac, medAct: medPac, enfPrev: patPac, varMed : varMed, aler: alergPac});        
 
-
-        res.status(200).json(datos);
+        res.status(200).json(tratamientoObtenido);
     }
     catch (err) {
         res.status(500).json("ERROR" + err);
@@ -1108,7 +1107,7 @@ variablesMedicas = (idPaciente) => {
 
 medicamentos = (idMed) => {
     let idMedString = idMed.join(',');
-    let petMed = `SELECT Nombre, PrincipioActivo FROM farmacos WHERE IDFarmaco IN (${idMed})`
+    let petMed = `SELECT IDFarmaco, Nombre, PrincipioActivo FROM farmacos WHERE IDFarmaco IN (${idMed})`
     return new Promise((resolve, reject) => {
         baseDatos.query(petMed, (err, medicamentos) => {
             if (err) return reject(err);
@@ -1143,7 +1142,6 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     let enfermedadPrincipal = enfPrin;
     let embarazo = emb;
     let lactancia = lact;
-    let tratamientosActuales = tratAct;
     let enfermedadesPrevias = enfPrev;
     let variablesMedicas = varMed;
     let alergias = aler;
@@ -1171,21 +1169,54 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     }
 
     let principiosActivos = regla2[regla1[enfermedadPrincipal]]; //estos son los posibles principios activos que puede usar el paciente para su enfermedad
-    console.log(principiosActivos);
 
+    let medicamentoPrincipal;
+    let tratamientoPrincipal;
+    //el siguiente bucle busca en los tratamientos del paciente el que coincida con uno de los principios activos que puede usar para su enfermedad
+    for (let a = 0; a < medAct.length; a++) {
+        let medicamento = medAct[a];
+        let prAct = medicamento.PrincipioActivo;
+        if (principiosActivos.includes(prAct)) {
+            medicamentoPrincipal = medicamento;
+            break;
+        }
+    }
+    for (let a = 0; a < tratAct.length; a++) {
+        let tratamiento = tratAct[a];
+        if (tratamiento.IDFarmaco === medicamentoPrincipal.IDFarmaco) {
+            tratamientoPrincipal = tratamiento;
+        }
+    }
+
+    console.log(varMed.length);
     //motor de inferencia
 
 
 
 
 
+    let datosTratamiento;
+    if (medicamentoRecomendado == null){
+        datosTratamiento = {
+            medicamento: medicamentoPrincipal,
+            indicaciones: "",
+            dosis: tratamientoPrincipal.Cantidad,
+            frecuencia: tratamientoPrincipal.IntervaloTomas,
+            fechaInicio: tratamientoPrincipal.FechaInicio,
+            fechaFin: tratamientoPrincipal.FechaFin
+        }
+    } else {
+        datosTratamiento = {
+            medicamento: medicamentoRecomendado,
+            indicaciones: "",
+            dosis: "",
+            frecuencia: "",
+            fechaInicio: "",
+            fechaFin: "",
+        }
+    }
 
-
-
-
-
-
-    return medicamentoRecomendado
+    return datosTratamiento;
 }
 
 
