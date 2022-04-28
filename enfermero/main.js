@@ -1865,9 +1865,10 @@ function addMedicion(){
 
     let li = `<li id="LIM${tipo}">${nombreTipo} - ${cantidad}${unidad} <button type="button" onclick="borrarMedicion('${tipo}')">❌</button></li>`;
     document.getElementById('listaMediciones').innerHTML += li
-    console.log(idMedidaTomada);
-    console.log(cantidadTomada);
-    console.log(unidadTomada);
+
+    document.getElementById('tipoVariable').value = "placeholderVariable";
+    document.getElementById('cantidadVariable').value = ""
+    document.getElementById('unidadVariable').value = ""
 }
 
 function borrarMedicion(tipo) {
@@ -1885,9 +1886,6 @@ function borrarMedicion(tipo) {
             break;
         }
     }
-    console.log(idMedidaTomada);
-    console.log(cantidadTomada);
-    console.log(unidadTomada);
 }
 
 async function guardarMedidas(){
