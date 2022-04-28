@@ -15,16 +15,27 @@ function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, v
     //base de conocimientos
     // en primer lugar se emplea el campo enfermedad principal para saber sobre que tipo de tratamiento se va a tratar
     // luego se busca entre los tratamientos del paciente el que coincida con uno de los principios activos que pueden tratar esta enfermedad
+    // y así se conoce el tratamiento que está usando el paciente, recetado por el médico
     
     // let princActivos = {
     //     1:
     // }
 
-    let reglaEsquema = {
+    let regla1 = {
         Diabetes: 1,
         RV: 2,
         ACOs: 3
     }
+
+    let regla2 = {
+        1: ["metformina", "glicazida", "glipizida", "glimepirida", "insulina"],
+        2: ["simvastatina", "enalapril", "ramipril", "clortalidona", "tiazida", "amlodipino"],
+        3: ["acenocumarol", "warfarina"]
+    }
+
+    let principiosActivos = regla2[regla1[enfermedadPrincipal]]; //estos son los posibles principios activos que puede usar el paciente para su enfermedad
+    console.log(principiosActivos);
+
     //motor de inferencia
 
 
@@ -45,10 +56,6 @@ function prescripcion({enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, v
 //////////////////BASE DE CONOCIMIENTO//////////////////
 ////////////////////////////////////////////////////////
 
-
-//Reglas diabetes
-
-//Toma de decision con METFORMINA
 
 
 

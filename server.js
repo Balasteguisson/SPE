@@ -975,7 +975,6 @@ app.get('/api/enfermero/:id/getFarmacos', (req, res) => {
 
 //SISTEMA EXPERTO
 
-const sistExperto = require('./sistemaExperto')
 app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => {
     let idCita = req.params.idCita;
     //a partir de idCita se obtiene los datos del paciente, de su enfermedad 
@@ -1007,7 +1006,7 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
         let emb = embPac.length > 0 ? 1 : 0;
         let lact = lactPac.length > 0 ? 1 : 0;
 
-        sistExperto.prescripcion({enfPrin : enfermedadPrincipal, edad: calcularEdad(infoPaciente[0]?.FechaNacimiento), peso: infoPaciente[0]?.Peso, sexo: infoPaciente[0]?.Sexo, emb: emb, lact: lact, tratAct: tratPac, medAct: medPac, enfPrev: patPac, varMed : varMed, aler: alergPac});
+        prescripcion({enfPrin : enfermedadPrincipal, edad: calcularEdad(infoPaciente[0]?.FechaNacimiento), peso: infoPaciente[0]?.Peso, sexo: infoPaciente[0]?.Sexo, emb: emb, lact: lact, tratAct: tratPac, medAct: medPac, enfPrev: patPac, varMed : varMed, aler: alergPac});
 
 
         res.status(200).json(datos);
@@ -1129,6 +1128,64 @@ function calcularEdad(fechaNacimiento){
         edad--;
     }
     return edad
+}
+
+
+
+
+
+//SISTEMA EXPERTO//
+function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, varMed, aler, medAct }) {
+
+    let medicamentoRecomendado
+
+    //base de hechos
+    let enfermedadPrincipal = enfPrin;
+    let embarazo = emb;
+    let lactancia = lact;
+    let tratamientosActuales = tratAct;
+    let enfermedadesPrevias = enfPrev;
+    let variablesMedicas = varMed;
+    let alergias = aler;
+
+
+    //base de conocimientos
+    // en primer lugar se emplea el campo enfermedad principal para saber sobre que tipo de tratamiento se va a tratar
+    // luego se busca entre los tratamientos del paciente el que coincida con uno de los principios activos que pueden tratar esta enfermedad
+    // y así se conoce el tratamiento que está usando el paciente, recetado por el médico
+
+    // let princActivos = {
+    //     1:
+    // }
+
+    let regla1 = {
+        Diabetes: 1,
+        RV: 2,
+        ACOs: 3
+    }
+
+    let regla2 = {
+        1: ["metformina", "glicazida", "glipizida", "glimepirida", "insulina"],
+        2: ["simvastatina", "enalapril", "ramipril", "clortalidona", "tiazida", "amlodipino"],
+        3: ["acenocumarol", "warfarina"]
+    }
+
+    let principiosActivos = regla2[regla1[enfermedadPrincipal]]; //estos son los posibles principios activos que puede usar el paciente para su enfermedad
+    console.log(principiosActivos);
+
+    //motor de inferencia
+
+
+
+
+
+
+
+
+
+
+
+    return medicamentoRecomendado
 }
 
 
