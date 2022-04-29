@@ -1760,6 +1760,7 @@ async function verCita(idCita){
         document.getElementById('citaListaMaternidad').style.display = "none"
     }
 
+    document.getElementById('medicamentoSeleccionado').innerHTML = "";
     solicitarPrescripcion(idCitaActual);
     cambiarPantalla('menuCita')
     getTiposVariables();
