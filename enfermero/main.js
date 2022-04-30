@@ -138,7 +138,7 @@ async function log() {
         headers: {
             'Content-Type': 'application/json'
         }
-    };
+    };    
     try {
         const dataLog = await peticionREST(url, peticion)
         let urlGet = `/api/enfermero/${dataLog.id}`;
