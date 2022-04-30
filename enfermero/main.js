@@ -139,30 +139,36 @@ async function log() {
             'Content-Type': 'application/json'
         }
     };
-    const dataLog = await peticionREST(url, peticion)
-    let urlGet = `/api/enfermero/${dataLog.id}`;
-    let peticionGet = { method: 'GET' };
-    const datosUser = await peticionREST(urlGet, peticionGet); //DATOS DEL ENFERMERO
-    //A partir de aqui puede tomar 3 caminos, si el rol es enfermero, carga la pantalla
-    // de enfermero, si es admin, la pantalla de admin, si es ambos, le lleva a la de
-    // enfermero, pero habilita un boton para acceder a la admin.
+    try {
+        const dataLog = await peticionREST(url, peticion)
+        let urlGet = `/api/enfermero/${dataLog.id}`;
+        let peticionGet = { method: 'GET' };
+        const datosUser = await peticionREST(urlGet, peticionGet); //DATOS DEL ENFERMERO
+        //A partir de aqui puede tomar 3 caminos, si el rol es enfermero, carga la pantalla
+        // de enfermero, si es admin, la pantalla de admin, si es ambos, le lleva a la de
+        // enfermero, pero habilita un boton para acceder a la admin.
 
-    //Si es enfermero
-    if(dataLog.permisos == 'enfermero'){
-        //Actualizar pantalla de enfermero
-        let mensajeBienvenida = document.createTextNode( `Bienvenido enfermero ${datosUser.Nombre}`);
-        document.getElementById('bienvenida').appendChild(mensajeBienvenida)
-        verMenuEnfermeroHTML(datosUser.DNI)
-    }else if(dataLog.permisos == 'administrador'){
-        let mensajeBienvenida = document.createTextNode(`Bienvenido administrador ${datosUser.Nombre}`);
-        document.getElementById('bienvenidaAdmin').appendChild(mensajeBienvenida);
-        cambiarPantalla('menuAdmin');
-    }else if(dataLog.permisos == 'ambos'){ //probablemente esta parte no se acabe usando y se borre o comente
-        //Actualizar pantalla de enfermero
-        let mensajeBienvenida = document.createTextNode( `Bienvenido ${datosUser.Nombre}`);
-        document.getElementById('bienvenidaEleccion').appendChild(mensajeBienvenida);
-        cambiarPantalla('menuEleccion');
+        console.log("data" + dataLog);
+
+        //Si es enfermero
+        if (dataLog.permisos == 'enfermero') {
+            //Actualizar pantalla de enfermero
+            let mensajeBienvenida = document.createTextNode(`Bienvenido enfermero ${datosUser.Nombre}`);
+            document.getElementById('bienvenida').appendChild(mensajeBienvenida)
+            verMenuEnfermeroHTML(datosUser.DNI)
+        } else if (dataLog.permisos == 'administrador') {
+            let mensajeBienvenida = document.createTextNode(`Bienvenido administrador ${datosUser.Nombre}`);
+            document.getElementById('bienvenidaAdmin').appendChild(mensajeBienvenida);
+            cambiarPantalla('menuAdmin');
+        }
+    } catch (error) {
+        document.getElementById("errorLogin").style.color = "red";
+        document.getElementById("errorLogin").style.visibility = "visible";
+        setTimeout(() => {
+            document.getElementById("errorLogin").style.visibility = "hidden";
+        }, 3000)
     }
+    
 }
 
 
@@ -1990,7 +1996,12 @@ async function crearVariable(){
         }
     }
     //procesado de la respuesta
-    let respuesta = await peticionREST(url,peticionServer)
+    let respuesta = await peticionREST(url, peticionServer)
+    console.log(respuesta);
+    if (respuesta.toString() == "Variable creada") {
+        alert("Variable creada")
+        pantallaMantenimientoCita()
+    }
     console.log(respuesta)
 }
 

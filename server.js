@@ -61,9 +61,9 @@ app.post('/api/login',(req,res) => {
                 res.status(201).json(datos);
                 return;
             }
-            res.status(403);
         }
-        
+        console.log("solo se deberia llegar aqui con la pass incorrecta");
+        res.status(403).json('Usuario o contraseña incorrectos');
     })
 });
 
@@ -833,7 +833,6 @@ app.post("/api/enfermero/:id/createVariable", (req,res)=>{
         }else{
             console.log(respuesta.insertId);
             for (let a = 0; a < datos.datosVariable[0].length; a++) {
-                console.log(datos.datosVariable[0][a])
                 petBBDD2 = `INSERT INTO UnidadesVariables (IDUnidad, IDVariable, NombreUnidad, Abreviatura, ValorMax, ValorMin) VALUES (NULL,'${respuesta.insertId}','${datos.datosVariable[0][a]}','${datos.datosVariable[1][a]}','${datos.datosVariable[2][a]}','${datos.datosVariable[3][a]}')`
                 baseDatos.query(petBBDD2, (err,respuesta) => {
                     if(err){
