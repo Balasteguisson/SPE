@@ -1142,7 +1142,6 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     let variablesMedicas = varMed;
     let alergias = aler;
 
-    console.log(varMed);
     //base de conocimientos
     // en primer lugar se emplea el campo enfermedad principal para saber sobre que tipo de tratamiento se va a tratar
     // luego se busca entre los tratamientos del paciente el que coincida con uno de los principios activos que pueden tratar esta enfermedad
@@ -1187,7 +1186,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     // una vez se tiene el principio activo y el medicamento, se sigue en la pauta de prescripcion
 
     if (regla1[enfermedadPrincipal] == 1) {
-        metformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed });
+        let nuevaDosis = metformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed });
     }
     // else if (regla1[enfermedadPrincipal] == 2) {
         
@@ -1235,16 +1234,18 @@ function metformina({dosis, varMed}) {
         //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
         //en varMed dos medidas de GBC con la fecha del mismo dia de la cita y se saca la media de ambas
         var fecha = new Date();
-        let GBCs = [];
+        let GBCsHoy = [];
         for (let a = 0; a < varMed.length; a++) {
             medida = varMed[a];
             let fechaMedida = moment(medida.Fecha).format("YYYY-MM-DD");
             let fechaCita = moment(fecha).format("YYYY-MM-DD");
-            console.log(fechaMedida == fechaCita);
             if (medida.Tipo == 5 && fechaMedida == fechaCita) {
-                GBCs.push(medida.Valor);
-                console.log("medida de hoy encontrada");
+                GBCsHoy.push(medida.Valor);
             }
+        }
+        let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2;
+        if (80 < GBCMedia < 130) {
+            return "425 mg";
         }
     }
 
