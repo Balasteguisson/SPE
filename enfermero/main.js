@@ -148,8 +148,7 @@ async function log() {
         // de enfermero, si es admin, la pantalla de admin, si es ambos, le lleva a la de
         // enfermero, pero habilita un boton para acceder a la admin.
 
-        console.log("data" + dataLog);
-
+        
         //Si es enfermero
         if (dataLog.permisos == 'enfermero') {
             //Actualizar pantalla de enfermero
@@ -1210,6 +1209,11 @@ async function crearCita(){
         tipo : tipo,
         presencialidad : presencialidad,
         fechaHora : fechaHora
+    }
+
+    if (datosCita.paciente == "" || datosCita.enfermero == "" || datosCita.tipo == "placeholderTipoRevision" || datosCita.presencialidad == "placeholderUbiCita" || datosCita.fechaHora == "") {
+        alert("Rellene todos los campos")
+        return;
     }
     let url = '/api/admin/:id/crearCita'
     let petServer = {

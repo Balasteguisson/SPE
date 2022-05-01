@@ -1189,10 +1189,12 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 
     console.log(varMed.length);
     console.log(varMed);
+    console.log(tratamientoPrincipal);
     // una vez se tiene el principio activo y el medicamento, se sigue en la pauta de prescripcion
 
-    //PAUTA METFORMINA
-    
+    // if (regla1[enfermedadPrincipal] == 1) {
+    //     metformina({dosis:tratamientoPrincipal.})
+    // }   
 
 
 
@@ -1224,6 +1226,12 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     }
 
     return datosTratamiento;
+}
+
+
+function metformina({dosis, varMed}) {
+    console.log(dosis);
+    console.log(varMed);
 }
 
 
