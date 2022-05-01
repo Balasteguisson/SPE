@@ -878,8 +878,6 @@ app.post('/api/enfermero/:id/guardarMedidasPaciente/:idPaciente', (req,res) => {
     let idParametros = mediciones.ids
     let cantidades = mediciones.cantidades
     let unidades = mediciones.unidades
-    console.log(idPaciente)
-    console.log(mediciones)
     for (let a = 0; a < idParametros.length; a++) {
         let petBBDD = `INSERT INTO VariableFisica (IDVariable, IDPaciente, Tipo, Valor, Unidades, Fecha, IDEnfermero) VALUES (NULL,'${idPaciente}','${idParametros[a]}','${cantidades[a]}','${unidades[a]}','${mediciones.fecha}','${req.params.id}')`
         console.log(petBBDD)
@@ -891,7 +889,6 @@ app.post('/api/enfermero/:id/guardarMedidasPaciente/:idPaciente', (req,res) => {
         })
     }
     res.status(201).json("Mediciones guardadas correctamente")
-
 })
 
 app.put("/api/enfermero/:id/cerrarEmbarazo/:idEmbarazo",(req,res) => {
@@ -1187,14 +1184,18 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         }
     }
 
-    console.log(varMed.length);
-    console.log(varMed);
-    console.log(tratamientoPrincipal);
     // una vez se tiene el principio activo y el medicamento, se sigue en la pauta de prescripcion
 
-    // if (regla1[enfermedadPrincipal] == 1) {
-    //     metformina({dosis:tratamientoPrincipal.})
-    // }   
+    if (regla1[enfermedadPrincipal] == 1) {
+        metformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed });
+    }
+    // else if (regla1[enfermedadPrincipal] == 2) {
+        
+    // } else if (regla1[enfermedadPrincipal] == 3) {
+
+    // } else {
+        
+    // }
 
 
 
@@ -1230,8 +1231,25 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 
 
 function metformina({dosis, varMed}) {
-    console.log(dosis);
-    console.log(varMed);
+    if (dosis == "425 mg") {
+        //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
+        //en varMed dos medidas de GBC con la fecha del mismo dia de la cita y se saca la media de ambas
+        var fecha = new Date();
+        let GBCs = [];
+        for (let a = 0; a < varMed.length; a++) {
+            medida = varMed[a];
+            console.log(fecha);
+            console.log(medida.Fecha);
+
+            if (medida.IDVariable == 5 && medida.Fecha == fecha) {
+                GBCs.push(medida.Valor);
+                console.log("medida de hoy encontrada");
+            }
+        }
+    }
+
+
+
 }
 
 
