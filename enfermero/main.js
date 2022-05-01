@@ -1906,7 +1906,7 @@ async function guardarMedidas(){
         ids : idMedidaTomada,
         cantidades : cantidadTomada,
         unidades : unidadTomada,
-        fecha: (new Date()).toLocaleString("es-ES")
+        fecha: new Date()
     }
     console.log(datos);
     let peticion = {

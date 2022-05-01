@@ -1142,7 +1142,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     let variablesMedicas = varMed;
     let alergias = aler;
 
-
+    console.log(varMed);
     //base de conocimientos
     // en primer lugar se emplea el campo enfermedad principal para saber sobre que tipo de tratamiento se va a tratar
     // luego se busca entre los tratamientos del paciente el que coincida con uno de los principios activos que pueden tratar esta enfermedad
@@ -1238,9 +1238,8 @@ function metformina({dosis, varMed}) {
         let GBCs = [];
         for (let a = 0; a < varMed.length; a++) {
             medida = varMed[a];
-            console.log(fecha);
-            console.log(medida.Fecha);
-
+            let fechaMedida = moment(medida.Fecha).format("YYYY-MM-DD");
+            console.log(fechaMedida);
             if (medida.IDVariable == 5 && medida.Fecha == fecha) {
                 GBCs.push(medida.Valor);
                 console.log("medida de hoy encontrada");
