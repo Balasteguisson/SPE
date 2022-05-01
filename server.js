@@ -4,7 +4,7 @@ var express = require("express");
 const mysql = require('mysql')
 var morgan = require('morgan');
 var cors = require('cors');
-
+var moment = require('moment');
 
 var app = express();
 
@@ -1239,8 +1239,9 @@ function metformina({dosis, varMed}) {
         for (let a = 0; a < varMed.length; a++) {
             medida = varMed[a];
             let fechaMedida = moment(medida.Fecha).format("YYYY-MM-DD");
-            console.log(fechaMedida);
-            if (medida.IDVariable == 5 && medida.Fecha == fecha) {
+            let fechaCita = moment(fecha).format("YYYY-MM-DD");
+            console.log(fechaMedida == fechaCita);
+            if (medida.Tipo == 5 && fechaMedida == fechaCita) {
                 GBCs.push(medida.Valor);
                 console.log("medida de hoy encontrada");
             }
