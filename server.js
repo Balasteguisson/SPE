@@ -1246,6 +1246,8 @@ function metformina({dosis, varMed}) {
         let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2;
         if (80 < GBCMedia < 130) {
             return "425 mg";
+        } else if (GBCMedia > 130) {
+            return "850 mg";
         }
     }
 
