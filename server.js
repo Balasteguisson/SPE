@@ -1229,6 +1229,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 }
 
 
+<<<<<<< HEAD
 function metformina({ dosis, varMed, medicamento }) {
     //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
     //en varMed dos medidas de GBC con la fecha del mismo dia de la cita y se saca la media de ambas
@@ -1252,6 +1253,27 @@ function metformina({ dosis, varMed, medicamento }) {
         let fechaCita = moment(fecha).format("YYYY-MM-DD");
         if (medida.Tipo == 5 && fechaMedida == fechaCita) {
             GBCsHoy.push(medida.Valor);
+=======
+function metformina({dosis, varMed}) {
+    if (dosis == "425 mg") {
+        //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
+        //en varMed dos medidas de GBC con la fecha del mismo dia de la cita y se saca la media de ambas
+        var fecha = new Date();
+        let GBCsHoy = [];
+        for (let a = 0; a < varMed.length; a++) {
+            medida = varMed[a];
+            let fechaMedida = moment(medida.Fecha).format("YYYY-MM-DD");
+            let fechaCita = moment(fecha).format("YYYY-MM-DD");
+            if (medida.Tipo == 5 && fechaMedida == fechaCita) {
+                GBCsHoy.push(medida.Valor);
+            }
+        }
+        let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2;
+        if (80 < GBCMedia < 130) {
+            return "425 mg";
+        } else if (GBCMedia > 130) {
+            return "850 mg";
+>>>>>>> 121f31bbb47df95f966253a4bc43342df3d3f57d
         }
     }
     let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2;
