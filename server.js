@@ -879,10 +879,11 @@ app.post('/api/enfermero/:id/guardarMedidasPaciente/:idPaciente', (req, res) => 
     let cantidades = mediciones.cantidades
     let unidades = mediciones.unidades
     for (let a = 0; a < idParametros.length; a++) {
-        let petBBDD = `INSERT INTO VariableFisica (IDVariable, IDPaciente, Tipo, Valor, Unidades, Fecha, IDEnfermero) VALUES (NULL,'${idPaciente}','${idParametros[a]}','${cantidades[a]}','${unidades[a]}','${mediciones.fecha}','${req.params.id}')`
+        let petBBDD = `INSERT INTO VariableFisica (IDVariable, IDPaciente, Tipo, Valor, Unidades, Fecha, IDEnfermero) VALUES (NULL,'${idPaciente}',${idParametros[a]},'${cantidades[a]}','${unidades[a]}','${mediciones.fecha}','${req.params.id}')`
         console.log(petBBDD)
         baseDatos.query(petBBDD, (err, respuesta) => {
             if (err) {
+                console.log(err);
                 res.status(502).json("Fallo BBDD" + err);
                 return;
             }
@@ -1003,7 +1004,7 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
         let lact = lactPac.length > 0 ? 1 : 0;
 
         let tratamientoObtenido = prescripcion({ enfPrin: enfermedadPrincipal, edad: calcularEdad(infoPaciente[0]?.FechaNacimiento), peso: infoPaciente[0]?.Peso, sexo: infoPaciente[0]?.Sexo, emb: emb, lact: lact, tratAct: tratPac, medAct: medPac, enfPrev: patPac, varMed: varMed, aler: alergPac });
-
+        console.log(tratamientoObtenido);
         res.status(200).json(tratamientoObtenido);
     }
     catch (err) {
@@ -1184,9 +1185,9 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     }
 
     // una vez se tiene el principio activo y el medicamento, se sigue en la pauta de prescripcion
-
+    let tratamientoRecomendado
     if (regla1[enfermedadPrincipal] == 1) {
-        let actualizacion = metformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoPrincipal });
+        tratamientoRecomendado = metformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoPrincipal });
     }
     // else if (regla1[enfermedadPrincipal] == 2) {
 
@@ -1202,10 +1203,8 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 
 
 
-
-
     let datosTratamiento;
-    if (medicamentoRecomendado == null) {
+    if (tratamientoRecomendado == null) {
         datosTratamiento = {
             medicamento: medicamentoPrincipal,
             indicaciones: "",
@@ -1216,12 +1215,12 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         }
     } else {
         datosTratamiento = {
-            medicamento: medicamentoRecomendado,
-            indicaciones: "",
-            dosis: "",
-            frecuencia: "",
-            fechaInicio: "",
-            fechaFin: "",
+            medicamento: tratamientoRecomendado.medicamento,
+            indicaciones: tratamientoRecomendado.indicaciones,
+            dosis: tratamientoRecomendado.dosis,
+            frecuencia: tratamientoRecomendado.frecuencia || tratamientoPrincipal.IntervaloTomas,
+            fechaInicio: tratamientoRecomendado.fechaInicio,
+            fechaFin: tratamientoRecomendado.fechaFin,
         }
     }
 
@@ -1229,54 +1228,56 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 }
 
 
-<<<<<<< HEAD
 function metformina({ dosis, varMed, medicamento }) {
     //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
     //en varMed dos medidas de GBC con la fecha del mismo dia de la cita y se saca la media de ambas
-    var fecha = new Date();
-    let GBCsHoy = [];
-    let actualizacionTratamiento = {
-        medicamento,
-        indicaciones,
-        dosis,
-        frecuencia,
-        fechaInicio,
-        fechaFin
-    }
-    let dosisReturn;
-    
-    
 
+    var fecha = new Date();
+    let fechaCita = moment(fecha).format("YYYY-MM-DD");
+
+    let GBCsHoy = [];
+    let hba1cHoy = varMed.filter(med => med.Tipo == 6 && moment(med.Fecha).format("YYYY-MM-DD") == fechaCita);
     for (let a = 0; a < varMed.length; a++) {
         medida = varMed[a];
         let fechaMedida = moment(medida.Fecha).format("YYYY-MM-DD");
-        let fechaCita = moment(fecha).format("YYYY-MM-DD");
         if (medida.Tipo == 5 && fechaMedida == fechaCita) {
             GBCsHoy.push(medida.Valor);
-=======
-function metformina({dosis, varMed}) {
-    if (dosis == "425 mg") {
-        //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
-        //en varMed dos medidas de GBC con la fecha del mismo dia de la cita y se saca la media de ambas
-        var fecha = new Date();
-        let GBCsHoy = [];
-        for (let a = 0; a < varMed.length; a++) {
-            medida = varMed[a];
-            let fechaMedida = moment(medida.Fecha).format("YYYY-MM-DD");
-            let fechaCita = moment(fecha).format("YYYY-MM-DD");
-            if (medida.Tipo == 5 && fechaMedida == fechaCita) {
-                GBCsHoy.push(medida.Valor);
-            }
-        }
-        let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2;
-        if (80 < GBCMedia < 130) {
-            return "425 mg";
-        } else if (GBCMedia > 130) {
-            return "850 mg";
->>>>>>> 121f31bbb47df95f966253a4bc43342df3d3f57d
         }
     }
-    let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2;
+    let dosisReturn;
+    let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
+        medicamento,
+        indicaciones: "",
+        dosis,
+        frecuencia: "",
+        fechaInicio : "",
+        fechaFin: ""
+    }
+    
+    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return null; //si no hay tomadas medidas, se devuelve null para que se muestre el tratamiento actual en el cliente
+    if (hba1cHoy.length > 0) {
+        let valor = hba1cHoy[hba1cHoy.length -1].Valor;
+        if (valor < 7.0) {
+            dosisReturn = dosis;
+            actualizacionTratamiento.dosis = dosisReturn;
+            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.fechaInicio = new Date (moment(fecha).format("DD-MM-YYYY"));
+            actualizacionTratamiento.fechaFin = new Date (moment(fecha).add(6, "months").format("DD-MM-YYYY"));
+            actualizacionTratamiento.indicaciones += "Revisión de HbA1c en 6 meses" // no se modificará nada mas
+            return actualizacionTratamiento;
+        } else {
+            dosisReturn = dosis;
+            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("DD-MM-YYYY"));
+            actualizacionTratamiento.fechaFin = new Date(moment(fecha).format("DD-MM-YYYY"));
+            actualizacionTratamiento.indicaciones += "DERIVAR A MÉDICO DE FAMILIA" // no se modificará nada mas
+            return actualizacionTratamiento;
+        }
+    }
+
+
+    
+    let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2 || GBCsHoy[0];
     if (80 < GBCMedia < 130) {
         dosisReturn = dosis;
     } else if (GBCMedia > 130) {
@@ -1287,34 +1288,38 @@ function metformina({dosis, varMed}) {
     }
 
     actualizacionTratamiento.dosis = dosisReturn;
-    actualizacionTratamiento.fechaInicio = moment(fecha).format("DD-MM-YYYY");
+    actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("DD-MM-YYYY"));
+
+    // en funcion de la dosis se crean las indicaciones del tratamiento
     if (dosisReturn == "850 mg") {
         actualizacionTratamiento.frecuencia = "12"
         actualizacionTratamiento.indicaciones = "Tomar dos veces al día, en el desayuno y en la cena.";
         actualizacionTratamiento.medicamento = medicamento;
-        actualizacionTratamiento.fechaFin = moment(fecha).add(7, "days").format("DD-MM-YYYY");
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("DD-MM-YYYY"));
     }
     else if (dosisReturn == "1275 mg") {
         actualizacionTratamiento.frecuencia = "8"
         actualizacionTratamiento.indicaciones = "Tomar tres veces al día, 1/2 pastilla en el desayuno, 1/2 pastilla en la comida y 1/2 pastilla en la cena.";
         actualizacionTratamiento.medicamento = medicamento;
-        actualizacionTratamiento.fechaFin = moment(fecha).add(7, "days").format("DD-MM-YYYY");
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("DD-MM-YYYY"));
     }
     else if (dosisReturn == "1700 mg") {
         actualizacionTratamiento.frecuencia = "12"
         actualizacionTratamiento.indicaciones = "Tomar una pastilla en el desayuno, y otra en la cena";
         actualizacionTratamiento.medicamento = medicamento;
-        actualizacionTratamiento.fechaFin = moment(fecha).add(7, "days").format("DD-MM-YYYY");
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("DD-MM-YYYY"));
     }
     else if (dosisReturn == "2125 mg") {
         actualizacionTratamiento.frecuencia = "8"
         actualizacionTratamiento.indicaciones = "Tres tomas al día, una pastilla en el desayuno, otra en la comida y 1/2 en la cena. Si se considera necesario, aumentar dosis a 2550 mg/dia, una pastilla cada 8 horas, desayuno, comida y cena.";
         actualizacionTratamiento.medicamento = medicamento;
-        actualizacionTratamiento.fechaFin = moment(fecha).add(15, "days").format("DD-MM-YYYY");
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("DD-MM-YYYY"));
     }
-    if (dosisReturn == dosis) {
-        actualizacionTratamiento.fechaFin = moment(fecha).add(3, "months").format("DD-MM-YYYY");
+    if (dosisReturn == dosis) { //en caso de que no se haya cambiado la dosis, se le da cita dentro de 3 meses
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("DD-MM-YYYY"));
+        actualizacionTratamiento.indicaciones += " Se debe citar dentro de 3 meses para una revisión de HbA1c.";
     }
+    return actualizacionTratamiento;
 
 
 }

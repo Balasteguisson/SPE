@@ -2307,6 +2307,8 @@ async function solicitarPrescripcion(idCitaActual) {
 
     let respuesta = await peticionREST(url, peticion);
 
+    console.log(respuesta);
+
     let desplegable = document.getElementById("medicamentoSeleccionado");
     let option = document.createElement("option");
     option.value = respuesta.medicamento.IDFarmaco;
