@@ -1261,15 +1261,15 @@ function metformina({ dosis, varMed, medicamento }) {
             dosisReturn = dosis;
             actualizacionTratamiento.dosis = dosisReturn;
             actualizacionTratamiento.medicamento = medicamento;
-            actualizacionTratamiento.fechaInicio = new Date (moment(fecha).format("DD-MM-YYYY"));
-            actualizacionTratamiento.fechaFin = new Date (moment(fecha).add(6, "months").format("DD-MM-YYYY"));
+            actualizacionTratamiento.fechaInicio = new Date (moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.fechaFin = new Date (moment(fecha).add(6, "months").format("YYYY-MM-DD"));
             actualizacionTratamiento.indicaciones += "Revisión de HbA1c en 6 meses" // no se modificará nada mas
             return actualizacionTratamiento;
         } else {
             dosisReturn = dosis;
             actualizacionTratamiento.medicamento = medicamento;
-            actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("DD-MM-YYYY"));
-            actualizacionTratamiento.fechaFin = new Date(moment(fecha).format("DD-MM-YYYY"));
+            actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.fechaFin = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.indicaciones += "DERIVAR A MÉDICO DE FAMILIA" // no se modificará nada mas
             return actualizacionTratamiento;
         }
@@ -1288,35 +1288,35 @@ function metformina({ dosis, varMed, medicamento }) {
     }
 
     actualizacionTratamiento.dosis = dosisReturn;
-    actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("DD-MM-YYYY"));
+    actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
 
     // en funcion de la dosis se crean las indicaciones del tratamiento
     if (dosisReturn == "850 mg") {
         actualizacionTratamiento.frecuencia = "12"
         actualizacionTratamiento.indicaciones = "Tomar dos veces al día, en el desayuno y en la cena.";
         actualizacionTratamiento.medicamento = medicamento;
-        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("DD-MM-YYYY"));
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
     }
     else if (dosisReturn == "1275 mg") {
         actualizacionTratamiento.frecuencia = "8"
         actualizacionTratamiento.indicaciones = "Tomar tres veces al día, 1/2 pastilla en el desayuno, 1/2 pastilla en la comida y 1/2 pastilla en la cena.";
         actualizacionTratamiento.medicamento = medicamento;
-        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("DD-MM-YYYY"));
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
     }
     else if (dosisReturn == "1700 mg") {
         actualizacionTratamiento.frecuencia = "12"
         actualizacionTratamiento.indicaciones = "Tomar una pastilla en el desayuno, y otra en la cena";
         actualizacionTratamiento.medicamento = medicamento;
-        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("DD-MM-YYYY"));
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
     }
     else if (dosisReturn == "2125 mg") {
         actualizacionTratamiento.frecuencia = "8"
         actualizacionTratamiento.indicaciones = "Tres tomas al día, una pastilla en el desayuno, otra en la comida y 1/2 en la cena. Si se considera necesario, aumentar dosis a 2550 mg/dia, una pastilla cada 8 horas, desayuno, comida y cena.";
         actualizacionTratamiento.medicamento = medicamento;
-        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("DD-MM-YYYY"));
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
     }
     if (dosisReturn == dosis) { //en caso de que no se haya cambiado la dosis, se le da cita dentro de 3 meses
-        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("DD-MM-YYYY"));
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
         actualizacionTratamiento.indicaciones += " Se debe citar dentro de 3 meses para una revisión de HbA1c.";
     }
     return actualizacionTratamiento;
