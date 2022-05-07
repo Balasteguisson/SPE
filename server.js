@@ -485,7 +485,6 @@ app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req, res) => {
                 }
                 else {
                     for (let a = 0; a < respuesta.length; a++) {
-                        console.log(nombres[a]);
                         let tratamiento = {
                             idTratamiento: respuesta[a].IDTratamiento,
                             nombre: nombres[a].Nombre,
@@ -767,7 +766,6 @@ app.post("/api/enfermero/:id/guardarTest", (req, res) => {
         var insertEnfTest = `INSERT INTO EnfermeroTest (IDEnfermero, IDTest, FechaRealizado, PorcentajeCompletitud, Puntuacion, TiempoRestante) VALUES ('${idEnfermero}', '${datosTest.idTest}', '${datosTest.fecha}','${datosTest.completado}','${datosTest.puntuacion}','${datosTest.tiempoRestante}')`
         baseDatos.query(insertEnfTest, (err, respuesta) => {
             if (err) {
-                console.log(err)
                 res.status(502).json(err);
             }
             for (let a = 0; a < datosTest.contestaciones.length; a++) {
@@ -832,12 +830,10 @@ app.post("/api/enfermero/:id/createVariable", (req, res) => {
         if (err) {
             res.status(502).json("Error en la BBDD" + err)
         } else {
-            console.log(respuesta.insertId);
             for (let a = 0; a < datos.datosVariable[0].length; a++) {
                 petBBDD2 = `INSERT INTO UnidadesVariables (IDUnidad, IDVariable, NombreUnidad, Abreviatura, ValorMax, ValorMin) VALUES (NULL,'${respuesta.insertId}','${datos.datosVariable[0][a]}','${datos.datosVariable[1][a]}','${datos.datosVariable[2][a]}','${datos.datosVariable[3][a]}')`
                 baseDatos.query(petBBDD2, (err, respuesta) => {
                     if (err) {
-                        console.log(err)
                         res.status(502).json("Error BBDD" + err);
                     }
                 })
@@ -880,8 +876,7 @@ app.post('/api/enfermero/:id/guardarMedidasPaciente/:idPaciente', (req, res) => 
     let cantidades = mediciones.cantidades
     let unidades = mediciones.unidades
     for (let a = 0; a < idParametros.length; a++) {
-        let petBBDD = `INSERT INTO VariableFisica (IDVariable, IDPaciente, Tipo, Valor, Unidades, Fecha, IDEnfermero) VALUES (NULL,'${idPaciente}',${idParametros[a]},'${cantidades[a]}','${unidades[a]}','${mediciones.fecha}','${req.params.id}')`
-        console.log(petBBDD)
+        let petBBDD = `INSERT INTO VariableFisica (IDVariable, IDPaciente, Tipo, Valor, Unidades, Cita, IDEnfermero) VALUES (NULL,'${idPaciente}',${idParametros[a]},'${cantidades[a]}','${unidades[a]}','${mediciones.cita}','${req.params.id}')`
         baseDatos.query(petBBDD, (err, respuesta) => {
             if (err) {
                 console.log(err);
@@ -891,6 +886,22 @@ app.post('/api/enfermero/:id/guardarMedidasPaciente/:idPaciente', (req, res) => 
         })
     }
     res.status(201).json("Mediciones guardadas correctamente")
+})
+
+
+app.post('/api/enfermero/:id/guardarMedidaPaciente/:idPaciente', async (req, res) => {
+    let idPaciente = req.params.idPaciente
+    let medicion = req.body
+    let petBBDD = `INSERT INTO variablefisica (IDVariable, IDPaciente, Tipo, Valor, Unidades, Cita, IDEnfermero) VALUES (NULL,'${idPaciente}',${medicion.tipo},'${medicion.cantidad}','${medicion.unidades}','${medicion.cita}','${req.params.id}')`
+    let respuesta = await medicionesPaciente(petBBDD);
+    res.status(201).json(respuesta);
+})
+
+app.delete('/api/enfermero/:id/borrarMedidaPaciente/:idMedida', async (req, res) => {
+    let idMedida = req.params.idMedida
+    let petBBDD = `DELETE FROM VariableFisica WHERE IDVariable = '${idMedida}'`
+    let respuesta = await medicionesPaciente(petBBDD);
+    res.status(201).json(respuesta);
 })
 
 app.put("/api/enfermero/:id/cerrarEmbarazo/:idEmbarazo", (req, res) => {
@@ -977,7 +988,7 @@ app.put('/api/enfermero/:id/actualizarTratamiento/:idPaciente/:idFarmaco/:idCita
     let petBBDD = `UPDATE tratamiento SET FechaInicio = '${datos.fechaInicio}', FechaFin = '${datos.fechaFin}', IntervaloTomas = '${datos.intervalo}', Cantidad = '${datos.cantidad}', Anotaciones = '${datos.indicaciones}', IDCita ='${idCita}' WHERE IdPaciente = '${idPaciente}' AND IDFarmaco = '${idFarmaco}'`;
     let respuesta = await actualizarTratamiento(petBBDD)
 
-    console.log(respuesta);
+    res.status(201).json(respuesta);
 })
 
 actualizarTratamiento = (peticion) => {
@@ -988,6 +999,30 @@ actualizarTratamiento = (peticion) => {
         })
     })
 }
+
+app.get('/api/enfermero/:id/getMedicionesPaciente/:idPaciente/:idCita', async (req, res) => {
+    let idPaciente = req.params.idPaciente
+    let idCita = req.params.idCita
+    let petBBDD = `SELECT * FROM variableFisica WHERE IdPaciente = '${idPaciente}' AND Cita = '${idCita}'`;
+    let petBBDD2 = `SELECT * FROM tiposvariables`
+    let respuesta = await medicionesPaciente(petBBDD)
+    let respuesta2 = await medicionesPaciente(petBBDD2)
+    let datos = {
+        mediciones: respuesta,
+        tipos: respuesta2
+    }
+    res.status(201).json(datos);
+})
+
+medicionesPaciente = (peticion) => {
+    return new Promise((resolve, reject) => {
+        baseDatos.query(peticion, (err, respuesta) => {
+            if (err) return reject(err);
+            return resolve(respuesta);
+        })
+    })
+}
+
 
 //SISTEMA EXPERTO
 
@@ -1011,7 +1046,7 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
         let embPac = await embarazo(idPaciente);
         let alergPac = await alergias(idPaciente);
         let patPac = await patologias(idPaciente);
-        let varMed = await variablesMedicas(idPaciente);
+        let varMed = await variablesMedicas(idPaciente, idCita);
 
 
         //Procesado de tratamientos para mandar los principios activos por separado
@@ -1109,8 +1144,8 @@ patologias = (idPaciente) => {
     });
 }
 
-variablesMedicas = (idPaciente) => {
-    let petVar = `SELECT * FROM variablefisica WHERE IdPaciente = '${idPaciente}'`
+variablesMedicas = (idPaciente, idCita) => {
+    let petVar = `SELECT * FROM variablefisica WHERE IdPaciente = '${idPaciente}' AND Cita = '${idCita}'`
     return new Promise((resolve, reject) => {
         baseDatos.query(petVar, (err, varMed) => {
             if (err) return reject(err);
@@ -1118,6 +1153,8 @@ variablesMedicas = (idPaciente) => {
         })
     })
 }
+
+
 
 medicamentos = (idMed) => {
     let idMedString = idMed.join(',');
@@ -1149,8 +1186,6 @@ function calcularEdad(fechaNacimiento) {
 
 //SISTEMA EXPERTO//
 function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, varMed, aler, medAct }) {
-
-    let medicamentoRecomendado
 
     //base de hechos --> toda la informacion pasada a la funcion como params
 
@@ -1290,7 +1325,6 @@ function metformina({ dosis, varMed, medicamento }) {
     let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2 || GBCsHoy[0];
     // transformar GBCMedia a entero
     GBCMedia = Math.round(GBCMedia);
-    console.log(GBCMedia);
     if (GBCMedia < 130) {
         dosisReturn = dosis;
     } else if (GBCMedia > 130) {

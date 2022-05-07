@@ -1772,9 +1772,31 @@ async function verCita(idCita){
 
     document.getElementById('medicamentoSeleccionado').innerHTML = "";
     solicitarPrescripcion(idCitaActual);
+    cargarMedicionesPaciente(idPacienteCita);
     cambiarPantalla('menuCita')
     getTiposVariables();
 }
+
+async function cargarMedicionesPaciente(idPaciente) {
+    let url = `/api/enfermero/:id/getMedicionesPaciente/${idPaciente}/${idCitaActual}`
+    let peticionServer = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    let respuesta = await peticionREST(url, peticionServer);
+    let mediciones = respuesta.mediciones;
+    console.log(mediciones);
+    let tipos = respuesta.tipos;
+    document.getElementById('listaMediciones').innerHTML = ""
+    for (let a = 0; a < mediciones.length; a++){
+        let tipo = tipos.find(x => x.IDVariable == mediciones[a].Tipo);
+        let li = `<li id="LIM${mediciones[a].IDVariable}">${tipo.Nombre} - ${mediciones[a].Valor} ${mediciones[a].Unidades}<button type="button" onclick="borrarMedicion('${mediciones[a].IDVariable}')">❌</button></li>`;
+        document.getElementById('listaMediciones').innerHTML += li
+    }
+}
+
 
 function calcularEdad(fechaNacimiento){
     let nacimiento = new Date(fechaNacimiento)
@@ -1864,7 +1886,7 @@ async function cerrarLactancia(idEmbarazo){
 var idMedidaTomada = []
 var cantidadTomada = []
 var unidadTomada = []
-function addMedicion(){
+async function addMedicion(){
     let tipo = document.getElementById('tipoVariable').value
     let nombreTipo = document.getElementById('tipoVariable').selectedOptions[0].innerHTML
     let cantidad = document.getElementById('cantidadVariable').value
@@ -1874,28 +1896,63 @@ function addMedicion(){
     cantidadTomada.push(cantidad)
     unidadTomada.push(unidad)
 
-    let li = `<li id="LIM${tipo}">${nombreTipo} - ${cantidad}${unidad} <button type="button" onclick="borrarMedicion('${tipo}')">❌</button></li>`;
-    document.getElementById('listaMediciones').innerHTML += li
 
-    document.getElementById('tipoVariable').value = "placeholderVariable";
-    document.getElementById('cantidadVariable').value = ""
-    document.getElementById('unidadVariable').value = ""
+    let url = `/api/enfermero/${dniEnfermeroActual}/guardarMedidaPaciente/${idPacienteCita}`
+    let datos = {
+        tipo: tipo,
+        cantidad: cantidad,
+        unidades: unidad,
+        cita: idCitaActual
+    }
+    let peticion = {
+        method: 'POST',
+        body: JSON.stringify(datos),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    let respuesta = await peticionREST(url, peticion)
+    if (respuesta.serverStatus == 2) {
+        let li = `<li id="LIM${respuesta.insertId}">${nombreTipo} - ${cantidad} ${unidad} <button type="button" onclick="borrarMedicion('${respuesta.insertId}')">❌</button></li>`;
+        document.getElementById('listaMediciones').innerHTML += li
+        document.getElementById('tipoVariable').value = "placeholderVariable";
+        document.getElementById('cantidadVariable').value = ""
+        document.getElementById('unidadVariable').value = ""
+    } else {
+        alert("Error al guardar la medición")
+    }
+
+
 }
 
-function borrarMedicion(tipo) {
-    let lista = document.getElementById('listaMediciones');
-    let IDFila = `LIM${tipo}`
-    let fila = document.getElementById(IDFila);
-    lista.removeChild(fila);
-
-    for (let a = 0; a < idMedidaTomada.length; a++){
-        console.log(tipo == idMedidaTomada[a]);
-        if(tipo == idMedidaTomada[a]){
-            idMedidaTomada.splice(a,1)
-            cantidadTomada.splice(a,1)
-            unidadTomada.splice(a,1)
-            break;
+async function borrarMedicion(idMedicion) {
+    
+    let url = `/api/enfermero/${dniEnfermeroActual}/borrarMedidaPaciente/${idMedicion}`
+    let peticion = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
         }
+    }
+
+    let respuesta = await peticionREST(url, peticion)
+    if (respuesta.serverStatus == 2) {
+        let lista = document.getElementById('listaMediciones');
+        let IDFila = `LIM${idMedicion}`
+        let fila = document.getElementById(IDFila);
+        lista.removeChild(fila);
+
+        for (let a = 0; a < idMedidaTomada.length; a++) {
+            console.log(tipo == idMedidaTomada[a]);
+            if (tipo == idMedidaTomada[a]) {
+                idMedidaTomada.splice(a, 1)
+                cantidadTomada.splice(a, 1)
+                unidadTomada.splice(a, 1)
+                break;
+            }
+        }
+    } else {
+        alert("Error al borrar la medición");
     }
 }
 
@@ -1906,7 +1963,7 @@ async function guardarMedidas(){
         ids : idMedidaTomada,
         cantidades : cantidadTomada,
         unidades : unidadTomada,
-        fecha: new Date()
+        cita: idCitaActual
     }
     console.log(datos);
     let peticion = {
@@ -1947,6 +2004,19 @@ async function actualizarTratamiento() {
     }
     let respuesta = await peticionREST(url, peticion)
     console.log(respuesta);
+    if (respuesta.serverStatus == 2) {
+        document.getElementById('statusActualizarTratamiento').style.color = "green";
+        document.getElementById('statusActualizarTratamiento').innerHTML = "Tratamiento actualizado";
+        setTimeout(() => {
+            document.getElementById('statusActualizarTratamiento').innerHTML = "";
+        }, 2000);
+    } else {
+        document.getElementById('statusActualizarTratamiento').style.color = "red";
+        document.getElementById('statusActualizarTratamiento').innerHTML = "Error al actualizar el tratamiento";
+        setTimeout(() => {
+            document.getElementById('statusActualizarTratamiento').innerHTML = "";
+        }, 2000);
+    }
 }
 
 function prescribirMedicamento() {
