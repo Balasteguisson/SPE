@@ -485,6 +485,7 @@ app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req, res) => {
                 }
                 else {
                     for (let a = 0; a < respuesta.length; a++) {
+                        console.log(nombres[a]);
                         let tratamiento = {
                             idTratamiento: respuesta[a].IDTratamiento,
                             nombre: nombres[a].Nombre,
@@ -944,7 +945,6 @@ app.post('/api/enfermero/:id/abrirLactancia/:idPaciente', (req, res) => {
 
 app.post('/api/admin/:id/registrarMedicamento', (req, res) => {
     let datosMedicamento = req.body;
-    console.log(datosMedicamento);
 
     let petBBDD = `INSERT INTO farmacos (IDFarmaco, Nombre, PrincipioActivo, FormaFarm, Dosis, ViaAdministracion, NRegistro, RiesgoEmbarazo, RiesgoLactancia, ImgCaja, ImgForma) VALUES (NULL, '${datosMedicamento.nombre}', '${datosMedicamento.prAct1}', '${datosMedicamento.formFarm}', '${datosMedicamento.dosis}', '${datosMedicamento.viaAdmin}', '${datosMedicamento.nRegistro}', '${datosMedicamento.rEmbarazo}', '${datosMedicamento.rLactancia}', '${datosMedicamento.imgCaja}', '${datosMedicamento.imgForma}')`;
     baseDatos.query(petBBDD, (err, respuesta) => {
@@ -968,7 +968,26 @@ app.get('/api/enfermero/:id/getFarmacos', (req, res) => {
     });
 })
 
+app.put('/api/enfermero/:id/actualizarTratamiento/:idPaciente/:idFarmaco/:idCita', async (req, res) => {
+    let idPaciente = req.params.idPaciente
+    let idFarmaco = req.params.idFarmaco
+    let idCita = req.params.idCita
+    let datos = req.body
 
+    let petBBDD = `UPDATE tratamiento SET FechaInicio = '${datos.fechaInicio}', FechaFin = '${datos.fechaFin}', IntervaloTomas = '${datos.intervalo}', Cantidad = '${datos.cantidad}', Anotaciones = '${datos.indicaciones}', IDCita ='${idCita}' WHERE IdPaciente = '${idPaciente}' AND IDFarmaco = '${idFarmaco}'`;
+    let respuesta = await actualizarTratamiento(petBBDD)
+
+    console.log(respuesta);
+})
+
+actualizarTratamiento = (peticion) => {
+    return new Promise((resolve, reject) => {
+        baseDatos.query(peticion, (err, respuesta) => {
+            if (err) return reject(err);
+            return resolve(respuesta);
+        })
+    })
+}
 
 //SISTEMA EXPERTO
 
@@ -1004,7 +1023,6 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
         let lact = lactPac.length > 0 ? 1 : 0;
 
         let tratamientoObtenido = prescripcion({ enfPrin: enfermedadPrincipal, edad: calcularEdad(infoPaciente[0]?.FechaNacimiento), peso: infoPaciente[0]?.Peso, sexo: infoPaciente[0]?.Sexo, emb: emb, lact: lact, tratAct: tratPac, medAct: medPac, enfPrev: patPac, varMed: varMed, aler: alergPac });
-        console.log(tratamientoObtenido);
         res.status(200).json(tratamientoObtenido);
     }
     catch (err) {
@@ -1016,7 +1034,6 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
 
 
 
-    // console.log("llamando a sistema experto");
     // sistExperto.prescripcion({ emb: 1, lact: 1, edad: 32 });
 })
 
@@ -1135,13 +1152,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 
     let medicamentoRecomendado
 
-    //base de hechos
-    let enfermedadPrincipal = enfPrin;
-    let embarazo = emb;
-    let lactancia = lact;
-    let enfermedadesPrevias = enfPrev;
-    let variablesMedicas = varMed;
-    let alergias = aler;
+    //base de hechos --> toda la informacion pasada a la funcion como params
 
     //base de conocimientos
     // en primer lugar se emplea el campo enfermedad principal para saber sobre que tipo de tratamiento se va a tratar
@@ -1164,7 +1175,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         3: ["acenocumarol", "warfarina"]
     }
 
-    let principiosActivos = regla2[regla1[enfermedadPrincipal]]; //estos son los posibles principios activos que puede usar el paciente para su enfermedad
+    let principiosActivos = regla2[regla1[enfPrin]]; //estos son los posibles principios activos que puede usar el paciente para su enfermedad
 
     let medicamentoPrincipal;
     let tratamientoPrincipal;
@@ -1186,7 +1197,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 
     // una vez se tiene el principio activo y el medicamento, se sigue en la pauta de prescripcion
     let tratamientoRecomendado
-    if (regla1[enfermedadPrincipal] == 1) {
+    if (regla1[enfPrin] == 1) {
         tratamientoRecomendado = metformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoPrincipal });
     }
     // else if (regla1[enfermedadPrincipal] == 2) {
@@ -1207,7 +1218,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     if (tratamientoRecomendado == null) {
         datosTratamiento = {
             medicamento: medicamentoPrincipal,
-            indicaciones: "",
+            indicaciones: "Mantener cantidad y horas de toma",
             dosis: tratamientoPrincipal.Cantidad,
             frecuencia: tratamientoPrincipal.IntervaloTomas,
             fechaInicio: tratamientoPrincipal.FechaInicio,
@@ -1231,7 +1242,6 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 function metformina({ dosis, varMed, medicamento }) {
     //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
     //en varMed dos medidas de GBC con la fecha del mismo dia de la cita y se saca la media de ambas
-
     var fecha = new Date();
     let fechaCita = moment(fecha).format("YYYY-MM-DD");
 
@@ -1278,7 +1288,10 @@ function metformina({ dosis, varMed, medicamento }) {
 
     
     let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2 || GBCsHoy[0];
-    if (80 < GBCMedia < 130) {
+    // transformar GBCMedia a entero
+    GBCMedia = Math.round(GBCMedia);
+    console.log(GBCMedia);
+    if (GBCMedia < 130) {
         dosisReturn = dosis;
     } else if (GBCMedia > 130) {
         let dosisNueva = dosis.substring(0, dosis.length - 2);
@@ -1289,7 +1302,6 @@ function metformina({ dosis, varMed, medicamento }) {
 
     actualizacionTratamiento.dosis = dosisReturn;
     actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
-
     // en funcion de la dosis se crean las indicaciones del tratamiento
     if (dosisReturn == "850 mg") {
         actualizacionTratamiento.frecuencia = "12"
@@ -1314,6 +1326,9 @@ function metformina({ dosis, varMed, medicamento }) {
         actualizacionTratamiento.indicaciones = "Tres tomas al día, una pastilla en el desayuno, otra en la comida y 1/2 en la cena. Si se considera necesario, aumentar dosis a 2550 mg/dia, una pastilla cada 8 horas, desayuno, comida y cena.";
         actualizacionTratamiento.medicamento = medicamento;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+    } else if (dosisReturn == "425 mg") {
+        actualizacionTratamiento.frecuencia = "24"
+        actualizacionTratamiento.indicaciones = "Tomar una pastilla con la comida.";
     }
     if (dosisReturn == dosis) { //en caso de que no se haya cambiado la dosis, se le da cita dentro de 3 meses
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));

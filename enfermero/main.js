@@ -1925,7 +1925,28 @@ function verGraficasPaciente(){
     console.log("cargando graficas")
 }
 
-function crearReceta() {
+async function actualizarTratamiento() {
+    //esta funcion obtiene los datos que se muestran en el menu de tratamiento y los envia al servidor para que se guarden en la base de datos
+    let url = `/api/enfermero/:id/actualizarTratamiento/${idPacienteCita}/${document.getElementById("medicamentoSeleccionado").value
+}/${idCitaActual}`
+    let datos = {
+        medicamento: document.getElementById("medicamentoSeleccionado").value,
+        indicaciones: document.getElementById("recomendacionesMedicamento").value,
+        cantidad: document.getElementById("posologiaMedicamento").value,
+        intervalo: document.getElementById("intervaloTomas").value,
+        fechaInicio: document.getElementById("fechaInicioMedicacion").value,
+        fechaFin: document.getElementById("fechaFinMedicacion").value
+    }
+    
+    let peticion = {
+        method: 'PUT',
+        body: JSON.stringify(datos),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    let respuesta = await peticionREST(url, peticion)
+    console.log(respuesta);
 }
 
 function prescribirMedicamento() {
@@ -2298,7 +2319,7 @@ async function solicitarPrescripcion(idCitaActual) {
     //     enfPrev: ,
     //     varMed: 
     // }
-
+    document.getElementById('medicamentoSeleccionado').innerHTML = "";
     let url = `/api/enfermero/:id/solicitarPrescripcion/${idCitaActual}`;
 
     let peticion = {
@@ -2307,7 +2328,6 @@ async function solicitarPrescripcion(idCitaActual) {
 
     let respuesta = await peticionREST(url, peticion);
 
-    console.log(respuesta);
 
     let desplegable = document.getElementById("medicamentoSeleccionado");
     let option = document.createElement("option");
@@ -2318,7 +2338,7 @@ async function solicitarPrescripcion(idCitaActual) {
 
     document.getElementById("posologiaMedicamento").value = respuesta.dosis;
     document.getElementById("intervaloTomas").value = `${respuesta.frecuencia} horas`;
-
+    document.getElementById("recomendacionesMedicamento").innerHTML = respuesta.indicaciones;
 
     document.getElementById("fechaInicioMedicacion").valueAsDate = new Date(respuesta.fechaInicio);
     document.getElementById("fechaFinMedicacion").valueAsDate = new Date(respuesta.fechaFin);
