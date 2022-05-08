@@ -1047,7 +1047,7 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
         let embPac = await embarazo(idPaciente);
         let alergPac = await alergias(idPaciente);
         let patPac = await patologias(idPaciente);
-        let varMed = await variablesMedicas(idPaciente);
+        let varMed = await variablesMedicas(idPaciente, idCita);
 
 
         //Procesado de tratamientos para mandar los principios activos por separado
@@ -1145,8 +1145,8 @@ patologias = (idPaciente) => {
     });
 }
 
-variablesMedicas = (idPaciente) => {
-    let petVar = `SELECT * FROM variablefisica WHERE IdPaciente = '${idPaciente}'`
+variablesMedicas = (idPaciente, idCita) => {
+    let petVar = `SELECT * FROM variablefisica WHERE IdPaciente = '${idPaciente}' AND Cita = '${idCita}'`
     return new Promise((resolve, reject) => {
         baseDatos.query(petVar, (err, varMed) => {
             if (err) return reject(err);
