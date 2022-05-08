@@ -5,6 +5,7 @@ const mysql = require('mysql')
 var morgan = require('morgan');
 var cors = require('cors');
 var moment = require('moment');
+const { CLIENT_LONG_FLAG } = require("mysql/lib/protocol/constants/client");
 
 var app = express();
 
@@ -1046,7 +1047,7 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
         let embPac = await embarazo(idPaciente);
         let alergPac = await alergias(idPaciente);
         let patPac = await patologias(idPaciente);
-        let varMed = await variablesMedicas(idPaciente, idCita);
+        let varMed = await variablesMedicas(idPaciente);
 
 
         //Procesado de tratamientos para mandar los principios activos por separado
@@ -1144,8 +1145,8 @@ patologias = (idPaciente) => {
     });
 }
 
-variablesMedicas = (idPaciente, idCita) => {
-    let petVar = `SELECT * FROM variablefisica WHERE IdPaciente = '${idPaciente}' AND Cita = '${idCita}'`
+variablesMedicas = (idPaciente) => {
+    let petVar = `SELECT * FROM variablefisica WHERE IdPaciente = '${idPaciente}'`
     return new Promise((resolve, reject) => {
         baseDatos.query(petVar, (err, varMed) => {
             if (err) return reject(err);
@@ -1158,7 +1159,7 @@ variablesMedicas = (idPaciente, idCita) => {
 
 medicamentos = (idMed) => {
     let idMedString = idMed.join(',');
-    let petMed = `SELECT IDFarmaco, Nombre, PrincipioActivo FROM farmacos WHERE IDFarmaco IN (${idMed})`
+    let petMed = `SELECT IDFarmaco, Nombre, PrincipioActivo, RiesgoEmbarazo, RiesgoLactancia FROM farmacos WHERE IDFarmaco IN (${idMed})`
     return new Promise((resolve, reject) => {
         baseDatos.query(petMed, (err, medicamentos) => {
             if (err) return reject(err);
@@ -1205,7 +1206,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     }
 
     let regla2 = {
-        1: ["metformina", "glicazida", "glipizida", "glimepirida", "insulina"],
+        1: ["metformina", "gliclazida", "glipizida", "glimepirida", "insulina"],
         2: ["simvastatina", "enalapril", "ramipril", "clortalidona", "tiazida", "amlodipino"],
         3: ["acenocumarol", "warfarina"]
     }
@@ -1229,20 +1230,34 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
             tratamientoPrincipal = tratamiento;
         }
     }
-
+    //se comprueba si la paciente esta embarazada o dando lactancia y se comparar con el riesgo del medicamento
     // una vez se tiene el principio activo y el medicamento, se sigue en la pauta de prescripcion
     let tratamientoRecomendado
-    if (regla1[enfPrin] == 1) {
-        tratamientoRecomendado = metformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoPrincipal });
+    let riesgos = {
+        emb: emb,
+        lact: lact,
+        enfPrev: enfPrev
     }
-    // else if (regla1[enfermedadPrincipal] == 2) {
+    let salida;
+    let a = 0;
+    while (salida != true) {
+        a++;
+        console.log(salida);
+        if (regla1[enfPrin] == 1) {
+            tratamientoRecomendado, salida = metformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoPrincipal, riesgos: riesgos });
+            tratamientoRecomendado, salida = gliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoPrincipal, riesgos: riesgos });
+        }
+        if (a > 5) {
+            salida = true;
+        }
+        // else if (regla1[enfermedadPrincipal] == 2) {
 
-    // } else if (regla1[enfermedadPrincipal] == 3) {
+        // } else if (regla1[enfermedadPrincipal] == 3) {
 
-    // } else {
+        // } else {
 
-    // }
-
+        // }
+    }
 
 
     //motor de inferencia
@@ -1274,11 +1289,15 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 }
 
 
-function metformina({ dosis, varMed, medicamento }) {
+function metformina({ dosis, varMed, medicamento, riesgos }) {
+    if (riesgos.emb === 1 || riesgos.lact === 1) return null, false;
+
     //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
     //en varMed dos medidas de GBC con la fecha del mismo dia de la cita y se saca la media de ambas
     var fecha = new Date();
     let fechaCita = moment(fecha).format("YYYY-MM-DD");
+
+    
 
     let GBCsHoy = [];
     let hba1cHoy = varMed.filter(med => med.Tipo == 6 && moment(med.Fecha).format("YYYY-MM-DD") == fechaCita);
@@ -1299,7 +1318,7 @@ function metformina({ dosis, varMed, medicamento }) {
         fechaFin: ""
     }
     
-    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return null; //si no hay tomadas medidas, se devuelve null para que se muestre el tratamiento actual en el cliente
+    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return null, true; //si no hay tomadas medidas, se devuelve null para que se muestre el tratamiento actual en el cliente
     if (hba1cHoy.length > 0) {
         let valor = hba1cHoy[hba1cHoy.length -1].Valor;
         if (valor < 7.0) {
@@ -1368,11 +1387,15 @@ function metformina({ dosis, varMed, medicamento }) {
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
         actualizacionTratamiento.indicaciones += " Se debe citar dentro de 3 meses para una revisión de HbA1c.";
     }
-    return actualizacionTratamiento;
+    return actualizacionTratamiento, true;
 
 
 }
 
+function glizclazida({ dosis, varMed, medicamento, riesgos }) {
+    if (riesgos.emb === 1 || riesgos.lact === 1) return null, false;
+    
+}
 
 
 //INICIO DEL SERVIDOR
