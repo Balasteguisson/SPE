@@ -5,7 +5,7 @@ const mysql = require('mysql')
 var morgan = require('morgan');
 var cors = require('cors');
 var moment = require('moment');
-const { CLIENT_LONG_FLAG } = require("mysql/lib/protocol/constants/client");
+const { CLIENT_LONG_FLAG, CLIENT_FOUND_ROWS } = require("mysql/lib/protocol/constants/client");
 
 var app = express();
 
@@ -1236,59 +1236,59 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         }
     }
     // una vez se tiene el principio activo y el medicamento, se sigue en la pauta de prescripcion
-    let tratamientoRecomendado
+    let tratamientoRecomendado;
+
     let riesgos = { //se refiere a los posibles estados del paciente que provoquen el descarte de un tratamiento
         emb: emb,
         lact: lact,
         enfPrev: enfPrev
     }
-    let salida;
     let a = 0;
-    console.log(medicamentoActual);
-    while (salida != true) {
-        a++;
-        if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 1) { //TRATAMIENTO EN METFORMINA
-            tratamientoRecomendado, salida = setMetformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            if (salida != true) {
-                tratamientoRecomendado, salida = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            }
-            if (salida != true) {
-                tratamientoRecomendado, salida = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            }
-            if (salida != true) {
-                tratamientoRecomendado, salida = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            }
-             //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
-        }else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 2) { //TRATAMIENTO EN TIAZIDAS
-            tratamientoRecomendado, salida = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            if (salida != true) {
-                tratamientoRecomendado, salida = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            }
-            if (salida != true) {
-                tratamientoRecomendado, salida = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
-        }else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 3) { //TRATAMIENTO EN TIAZIDAS 2
-            tratamientoRecomendado, salida = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            if (salida != true) {
-                tratamientoRecomendado, salida = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
-        } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 4) { //TRATAMIENTO EN TIAZIDAS 3
-            tratamientoRecomendado, salida = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            if (salida != true) {
-                //INSULINAS
-            }
+    let resultado = {actualizarTratamiento: null, salida: false};
+    
+    if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 1) { //TRATAMIENTO EN METFORMINA
+        resultado = setMetformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        if (resultado.salida != true) {
+            resultado = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
-        if (a > 5) {
-            salida = true;
+        if (resultado.salida != true) {
+            resultado = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
-        // else if (regla1[enfermedadPrincipal] == 2) {
-
-        // } else if (regla1[enfermedadPrincipal] == 3) {
-
-        // } else {
-
-        // }
+        if (resultado.salida != true) {
+            resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        }
+            //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
+    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 2) { //TRATAMIENTO EN TIAZIDAS
+        resultado = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        if (resultado.salida != true) {
+            resultado = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        }
+        if (resultado.salida != true) {
+            resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
+    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 3) { //TRATAMIENTO EN TIAZIDAS 2
+        resultado = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        if (resultado.salida != true) {
+            resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
+    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 4) { //TRATAMIENTO EN TIAZIDAS 3
+        resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        if (resultado.salida != true) {
+            //INSULINAS
+        }
     }
+    if (a > 1) {
+        resultado.salida = true;
+    }
+    // else if (regla1[enfermedadPrincipal] == 2) {
+
+    // } else if (regla1[enfermedadPrincipal] == 3) {
+
+    // } else {
+
+    // }
+    tratamientoRecomendado = resultado.actualizacionTratamiento;
+
 
 
     //motor de inferencia
@@ -1418,7 +1418,8 @@ function setMetformina({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
         actualizacionTratamiento.indicaciones += " Se debe citar dentro de 3 meses para una revisión de HbA1c.";
     }
-    return actualizacionTratamiento, true;
+    let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
+    return salida;
 
 
 }
@@ -1502,13 +1503,13 @@ function setGliclazida({ dosis, varMed, medicamento, riesgos }) {
     actualizacionTratamiento.dosis = dosisReturn;
     actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
 
+    let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
+    return salida;
 
 }
 
 function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
     if (riesgos.emb === 1 || riesgos.lact === 1) return null, false;
-
-
     var fecha = new Date();
     let fechaCita = moment(fecha).format("YYYY-MM-DD");
 
@@ -1562,7 +1563,8 @@ function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
         dosisReturn = dosis;
     } else if (GBCMedia > 130) {
         let dosisNueva = dosis.substring(0, dosis.length - 2);
-        dosisNueva = parseInt(dosisNueva) + 2.5;
+        dosisNueva = parseFloat(dosisNueva.replace(",", "."));
+        dosisNueva = dosisNueva + 2.5;
         dosisNueva = `${dosisNueva} mg`;
         dosisReturn = dosisNueva;
     }
@@ -1571,7 +1573,8 @@ function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
     if (dosisReturn != dosis) {
         actualizacionTratamiento.frecuencia = "24"
         actualizacionTratamiento.indicaciones = "Tomar antes del desayuno.";
-    } else if (dosisReturn > 15) {
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
+    } else if ((dosisReturn.substring(0, dosis.length - 2)) > 15) {
         dosisReturn = "15 mg";
         actualizacionTratamiento.frecuencia = "24"
         actualizacionTratamiento.indicaciones = "Tomar antes del desayuno, la próxima revisión será de HbA1c dentro de 3 meses, dosis máxima alcanzada.";
@@ -1584,7 +1587,8 @@ function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
     actualizacionTratamiento.dosis = dosisReturn;
     actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
 
-
+    let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
+    return salida;
 }
 
 function setGlimepirida({ dosis, varMed, medicamento, riesgos }) {
@@ -1665,6 +1669,9 @@ function setGlimepirida({ dosis, varMed, medicamento, riesgos }) {
     }
     actualizacionTratamiento.dosis = dosisReturn;
     actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+
+    let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
+    return salida;
 }
 
 
