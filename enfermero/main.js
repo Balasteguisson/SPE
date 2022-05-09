@@ -1701,9 +1701,6 @@ async function verCita(idCita){
     let datosCita = await peticionREST(urlCita,peticionServer)
     let idPaciente = datosCita[0].IdPaciente
     idPacienteCita = idPaciente;
-    idMedidaTomada.splice(0,idMedidaTomada.length)
-    cantidadTomada.splice(0,cantidadTomada.length)
-    unidadTomada.splice(0,unidadTomada.length)
     tipoCita = datosCita[0].TipoRevision;
 
     let urlPaciente = `/api/admin/:id/getPaciente/${idPaciente}`
@@ -1787,7 +1784,6 @@ async function cargarMedicionesPaciente(idPaciente) {
     }
     let respuesta = await peticionREST(url, peticionServer);
     let mediciones = respuesta.mediciones;
-    console.log(mediciones);
     let tipos = respuesta.tipos;
     document.getElementById('listaMediciones').innerHTML = ""
     for (let a = 0; a < mediciones.length; a++){
@@ -1882,19 +1878,12 @@ async function cerrarLactancia(idEmbarazo){
 
 
 
-
-var idMedidaTomada = []
-var cantidadTomada = []
-var unidadTomada = []
 async function addMedicion(){
     let tipo = document.getElementById('tipoVariable').value
     let nombreTipo = document.getElementById('tipoVariable').selectedOptions[0].innerHTML
     let cantidad = document.getElementById('cantidadVariable').value
     let unidad = document.getElementById('unidadVariable').value
     cantidad = cantidad.replace(",",".")
-    idMedidaTomada.push(tipo)
-    cantidadTomada.push(cantidad)
-    unidadTomada.push(unidad)
 
 
     let url = `/api/enfermero/${dniEnfermeroActual}/guardarMedidaPaciente/${idPacienteCita}`
@@ -1913,11 +1902,11 @@ async function addMedicion(){
     }
     let respuesta = await peticionREST(url, peticion)
     if (respuesta.serverStatus == 2) {
-        let li = `<li id="LIM${respuesta.insertId}">${nombreTipo} - ${cantidad} ${unidad} <button type="button" onclick="borrarMedicion('${respuesta.insertId}')">❌</button></li>`;
-        document.getElementById('listaMediciones').innerHTML += li
+        // let li = `<li id="LIM${respuesta.insertId}">${nombreTipo} - ${cantidad} ${unidad} <button type="button" onclick="borrarMedicion('${respuesta.insertId}')">❌</button></li>`;
         document.getElementById('tipoVariable').value = "placeholderVariable";
         document.getElementById('cantidadVariable').value = ""
         document.getElementById('unidadVariable').value = ""
+        cargarMedicionesPaciente(idPacienteCita);
     } else {
         alert("Error al guardar la medición")
     }
@@ -1937,20 +1926,7 @@ async function borrarMedicion(idMedicion) {
 
     let respuesta = await peticionREST(url, peticion)
     if (respuesta.serverStatus == 2) {
-        let lista = document.getElementById('listaMediciones');
-        let IDFila = `LIM${idMedicion}`
-        let fila = document.getElementById(IDFila);
-        lista.removeChild(fila);
-
-        for (let a = 0; a < idMedidaTomada.length; a++) {
-            console.log(tipo == idMedidaTomada[a]);
-            if (tipo == idMedidaTomada[a]) {
-                idMedidaTomada.splice(a, 1)
-                cantidadTomada.splice(a, 1)
-                unidadTomada.splice(a, 1)
-                break;
-            }
-        }
+        cargarMedicionesPaciente(idPacienteCita);
     } else {
         alert("Error al borrar la medición");
     }

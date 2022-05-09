@@ -1213,24 +1213,23 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 
     let principiosActivos = regla2[regla1[enfPrin]]; //estos son los posibles principios activos que puede usar el paciente para su enfermedad
 
-    let medicamentoPrincipal;
+    let medicamentoActual;
     let tratamientoPrincipal;
     //el siguiente bucle busca en los tratamientos del paciente el que coincida con uno de los principios activos que puede usar para su enfermedad
     for (let a = 0; a < medAct.length; a++) {
         let medicamento = medAct[a];
         let prAct = medicamento.PrincipioActivo;
         if (principiosActivos.includes(prAct)) {
-            medicamentoPrincipal = medicamento;
+            medicamentoActual = medicamento;
             break;
         }
     }
     for (let a = 0; a < tratAct.length; a++) {
         let tratamiento = tratAct[a];
-        if (tratamiento.IDFarmaco === medicamentoPrincipal.IDFarmaco) {
+        if (tratamiento.IDFarmaco === medicamentoActual.IDFarmaco) {
             tratamientoPrincipal = tratamiento;
         }
     }
-    //se comprueba si la paciente esta embarazada o dando lactancia y se comparar con el riesgo del medicamento
     // una vez se tiene el principio activo y el medicamento, se sigue en la pauta de prescripcion
     let tratamientoRecomendado
     let riesgos = {
@@ -1242,10 +1241,15 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     let a = 0;
     while (salida != true) {
         a++;
-        console.log(salida);
         if (regla1[enfPrin] == 1) {
-            tratamientoRecomendado, salida = metformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoPrincipal, riesgos: riesgos });
-            tratamientoRecomendado, salida = gliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoPrincipal, riesgos: riesgos });
+            tratamientoRecomendado, salida = metformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            // if (salida != true) {
+            //     tratamientoRecomendado, salida = gliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            // }
+            // if (salida != true) {
+            //     tratamientoRecomendado, salida = glipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            // }
+            
         }
         if (a > 5) {
             salida = true;
@@ -1265,9 +1269,9 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 
 
     let datosTratamiento;
-    if (tratamientoRecomendado == null) {
+    if (tratamientoRecomendado == null) { //si el sistema experto no hace ningun cambio, se mantiene el tratamiento que ya se tenia
         datosTratamiento = {
-            medicamento: medicamentoPrincipal,
+            medicamento: medicamentoActual,
             indicaciones: "Mantener cantidad y horas de toma",
             dosis: tratamientoPrincipal.Cantidad,
             frecuencia: tratamientoPrincipal.IntervaloTomas,
@@ -1275,7 +1279,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
             fechaFin: tratamientoPrincipal.FechaFin
         }
     } else {
-        datosTratamiento = {
+        datosTratamiento = { //en caso de que el sistema experto haga cambios, se genera el nuevo tratamiento
             medicamento: tratamientoRecomendado.medicamento,
             indicaciones: tratamientoRecomendado.indicaciones,
             dosis: tratamientoRecomendado.dosis,
