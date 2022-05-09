@@ -1210,6 +1210,11 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         2: ["simvastatina", "enalapril", "ramipril", "clortalidona", "tiazida", "amlodipino"],
         3: ["acenocumarol", "warfarina"]
     }
+    let regla3 = {
+        metformina: 1, gliclazida: 2, glipizida: 3, glimepirida: 4, insulina: 5,
+        simvastatina: 6, enalapril: 7, ramipril: 8, clortalidona: 9, tiazida: 10, amlodipino: 11,
+        acenocumarol: 12, warfarina: 13
+    }
 
     let principiosActivos = regla2[regla1[enfPrin]]; //estos son los posibles principios activos que puede usar el paciente para su enfermedad
 
@@ -1232,24 +1237,46 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     }
     // una vez se tiene el principio activo y el medicamento, se sigue en la pauta de prescripcion
     let tratamientoRecomendado
-    let riesgos = {
+    let riesgos = { //se refiere a los posibles estados del paciente que provoquen el descarte de un tratamiento
         emb: emb,
         lact: lact,
         enfPrev: enfPrev
     }
     let salida;
     let a = 0;
+    console.log(medicamentoActual);
     while (salida != true) {
         a++;
-        if (regla1[enfPrin] == 1) {
-            tratamientoRecomendado, salida = metformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            // if (salida != true) {
-            //     tratamientoRecomendado, salida = gliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            // }
-            // if (salida != true) {
-            //     tratamientoRecomendado, salida = glipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            // }
-            
+        if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 1) { //TRATAMIENTO EN METFORMINA
+            tratamientoRecomendado, salida = setMetformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            if (salida != true) {
+                tratamientoRecomendado, salida = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            }
+            if (salida != true) {
+                tratamientoRecomendado, salida = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            }
+            if (salida != true) {
+                tratamientoRecomendado, salida = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            }
+             //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
+        }else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 2) { //TRATAMIENTO EN TIAZIDAS
+            tratamientoRecomendado, salida = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            if (salida != true) {
+                tratamientoRecomendado, salida = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            }
+            if (salida != true) {
+                tratamientoRecomendado, salida = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
+        }else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 3) { //TRATAMIENTO EN TIAZIDAS 2
+            tratamientoRecomendado, salida = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            if (salida != true) {
+                tratamientoRecomendado, salida = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
+        } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 4) { //TRATAMIENTO EN TIAZIDAS 3
+            tratamientoRecomendado, salida = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            if (salida != true) {
+                //INSULINAS
+            }
         }
         if (a > 5) {
             salida = true;
@@ -1293,7 +1320,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 }
 
 
-function metformina({ dosis, varMed, medicamento, riesgos }) {
+function setMetformina({ dosis, varMed, medicamento, riesgos }) {
     if (riesgos.emb === 1 || riesgos.lact === 1) return null, false;
 
     //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
@@ -1396,9 +1423,168 @@ function metformina({ dosis, varMed, medicamento, riesgos }) {
 
 }
 
-function glizclazida({ dosis, varMed, medicamento, riesgos }) {
+function setGliclazida({ dosis, varMed, medicamento, riesgos }) {
     if (riesgos.emb === 1 || riesgos.lact === 1) return null, false;
     
+
+    var fecha = new Date();
+    let fechaCita = moment(fecha).format("YYYY-MM-DD");
+
+
+
+    let GBCsHoy = [];
+    let hba1cHoy = varMed.filter(med => med.Tipo == 6 && moment(med.Fecha).format("YYYY-MM-DD") == fechaCita);
+    for (let a = 0; a < varMed.length; a++) {
+        medida = varMed[a];
+        let fechaMedida = moment(medida.Fecha).format("YYYY-MM-DD");
+        if (medida.Tipo == 5 && fechaMedida == fechaCita) {
+            GBCsHoy.push(medida.Valor);
+        }
+    }
+    let dosisReturn;
+    let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
+        medicamento,
+        indicaciones: "",
+        dosis,
+        frecuencia: "",
+        fechaInicio: "",
+        fechaFin: ""
+    }
+
+    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return null, true;
+
+    if (hba1cHoy.length > 0) {
+        let valor = hba1cHoy[hba1cHoy.length - 1].Valor;
+        if (valor < 7.0) {
+            dosisReturn = dosis;
+            actualizacionTratamiento.dosis = dosisReturn;
+            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(6, "months").format("YYYY-MM-DD"));
+            actualizacionTratamiento.indicaciones += "Revisión de HbA1c en 6 meses" // no se modificará nada mas
+            return actualizacionTratamiento;
+        } else {
+            dosisReturn = dosis;
+            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.fechaFin = new Date(moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.indicaciones += "DERIVAR A MÉDICO DE FAMILIA" // no se modificará nada mas
+            return actualizacionTratamiento;
+        }
+    }
+
+    let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2 || GBCsHoy[0];
+    // transformar GBCMedia a entero
+    GBCMedia = Math.round(GBCMedia);
+    if (GBCMedia < 130) {
+        dosisReturn = dosis;
+    } else if (GBCMedia > 130) {
+        let dosisNueva = dosis.substring(0, dosis.length - 2);
+        dosisNueva = parseInt(dosisNueva) + 30;
+        dosisNueva = `${dosisNueva} mg`;
+        dosisReturn = dosisNueva;
+    }
+
+
+    if (dosisReturn != dosis) {
+        actualizacionTratamiento.frecuencia = "24"
+        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno.";
+    } else if (dosisReturn > 120) {
+        dosisReturn = "120 mg";
+        actualizacionTratamiento.frecuencia = "24"
+        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno, la próxima revisión será de HbA1c dentro de 3 meses";
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+    }
+    if (dosisReturn == dosis) { //en caso de que no se haya cambiado la dosis, se le da cita dentro de 3 meses
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.indicaciones += " Se debe citar dentro de 3 meses para una revisión de HbA1c.";
+    }
+    actualizacionTratamiento.dosis = dosisReturn;
+    actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+
+
+}
+
+function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
+    if (riesgos.emb === 1 || riesgos.lact === 1) return null, false;
+
+
+    var fecha = new Date();
+    let fechaCita = moment(fecha).format("YYYY-MM-DD");
+
+
+
+    let GBCsHoy = [];
+    let hba1cHoy = varMed.filter(med => med.Tipo == 6 && moment(med.Fecha).format("YYYY-MM-DD") == fechaCita);
+    for (let a = 0; a < varMed.length; a++) {
+        medida = varMed[a];
+        let fechaMedida = moment(medida.Fecha).format("YYYY-MM-DD");
+        if (medida.Tipo == 5 && fechaMedida == fechaCita) {
+            GBCsHoy.push(medida.Valor);
+        }
+    }
+    let dosisReturn;
+    let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
+        medicamento,
+        indicaciones: "",
+        dosis,
+        frecuencia: "",
+        fechaInicio: "",
+        fechaFin: ""
+    }
+
+    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return null, true;
+
+    if (hba1cHoy.length > 0) {
+        let valor = hba1cHoy[hba1cHoy.length - 1].Valor;
+        if (valor < 7.0) {
+            dosisReturn = dosis;
+            actualizacionTratamiento.dosis = dosisReturn;
+            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(6, "months").format("YYYY-MM-DD"));
+            actualizacionTratamiento.indicaciones += "Revisión de HbA1c en 6 meses" // no se modificará nada mas
+            return actualizacionTratamiento;
+        } else {
+            dosisReturn = dosis;
+            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.fechaFin = new Date(moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.indicaciones += "DERIVAR A MÉDICO DE FAMILIA" // no se modificará nada mas
+            return actualizacionTratamiento;
+        }
+    }
+
+    let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2 || GBCsHoy[0];
+    // transformar GBCMedia a entero
+    GBCMedia = Math.round(GBCMedia);
+    if (GBCMedia < 130) {
+        dosisReturn = dosis;
+    } else if (GBCMedia > 130) {
+        let dosisNueva = dosis.substring(0, dosis.length - 2);
+        dosisNueva = parseInt(dosisNueva) + 2.5;
+        dosisNueva = `${dosisNueva} mg`;
+        dosisReturn = dosisNueva;
+    }
+
+
+    if (dosisReturn != dosis) {
+        actualizacionTratamiento.frecuencia = "24"
+        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno.";
+    } else if (dosisReturn > 15) {
+        dosisReturn = "15 mg";
+        actualizacionTratamiento.frecuencia = "24"
+        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno, la próxima revisión será de HbA1c dentro de 3 meses";
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+    }
+    if (dosisReturn == dosis) { //en caso de que no se haya cambiado la dosis, se le da cita dentro de 3 meses
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.indicaciones += " Se debe citar dentro de 3 meses para una revisión de HbA1c.";
+    }
+    actualizacionTratamiento.dosis = dosisReturn;
+    actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+
+
 }
 
 
