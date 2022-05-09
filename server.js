@@ -1492,7 +1492,7 @@ function setGliclazida({ dosis, varMed, medicamento, riesgos }) {
     } else if (dosisReturn > 120) {
         dosisReturn = "120 mg";
         actualizacionTratamiento.frecuencia = "24"
-        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno, la próxima revisión será de HbA1c dentro de 3 meses";
+        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno, la próxima revisión será de HbA1c dentro de 3 meses, dosis máxima alcanzada.";
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
     }
     if (dosisReturn == dosis) { //en caso de que no se haya cambiado la dosis, se le da cita dentro de 3 meses
@@ -1574,7 +1574,7 @@ function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
     } else if (dosisReturn > 15) {
         dosisReturn = "15 mg";
         actualizacionTratamiento.frecuencia = "24"
-        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno, la próxima revisión será de HbA1c dentro de 3 meses";
+        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno, la próxima revisión será de HbA1c dentro de 3 meses, dosis máxima alcanzada.";
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
     }
     if (dosisReturn == dosis) { //en caso de que no se haya cambiado la dosis, se le da cita dentro de 3 meses
@@ -1585,6 +1585,86 @@ function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
     actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
 
 
+}
+
+function setGlimepirida({ dosis, varMed, medicamento, riesgos }) {
+    if (riesgos.emb === 1 || riesgos.lact === 1) return null, false;
+
+
+    var fecha = new Date();
+    let fechaCita = moment(fecha).format("YYYY-MM-DD");
+
+
+
+    let GBCsHoy = [];
+    let hba1cHoy = varMed.filter(med => med.Tipo == 6 && moment(med.Fecha).format("YYYY-MM-DD") == fechaCita);
+    for (let a = 0; a < varMed.length; a++) {
+        medida = varMed[a];
+        let fechaMedida = moment(medida.Fecha).format("YYYY-MM-DD");
+        if (medida.Tipo == 5 && fechaMedida == fechaCita) {
+            GBCsHoy.push(medida.Valor);
+        }
+    }
+    let dosisReturn;
+    let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
+        medicamento,
+        indicaciones: "",
+        dosis,
+        frecuencia: "",
+        fechaInicio: "",
+        fechaFin: ""
+    }
+
+    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return null, true;
+
+    if (hba1cHoy.length > 0) {
+        let valor = hba1cHoy[hba1cHoy.length - 1].Valor;
+        if (valor < 7.0) {
+            dosisReturn = dosis;
+            actualizacionTratamiento.dosis = dosisReturn;
+            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(6, "months").format("YYYY-MM-DD"));
+            actualizacionTratamiento.indicaciones += "Revisión de HbA1c en 6 meses" // no se modificará nada mas
+            return actualizacionTratamiento;
+        } else {
+            dosisReturn = dosis;
+            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.fechaFin = new Date(moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.indicaciones += "DERIVAR A MÉDICO DE FAMILIA" // no se modificará nada mas
+            return actualizacionTratamiento;
+        }
+    }
+
+    let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2 || GBCsHoy[0];
+    // transformar GBCMedia a entero
+    GBCMedia = Math.round(GBCMedia);
+    if (GBCMedia < 130) {
+        dosisReturn = dosis;
+    } else if (GBCMedia > 130) {
+        let dosisNueva = dosis.substring(0, dosis.length - 2);
+        dosisNueva = parseInt(dosisNueva) + 1;
+        dosisNueva = `${dosisNueva} mg`;
+        dosisReturn = dosisNueva;
+    }
+
+
+    if (dosisReturn != dosis) {
+        actualizacionTratamiento.frecuencia = "24"
+        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno.";
+    } else if (dosisReturn > 4) {
+        dosisReturn = "4 mg";
+        actualizacionTratamiento.frecuencia = "24"
+        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno, la próxima revisión será de HbA1c dentro de 3 meses, la dosis máxima se ha alcanzado";
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+    }
+    if (dosisReturn == dosis) { //en caso de que no se haya cambiado la dosis, se le da cita dentro de 3 meses
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.indicaciones += " Se debe citar dentro de 3 meses para una revisión de HbA1c.";
+    }
+    actualizacionTratamiento.dosis = dosisReturn;
+    actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
 }
 
 
