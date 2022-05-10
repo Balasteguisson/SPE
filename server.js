@@ -1698,6 +1698,97 @@ function setGlimepirida({ dosis, varMed, medicamento, riesgos }) {
 }
 
 
+
+
+function setSimvastatina({ dosis, varMed, medicamento, riesgos }) {
+}
+
+function setEnalapril({ dosis, varMed, medicamento, riesgos }) { 
+    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+    let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
+    if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
+
+    var fecha = new Date();
+    let fechaCita = moment(fecha).format("YYYY-MM-DD");
+
+
+
+    let tensionSHoy; //medidas de tension diastolica
+    let tensionDHoy; //medidas de tension sistolica
+    let tensionSPrevia;
+    let tensionDPrevia;
+    let previa = 0; //0 para bien, 1 para mal
+    for (let a = 0; a < varMed.length; a++) {
+        medida = varMed[a];
+        let fechaMedida = moment(medida.Fecha).format("YYYY-MM-DD");
+        if (medida.Tipo == 2 && fechaMedida == fechaCita) {
+            tensionSHoy  = medida.Valor;
+        } else if (medida.Tipo == 3 && fechaMedida == fechaCita) {
+            tensionDHoy = medida.Valor;
+        }
+    }
+
+    if (tensionSHoy.length == 0 && tensionDHoy.length == 0) return { actualizarTratamiento: null, salida: true }
+
+    if (tensionSPrevia > 140 && tensionDPrevia > 90) {
+        previa = 1; //1 para mal
+    } else if (tensionSPrevia == null && tensionDPrevia == null) {
+        previa = 0; //0 para bien
+    } else if (tensionSPrevia < 140 && tensionDPrevia < 90) {
+        previa = 0; //0 para bien
+    }
+
+
+    if (tensionSHoy > 140 && tensionDHoy > 90 ) {
+        let dosisNueva = dosis.substring(0, dosis.length - 2);
+        dosisNueva = parseInt(dosisNueva)*2;                  ///OJO A ESTO--- ACTUALIZAR
+        dosisNueva = `${dosisNueva} mg`;
+        dosisReturn = dosisNueva;
+    } else if ( tensionSHoy > 140 || tensionDHoy > 90 ) { 
+        //preguntar!!
+    } else if ( tensionSHoy < 140 && tensionDHoy < 90 ) {
+        dosisReturn = dosis;
+        previa = 0;
+    }
+
+    let dosisReturn;
+    let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
+        medicamento,
+        indicaciones: "",
+        dosis,
+        frecuencia: "",
+        fechaInicio: "",
+        fechaFin: ""
+    }
+
+    if (dosisReturn != dosis && previa == 1) {
+        actualizacionTratamiento.frecuencia = "24"
+        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno.";
+        actualizacionTratamiento.dosis;
+
+    } else if (dosisReturn > 40) {
+        dosisReturn = "40 mg";
+        actualizacionTratamiento.frecuencia = "24"
+        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno, la próxima revisión será de HbA1c dentro de 3 meses, dosis máxima alcanzada.";
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+    }
+    
+    if (dosisReturn == dosis) { //en caso de que no se haya cambiado la dosis porque se cumplen objetivos, se le da cita dentro de 3 meses
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.indicaciones += " Se debe citar dentro de 3 meses para una revisión de HbA1c.";
+    }
+    actualizacionTratamiento.dosis = dosisReturn;
+    actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+
+    let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
+    return salida;
+    
+}
+function setRamipril({ dosis, varMed, medicamento, riesgos }) { 
+    
+}
+
+
 //INICIO DEL SERVIDOR
 app.listen(app.get('port'), () => {
     console.log(`Servidor en el puerto ${app.get('port')}`);
