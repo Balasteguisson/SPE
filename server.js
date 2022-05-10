@@ -1259,6 +1259,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         if (resultado.salida != true) {
             resultado = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
+
         if (resultado.salida != true) {
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
@@ -1304,13 +1305,9 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     } else if (regla1[enfPrin] == 3 && regla3[medicamentoActual.PrincipioActivo] == 11) { //TRATAMIENTO EN ACENOCUMAROL
     } else if (regla1[enfPrin] == 3 && regla3[medicamentoActual.PrincipioActivo] == 12) { //TRATAMIENTO EN WARFARINA
     }
-    
-    
-    tratamientoRecomendado = resultado.actualizacionTratamiento;
-
-
+    tratamientoRecomendado = resultado.actualizarTratamiento;
     //motor de inferencia
-    if (resultado.salida == undefined) {
+    if (resultado.salida == false) {
         throw "ErrorTratamiento";
     }
 
@@ -1340,7 +1337,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 
 
 function setMetformina({ dosis, varMed, medicamento, riesgos }) {
-    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+    if (riesgos.emb === 1 || riesgos.lact === 1) { return { actualizarTratamiento: null, salida: false } }
     let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
     if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
     //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
@@ -1530,7 +1527,7 @@ function setGliclazida({ dosis, varMed, medicamento, riesgos }) {
 }
 
 function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
-    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: true }
+    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
     let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
     if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
     var fecha = new Date();

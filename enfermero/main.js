@@ -2371,6 +2371,9 @@ async function solicitarPrescripcion(idCitaActual) {
 
     let peticion = {
         method: "GET",
+        headers: {
+            "content-type": "application/json"
+        }
     }
     let respuesta = await peticionREST(url, peticion); //este es el tratamiento obtenido del SE
     if (respuesta == 500) {
@@ -2387,8 +2390,9 @@ async function solicitarPrescripcion(idCitaActual) {
 
             document.getElementById("posologiaMedicamento").value = respuesta.dosis;
             document.getElementById("intervaloTomas").value = `${respuesta.frecuencia} horas`;
-            document.getElementById("recomendacionesMedicamento").style.color = "black";
             document.getElementById("recomendacionesMedicamento").innerHTML = respuesta.indicaciones;
+
+            document.getElementById("recomendacionesMedicamento").style.color = "black";
 
             document.getElementById("fechaInicioMedicacion").valueAsDate = new Date(respuesta.fechaInicio);
             document.getElementById("fechaFinMedicacion").valueAsDate = new Date(respuesta.fechaFin);
