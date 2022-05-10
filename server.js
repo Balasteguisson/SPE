@@ -1049,11 +1049,11 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
         let patPac = await patologias(idPaciente);
         let varMed = await variablesMedicas(idPaciente, idCita);
 
-
         //Procesado de tratamientos para mandar los principios activos por separado
         let idMedTomados = tratPac.map(trat => trat.IDFarmaco);
         let medPac = await medicamentos(idMedTomados);
 
+        
         //Procesamos la informacion obtenida para enviarla al sistema experto
         let emb = embPac.length > 0 ? 1 : 0;
         let lact = lactPac.length > 0 ? 1 : 0;
@@ -1213,8 +1213,8 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     }
     let regla3 = {
         metformina: 1, gliclazida: 2, glipizida: 3, glimepirida: 4, insulina: 5,
-        simvastatina: 6, enalapril: 7, ramipril: 8, clortalidona: 9, tiazida: 10, amlodipino: 11,
-        acenocumarol: 12, warfarina: 13
+        simvastatina: 6, enalapril: 7, ramipril: 8, clortalidona: 9, amlodipino: 10,
+        acenocumarol: 11, warfarina: 12
     }
 
     let principiosActivos = regla2[regla1[enfPrin]]; //estos son los posibles principios activos que puede usar el paciente para su enfermedad
@@ -1222,12 +1222,14 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     let medicamentoActual;
     let tratamientoPrincipal;
     //el siguiente bucle busca en los tratamientos del paciente el que coincida con uno de los principios activos que puede usar para su enfermedad
-    for (let a = 0; a < medAct.length; a++) {
+    for (let a = 0; a < medAct.length; a++){
         let medicamento = medAct[a];
-        let prAct = medicamento.PrincipioActivo;
-        if (principiosActivos.includes(prAct)) {
-            medicamentoActual = medicamento;
-            break;
+        let prActs = medicamento.PrincipioActivo.split(' + ');
+        for (let b = 0; b < prActs.length; b++) {
+            if (principiosActivos.includes(prActs[b])) {
+                medicamentoActual = medicamento;
+                break;
+            }
         }
     }
     for (let a = 0; a < tratAct.length; a++) {
@@ -1248,9 +1250,9 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     let a = 0;
     let resultado = {actualizacionTratamiento: null, salida: false};
     
+
     if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 1) { //TRATAMIENTO EN METFORMINA
         resultado = setMetformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-        console.log(resultado);
         if (resultado.salida != true) {
             resultado = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
@@ -1260,8 +1262,8 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         if (resultado.salida != true) {
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
-            //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
-    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 2) { //TRATAMIENTO EN TIAZIDAS
+        //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
+    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 2) { //TRATAMIENTO EN SULFONILUREAS
         resultado = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
             resultado = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
@@ -1269,31 +1271,40 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         if (resultado.salida != true) {
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
-    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 3) { //TRATAMIENTO EN TIAZIDAS 2
-        console.log("glipizida");
+    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 3) { //TRATAMIENTO EN SULFONILUREAS 2
         resultado = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
 
         if (resultado.salida != true) {
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
-    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 4) { //TRATAMIENTO EN TIAZIDAS 3
+    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 4) { //TRATAMIENTO EN SULFONILUREAS 3
         resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
             //INSULINAS
         }
-    } else if (regla1[enfermedadPrincipal] == 2 && regla3[medicamentoActual.principioActivo] == 6) { //TRATAMIENTO EN SIMVASTATINA
-        resultado = setSimvastatina({dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos:riesgos})
-    }else if (regla1[enfermedadPrincipal] == 2 && regla3[medicamentoActual.PrincipioActivo] == 7) { //TRATAMIENTO EN ENALAPRIL
+
+
+
+    } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.principioActivo] == 6) { //TRATAMIENTO EN SIMVASTATINA
+        resultado = setSimvastatina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos })
+    } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.PrincipioActivo] == 7) { //TRATAMIENTO EN ENALAPRIL
         resultado = setEnalapril({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
             resultado = setRamipril({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
+    } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.PrincipioActivo] == 8) { //TRATAMIENTO EN RAMIPRIL
+    } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.PrincipioActivo] == 9) { //TRATAMIENTO EN CLORTALIDONA
+    } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.PrincipioActivo] == 10) { //TRATAMIENTO EN AMLODIPINO
+
+
+
+
+
+    } else if (regla1[enfPrin] == 3 && regla3[medicamentoActual.PrincipioActivo] == 11) { //TRATAMIENTO EN ACENOCUMAROL
+    } else if (regla1[enfPrin] == 3 && regla3[medicamentoActual.PrincipioActivo] == 12) { //TRATAMIENTO EN WARFARINA
     }
-    //  else if (regla1[enfermedadPrincipal] == 3) {
-
-    // } else {
-
-    // }
+    
+    
     tratamientoRecomendado = resultado.actualizacionTratamiento;
 
 
