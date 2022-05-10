@@ -1288,6 +1288,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.principioActivo] == 6) { //TRATAMIENTO EN SIMVASTATINA
         resultado = setSimvastatina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos })
     } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.PrincipioActivo] == 7) { //TRATAMIENTO EN ENALAPRIL
+        console.log("set enalapril");
         resultado = setEnalapril({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
             resultado = setRamipril({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
@@ -1713,11 +1714,21 @@ function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
 
 
 
-    let tensionSHoy; //medidas de tension diastolica
+    let tensionSHoy; //medidas de tension diastolica de hoy
     let tensionDHoy; //medidas de tension sistolica
-    let tensionSPrevia;
+    let tensionSPrevia; //ultima medida
     let tensionDPrevia;
-    let previa = 0; //0 para bien, 1 para mal
+    let tensionSPrevia1; // penultima medida
+    let tensionDPrevia1;
+    let tensionSPrevia2; // antepenultima medida
+    let tensionDPrevia2;
+
+    
+
+
+    let previa = 0; //0 para no hay datos, 1 para mal, 2 para bien
+    let previa1 = 0;
+    let previa2 = 0;
     for (let a = 0; a < varMed.length; a++) {
         medida = varMed[a];
         let fechaMedida = moment(medida.Fecha).format("YYYY-MM-DD");
@@ -1728,16 +1739,11 @@ function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         }
     }
 
-    if (tensionSHoy.length == 0 && tensionDHoy.length == 0) return { actualizarTratamiento: null, salida: true }
+    if (tensionSHoy == null && tensionDHoy == null) return { actualizarTratamiento: null, salida: true }
 
-    if (tensionSPrevia > 140 && tensionDPrevia > 90) {
-        previa = 1; //1 para mal
-    } else if (tensionSPrevia == null && tensionDPrevia == null) {
-        previa = 0; //0 para bien
-    } else if (tensionSPrevia < 140 && tensionDPrevia < 90) {
-        previa = 0; //0 para bien
-    }
+    let previas = verPrevias(varMed);
 
+    let dosisReturn;
 
     if (tensionSHoy > 140 && tensionDHoy > 90 ) {
         let dosisNueva = dosis.substring(0, dosis.length - 2);
@@ -1748,10 +1754,8 @@ function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         //preguntar!!
     } else if ( tensionSHoy < 140 && tensionDHoy < 90 ) {
         dosisReturn = dosis;
-        previa = 0;
     }
 
-    let dosisReturn;
     let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
         medicamento,
         indicaciones: "",
@@ -1761,24 +1765,15 @@ function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         fechaFin: ""
     }
 
-    if (dosisReturn != dosis && previa == 1) {
-        actualizacionTratamiento.frecuencia = "24"
-        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno.";
-        actualizacionTratamiento.dosis;
-
-    } else if (dosisReturn > 40) {
-        dosisReturn = "40 mg";
-        actualizacionTratamiento.frecuencia = "24"
-        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno, la próxima revisión será de HbA1c dentro de 3 meses, dosis máxima alcanzada.";
+    if (tensionSHoy < 140 && tensionDHoy < 90 && previa === 0) {
+        actualizacionTratamiento.indicaciones = "Tomar antes del desayuno, cada 24 horas, se puede acordar con el paciente tomar la mitad de la dosis en 2 tomas cada 12 horas.";
+        actualizacionTratamiento.dosis = dosis; // si cumple objetivos se mantiene la dosis
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+    } else if (previa === 2 && tensionSHoy < 140 && tensionDHoy < 90) {
+        
     }
-    
-    if (dosisReturn == dosis) { //en caso de que no se haya cambiado la dosis porque se cumplen objetivos, se le da cita dentro de 3 meses
-        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
-        actualizacionTratamiento.indicaciones += " Se debe citar dentro de 3 meses para una revisión de HbA1c.";
-    }
-    actualizacionTratamiento.dosis = dosisReturn;
-    actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
 
     let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
     return salida;
@@ -1786,6 +1781,23 @@ function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
 }
 function setRamipril({ dosis, varMed, medicamento, riesgos }) { 
     
+}
+
+
+function verPrevias(varMed) {
+    let citas = [];
+    let previa;
+    let previa1;
+    let previa2;
+    console.log("calculando previas");
+    //ordenar varMed en funcion del numero de cita de mayor a menor
+    varMed.sort(function (a, b) {
+        citas.push(a.Cita);
+        return a.Cita - b.Cita;
+    });
+    console.log(citas);
+    console.log(varMed);
+    previa = varMed
 }
 
 
