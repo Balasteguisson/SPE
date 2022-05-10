@@ -1062,7 +1062,8 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
         res.status(200).json(tratamientoObtenido);
     }
     catch (err) {
-        res.status(500).json("ERROR" + err);
+        console.log(err);
+        res.status(500).json(err);
     }
 
 
@@ -1241,13 +1242,15 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     let riesgos = { //se refiere a los posibles estados del paciente que provoquen el descarte de un tratamiento
         emb: emb,
         lact: lact,
-        enfPrev: enfPrev
+        enfPrev: enfPrev,
+        alerg: aler
     }
     let a = 0;
-    let resultado = {actualizarTratamiento: null, salida: false};
+    let resultado = {actualizacionTratamiento: null, salida: false};
     
     if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 1) { //TRATAMIENTO EN METFORMINA
         resultado = setMetformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        console.log(resultado);
         if (resultado.salida != true) {
             resultado = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
@@ -1267,7 +1270,9 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
     } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 3) { //TRATAMIENTO EN TIAZIDAS 2
+        console.log("glipizida");
         resultado = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+
         if (resultado.salida != true) {
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
@@ -1276,13 +1281,15 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         if (resultado.salida != true) {
             //INSULINAS
         }
+    } else if (regla1[enfermedadPrincipal] == 2 && regla3[medicamentoActual.principioActivo] == 6) { //TRATAMIENTO EN SIMVASTATINA
+        resultado = setSimvastatina({dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos:riesgos})
+    }else if (regla1[enfermedadPrincipal] == 2 && regla3[medicamentoActual.PrincipioActivo] == 7) { //TRATAMIENTO EN ENALAPRIL
+        resultado = setEnalapril({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        if (resultado.salida != true) {
+            resultado = setRamipril({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        }
     }
-    if (a > 1) {
-        resultado.salida = true;
-    }
-    // else if (regla1[enfermedadPrincipal] == 2) {
-
-    // } else if (regla1[enfermedadPrincipal] == 3) {
+    //  else if (regla1[enfermedadPrincipal] == 3) {
 
     // } else {
 
@@ -1290,16 +1297,16 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     tratamientoRecomendado = resultado.actualizacionTratamiento;
 
 
-
     //motor de inferencia
-
-
+    if (resultado.salida == undefined) {
+        throw "ErrorTratamiento";
+    }
 
     let datosTratamiento;
     if (tratamientoRecomendado == null) { //si el sistema experto no hace ningun cambio, se mantiene el tratamiento que ya se tenia
         datosTratamiento = {
             medicamento: medicamentoActual,
-            indicaciones: "Mantener cantidad y horas de toma",
+            indicaciones: tratamientoPrincipal.Anotaciones,
             dosis: tratamientoPrincipal.Cantidad,
             frecuencia: tratamientoPrincipal.IntervaloTomas,
             fechaInicio: tratamientoPrincipal.FechaInicio,
@@ -1321,14 +1328,14 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
 
 
 function setMetformina({ dosis, varMed, medicamento, riesgos }) {
-    if (riesgos.emb === 1 || riesgos.lact === 1) return null, false;
-
+    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+    let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
+    if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
     //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
     //en varMed dos medidas de GBC con la fecha del mismo dia de la cita y se saca la media de ambas
     var fecha = new Date();
     let fechaCita = moment(fecha).format("YYYY-MM-DD");
 
-    
 
     let GBCsHoy = [];
     let hba1cHoy = varMed.filter(med => med.Tipo == 6 && moment(med.Fecha).format("YYYY-MM-DD") == fechaCita);
@@ -1349,7 +1356,7 @@ function setMetformina({ dosis, varMed, medicamento, riesgos }) {
         fechaFin: ""
     }
     
-    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return null, true; //si no hay tomadas medidas, se devuelve null para que se muestre el tratamiento actual en el cliente
+    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return { actualizarTratamiento: null, salida: true } //si no hay tomadas medidas, se devuelve null para que se muestre el tratamiento actual en el cliente
     if (hba1cHoy.length > 0) {
         let valor = hba1cHoy[hba1cHoy.length -1].Valor;
         if (valor < 7.0) {
@@ -1385,7 +1392,7 @@ function setMetformina({ dosis, varMed, medicamento, riesgos }) {
     }
 
     actualizacionTratamiento.dosis = dosisReturn;
-    actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+    actualizacionTratamiento.fechaInicio = new Date();
     // en funcion de la dosis se crean las indicaciones del tratamiento
     if (dosisReturn == "850 mg") {
         actualizacionTratamiento.frecuencia = "12"
@@ -1419,14 +1426,16 @@ function setMetformina({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones += " Se debe citar dentro de 3 meses para una revisión de HbA1c.";
     }
     let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
+
     return salida;
 
 
 }
 
 function setGliclazida({ dosis, varMed, medicamento, riesgos }) {
-    if (riesgos.emb === 1 || riesgos.lact === 1) return null, false;
-    
+    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+    let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
+    if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
 
     var fecha = new Date();
     let fechaCita = moment(fecha).format("YYYY-MM-DD");
@@ -1452,7 +1461,7 @@ function setGliclazida({ dosis, varMed, medicamento, riesgos }) {
         fechaFin: ""
     }
 
-    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return null, true;
+    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return { actualizarTratamiento: null, salida: true };
 
     if (hba1cHoy.length > 0) {
         let valor = hba1cHoy[hba1cHoy.length - 1].Valor;
@@ -1509,7 +1518,9 @@ function setGliclazida({ dosis, varMed, medicamento, riesgos }) {
 }
 
 function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
-    if (riesgos.emb === 1 || riesgos.lact === 1) return null, false;
+    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: true }
+    let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
+    if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
     var fecha = new Date();
     let fechaCita = moment(fecha).format("YYYY-MM-DD");
 
@@ -1534,7 +1545,7 @@ function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
         fechaFin: ""
     }
 
-    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return null, true;
+    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return { actualizarTratamiento: null, salida: true }
 
     if (hba1cHoy.length > 0) {
         let valor = hba1cHoy[hba1cHoy.length - 1].Valor;
@@ -1592,8 +1603,9 @@ function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
 }
 
 function setGlimepirida({ dosis, varMed, medicamento, riesgos }) {
-    if (riesgos.emb === 1 || riesgos.lact === 1) return null, false;
-
+    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+    let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
+    if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
 
     var fecha = new Date();
     let fechaCita = moment(fecha).format("YYYY-MM-DD");
@@ -1619,7 +1631,7 @@ function setGlimepirida({ dosis, varMed, medicamento, riesgos }) {
         fechaFin: ""
     }
 
-    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return null, true;
+    if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return { actualizarTratamiento: null, salida: true }
 
     if (hba1cHoy.length > 0) {
         let valor = hba1cHoy[hba1cHoy.length - 1].Valor;

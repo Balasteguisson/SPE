@@ -1960,8 +1960,7 @@ function verGraficasPaciente(){
 
 async function actualizarTratamiento() {
     //esta funcion obtiene los datos que se muestran en el menu de tratamiento y los envia al servidor para que se guarden en la base de datos
-    let url = `/api/enfermero/:id/actualizarTratamiento/${idPacienteCita}/${document.getElementById("medicamentoSeleccionado").value
-}/${idCitaActual}`
+    let url = `/api/enfermero/:id/actualizarTratamiento/${idPacienteCita}/${document.getElementById("medicamentoSeleccionado").value}/${idCitaActual}`
     let datos = {
         medicamento: document.getElementById("medicamentoSeleccionado").value,
         indicaciones: document.getElementById("recomendacionesMedicamento").value,
@@ -1971,6 +1970,8 @@ async function actualizarTratamiento() {
         fechaFin: document.getElementById("fechaFinMedicacion").value
     }
     
+    datos.intervalo = datos.intervalo.substring(0, datos.intervalo.length - 5)
+    console.log(datos.intervalo);
     let peticion = {
         method: 'PUT',
         body: JSON.stringify(datos),
@@ -2371,24 +2372,32 @@ async function solicitarPrescripcion(idCitaActual) {
     let peticion = {
         method: "GET",
     }
+    let respuesta = await peticionREST(url, peticion); //este es el tratamiento obtenido del SE
+    if (respuesta == 500) {
+        document.getElementById("recomendacionesMedicamento").innerHTML = "NO SE HAN ENCONTRADO TRATAMIENTOS COMPATIBLES PARA EL ESTADO DEL PACIENTE"
+        document.getElementById("recomendacionesMedicamento").style.color = "red";
+    } else {
+        try {
+            let desplegable = document.getElementById("medicamentoSeleccionado");
+            let option = document.createElement("option");
+            option.value = respuesta.medicamento.IDFarmaco;
+            option.text = respuesta.medicamento.Nombre;
+            desplegable.appendChild(option);
+            desplegable.value = respuesta.medicamento.IDFarmaco;
 
-    let respuesta = await peticionREST(url, peticion);
+            document.getElementById("posologiaMedicamento").value = respuesta.dosis;
+            document.getElementById("intervaloTomas").value = `${respuesta.frecuencia} horas`;
+            document.getElementById("recomendacionesMedicamento").style.color = "black";
+            document.getElementById("recomendacionesMedicamento").innerHTML = respuesta.indicaciones;
 
+            document.getElementById("fechaInicioMedicacion").valueAsDate = new Date(respuesta.fechaInicio);
+            document.getElementById("fechaFinMedicacion").valueAsDate = new Date(respuesta.fechaFin);
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
-    let desplegable = document.getElementById("medicamentoSeleccionado");
-    let option = document.createElement("option");
-    option.value = respuesta.medicamento.IDFarmaco;
-    option.text = respuesta.medicamento.Nombre;
-    desplegable.appendChild(option);
-    desplegable.value = respuesta.medicamento.IDFarmaco;
-
-    document.getElementById("posologiaMedicamento").value = respuesta.dosis;
-    document.getElementById("intervaloTomas").value = `${respuesta.frecuencia} horas`;
-    document.getElementById("recomendacionesMedicamento").innerHTML = respuesta.indicaciones;
-
-    document.getElementById("fechaInicioMedicacion").valueAsDate = new Date(respuesta.fechaInicio);
-    document.getElementById("fechaFinMedicacion").valueAsDate = new Date(respuesta.fechaFin);
-
+    
 
 }
 document.getElementById("fechaInicioMedicacion").addEventListener("change", () => {
