@@ -5,7 +5,7 @@ const mysql = require('mysql')
 var morgan = require('morgan');
 var cors = require('cors');
 var moment = require('moment');
-const { CLIENT_LONG_FLAG, CLIENT_FOUND_ROWS } = require("mysql/lib/protocol/constants/client");
+const { CLIENT_LONG_FLAG, CLIENT_FOUND_ROWS, CLIENT_PLUGIN_AUTH } = require("mysql/lib/protocol/constants/client");
 
 var app = express();
 
@@ -988,7 +988,7 @@ app.put('/api/enfermero/:id/actualizarTratamiento/:idPaciente/:idFarmaco/:idCita
     let idCita = req.params.idCita
     let datos = req.body
 
-    let petBBDD = `UPDATE tratamiento SET FechaInicio = '${datos.fechaInicio}', FechaFin = '${datos.fechaFin}', IntervaloTomas = '${datos.intervalo}', Cantidad = '${datos.cantidad}', Anotaciones = '${datos.indicaciones}', IDCita ='${idCita}' WHERE IdPaciente = '${idPaciente}' AND IDFarmaco = '${idFarmaco}'`;
+    let petBBDD = `UPDATE tratamiento SET IDFarmaco = '${datos.medicamento}', FechaInicio = '${datos.fechaInicio}', FechaFin = '${datos.fechaFin}', IntervaloTomas = '${datos.intervalo}', Cantidad = '${datos.cantidad}', Anotaciones = '${datos.indicaciones}', IDCita ='${idCita}' WHERE IdPaciente = '${idPaciente}' AND IDFarmaco = '${idMedicamentoActual}'`;
     let respuesta = await actualizarTratamiento(petBBDD)
 
     res.status(201).json(respuesta);
@@ -1035,7 +1035,6 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
     //y sus variables medicas mediante una llamada a la base de datos
     let idPaciente;
     let enfermedadPrincipal;
-    let fechaCita;
     try {
         //Obtenemos toda la informacion que necesita el sistema experto
         let datos = await datosCita(idCita);
@@ -1189,6 +1188,7 @@ function calcularEdad(fechaNacimiento) {
 
 
 //SISTEMA EXPERTO//
+let idMedicamentoActual;
 async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, varMed, aler, medAct }) {
 
     //base de hechos --> toda la informacion pasada a la funcion como params
@@ -1227,10 +1227,19 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
     for (let a = 0; a < medAct.length; a++){
         let medicamento = medAct[a];
         let prActs = medicamento.PrincipioActivo.split(' + ');
-        for (let b = 0; b < prActs.length; b++) {
-            if (principiosActivos.includes(prActs[b])) {
-                medicamentoActual = medicamento;
-                break;
+
+        // for (let b = 0; b < prActs.length; b++) {
+        //     if (principiosActivos.includes(prActs[b])) {
+        //         medicamentoActual = medicamento;
+        //         break;
+        //     }
+        // }
+        for (let c = 0; c < principiosActivos.length; c++) {
+            let principio = principiosActivos[c];
+            for (let d = 0; d < prActs.length; d++) {
+                if (prActs[d].includes(principio)) {
+                    medicamentoActual = medicamento;
+                }
             }
         }
     }
@@ -1240,6 +1249,7 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
             tratamientoPrincipal = tratamiento;
         }
     }
+    idMedicamentoActual = medicamentoActual.IDFarmaco;
     // una vez se tiene el principio activo y el medicamento, se sigue en la pauta de prescripcion
     let tratamientoRecomendado;
 
@@ -1250,11 +1260,13 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
         alerg: aler,
         peso: peso
     }
-    let a = 0;
-    let resultado = {actualizacionTratamiento: null, salida: false};
+    let resultado = { actualizacionTratamiento: null, salida: false };
+    let principioBuscado;
+    medicamentoActual.PrincipioActivo.includes("insulina") ? principioBuscado = "insulina" : principioBuscado = medicamentoActual.PrincipioActivo;
+
     
 
-    if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 1) { //TRATAMIENTO EN METFORMINA
+    if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 1) { //TRATAMIENTO EN METFORMINA
         resultado = setMetformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
             resultado = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
@@ -1268,21 +1280,30 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
         }
         if (resultado.salida != true) {
             resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos }); 
+            console.log(resultado);
         }
-    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 2) { //TRATAMIENTO EN SULFONILUREAS
+    } else if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 2) { //TRATAMIENTO EN SULFONILUREAS
         resultado = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
             resultado = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
         if (resultado.salida != true) {
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-        } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
-    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 3) { //TRATAMIENTO EN SULFONILUREAS 2
+        } 
+        if (resultado.salida != true) {
+            resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            console.log(resultado);
+        }
+    } else if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 3) { //TRATAMIENTO EN SULFONILUREAS 2
         resultado = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-        } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
-    } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 4) { //TRATAMIENTO EN SULFONILUREAS 3
+        }
+        if (resultado.salida != true) {
+            resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            console.log(resultado);
+        }
+    } else if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 4) { //TRATAMIENTO EN SULFONILUREAS 3
         resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
             //INSULINAS
@@ -1290,27 +1311,28 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
 
 
 
-    } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.principioActivo] == 6) { //TRATAMIENTO EN SIMVASTATINA
+    } else if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 5) {
+        resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+    } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 6) { //TRATAMIENTO EN SIMVASTATINA
         resultado = setSimvastatina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos })
-    } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.PrincipioActivo] == 7) { //TRATAMIENTO EN ENALAPRIL
+    } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 7) { //TRATAMIENTO EN ENALAPRIL
         console.log("set enalapril");
         resultado = setEnalapril({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
             resultado = setRamipril({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
-    } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.PrincipioActivo] == 8) { //TRATAMIENTO EN RAMIPRIL
-    } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.PrincipioActivo] == 9) { //TRATAMIENTO EN CLORTALIDONA
-    } else if (regla1[enfPrin] == 2 && regla3[medicamentoActual.PrincipioActivo] == 10) { //TRATAMIENTO EN AMLODIPINO
+    } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 8) { //TRATAMIENTO EN RAMIPRIL
+    } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 9) { //TRATAMIENTO EN CLORTALIDONA
+    } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 10) { //TRATAMIENTO EN AMLODIPINO
 
 
 
 
 
-    } else if (regla1[enfPrin] == 3 && regla3[medicamentoActual.PrincipioActivo] == 11) { //TRATAMIENTO EN ACENOCUMAROL
-    } else if (regla1[enfPrin] == 3 && regla3[medicamentoActual.PrincipioActivo] == 12) { //TRATAMIENTO EN WARFARINA
+    } else if (regla1[enfPrin] == 3 && regla3[principioBuscado] == 11) { //TRATAMIENTO EN ACENOCUMAROL
+    } else if (regla1[enfPrin] == 3 && regla3[principioBuscado] == 12) { //TRATAMIENTO EN WARFARINA
     }
     tratamientoRecomendado = resultado.actualizarTratamiento;
-     console.log(tratamientoRecomendado);
     //motor de inferencia
     if (resultado.salida == false) {
         throw "ErrorTratamiento";
@@ -1319,14 +1341,13 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
     let datosTratamiento;
     if (tratamientoRecomendado == null) { //si el sistema experto no hace ningun cambio, se mantiene el tratamiento que ya se tenia
         datosTratamiento = {
-            medicamento: medicamentos,
+            medicamento: [medicamentoActual],
             indicaciones: tratamientoPrincipal.Anotaciones,
             dosis: tratamientoPrincipal.Cantidad,
             frecuencia: tratamientoPrincipal.IntervaloTomas,
             fechaInicio: tratamientoPrincipal.FechaInicio,
             fechaFin: tratamientoPrincipal.FechaFin
         }
-        console.log(datosTratamiento.medicamento);
     } else {
         datosTratamiento = { //en caso de que el sistema experto haga cambios, se genera el nuevo tratamiento
             medicamento: tratamientoRecomendado.medicamento,
@@ -1337,7 +1358,6 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
             fechaFin: tratamientoRecomendado.fechaFin,
         }
     }
-
     return datosTratamiento;
 }
 
@@ -1585,7 +1605,6 @@ function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
     let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2 || GBCsHoy[0];
     // transformar GBCMedia a entero
     GBCMedia = Math.round(GBCMedia);
-    console.log(GBCMedia);
     if (GBCMedia < 130) {
         dosisReturn = dosis;
     } else if (GBCMedia > 130) {
@@ -1704,7 +1723,6 @@ function setGlimepirida({ dosis, varMed, medicamento, riesgos }) {
 
 async function setInsulina({ dosis, varMed, medicamento, riesgos }) { 
 
-
     let actualizarTratamiento = { //este sera el objeto devuelto por la funcion
         medicamento,
         indicaciones: "",
@@ -1713,23 +1731,25 @@ async function setInsulina({ dosis, varMed, medicamento, riesgos }) {
         fechaInicio: "",
         fechaFin: ""
     }
-    if (medicamento.PrincipioActivo != "insulina") { //es decir en caso de que su tratamiento actual no sea insulina
+    if (!medicamento.PrincipioActivo.includes("insulina")) { //es decir en caso de que su tratamiento actual no sea insulina
         let opciones = await buscarMedicamento("insulina isofana")
         let dosis = riesgos.peso * 0.2;
         // transformar dosis a string y cambiar "." por ","
-        dosis = dosis.toString();
-        dosis = dosis.replace(".", ",");
+        let dosisString = dosis.toString();
+        dosisString = dosisString.replace(".", ",");
         actualizarTratamiento = {
             medicamento: opciones,
-            indicaciones: "Hay que cambiar el tratamiento y empezar a usar insulina. \nLa siguiente revisión será en cuatro días. \nRemitir a médico para revisión de tratamiento ",
-            dosis: `${dosis} UI`,
+            indicaciones: `Hay que cambiar el tratamiento y empezar a usar insulina. \nLa siguiente revisión será en cuatro días. \nRemitir a médico para revisión de tratamiento. \nTomar ${(dosis*(2/3)).toFixed(2)} UI antes de desayunar y ${(dosis * (1/3)).toFixed(2)} UI antes de cenar.`,
+            dosis: `${dosisString} UI`,
             frecuencia: 12,
             fechaInicio: new Date(moment().format("YYYY-MM-DD")),
             fechaFin: new Date(moment().add(4, "days").format("YYYY-MM-DD"))
         }
         salida = true;
+        console.log("return cuando no esta en insulina ya");
         return { actualizarTratamiento, salida };
     }
+    return {actualizarTratamiento: null, salida: true}
 }
 
 
