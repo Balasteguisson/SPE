@@ -1060,7 +1060,7 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
         let emb = embPac.length > 0 ? 1 : 0;
         let lact = lactPac.length > 0 ? 1 : 0;
 
-        let tratamientoObtenido = prescripcion({ enfPrin: enfermedadPrincipal, edad: calcularEdad(infoPaciente[0]?.FechaNacimiento), peso: infoPaciente[0]?.Peso, sexo: infoPaciente[0]?.Sexo, emb: emb, lact: lact, tratAct: tratPac, medAct: medPac, enfPrev: patPac, varMed: varMed, aler: alergPac });
+        let tratamientoObtenido = await prescripcion({ enfPrin: enfermedadPrincipal, edad: calcularEdad(infoPaciente[0]?.FechaNacimiento), peso: infoPaciente[0]?.Peso, sexo: infoPaciente[0]?.Sexo, emb: emb, lact: lact, tratAct: tratPac, medAct: medPac, enfPrev: patPac, varMed: varMed, aler: alergPac });
         res.status(200).json(tratamientoObtenido);
     }
     catch (err) {
@@ -1189,7 +1189,7 @@ function calcularEdad(fechaNacimiento) {
 
 
 //SISTEMA EXPERTO//
-function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, varMed, aler, medAct }) {
+async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, varMed, aler, medAct }) {
 
     //base de hechos --> toda la informacion pasada a la funcion como params
 
@@ -1247,7 +1247,8 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         emb: emb,
         lact: lact,
         enfPrev: enfPrev,
-        alerg: aler
+        alerg: aler,
+        peso: peso
     }
     let a = 0;
     let resultado = {actualizacionTratamiento: null, salida: false};
@@ -1265,7 +1266,9 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         if (resultado.salida != true) {
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
-        //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
+        if (resultado.salida != true) {
+            resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos }); 
+        }
     } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 2) { //TRATAMIENTO EN SULFONILUREAS
         resultado = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
@@ -1276,7 +1279,6 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
     } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 3) { //TRATAMIENTO EN SULFONILUREAS 2
         resultado = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-        console.log(resultado);
         if (resultado.salida != true) {
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
@@ -1308,6 +1310,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     } else if (regla1[enfPrin] == 3 && regla3[medicamentoActual.PrincipioActivo] == 12) { //TRATAMIENTO EN WARFARINA
     }
     tratamientoRecomendado = resultado.actualizarTratamiento;
+     console.log(tratamientoRecomendado);
     //motor de inferencia
     if (resultado.salida == false) {
         throw "ErrorTratamiento";
@@ -1316,13 +1319,14 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
     let datosTratamiento;
     if (tratamientoRecomendado == null) { //si el sistema experto no hace ningun cambio, se mantiene el tratamiento que ya se tenia
         datosTratamiento = {
-            medicamento: medicamentoActual,
+            medicamento: medicamentos,
             indicaciones: tratamientoPrincipal.Anotaciones,
             dosis: tratamientoPrincipal.Cantidad,
             frecuencia: tratamientoPrincipal.IntervaloTomas,
             fechaInicio: tratamientoPrincipal.FechaInicio,
             fechaFin: tratamientoPrincipal.FechaFin
         }
+        console.log(datosTratamiento.medicamento);
     } else {
         datosTratamiento = { //en caso de que el sistema experto haga cambios, se genera el nuevo tratamiento
             medicamento: tratamientoRecomendado.medicamento,
@@ -1373,14 +1377,14 @@ function setMetformina({ dosis, varMed, medicamento, riesgos }) {
         if (valor < 7.0) {
             dosisReturn = dosis;
             actualizacionTratamiento.dosis = dosisReturn;
-            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.medicamento = [ medicamento ];
             actualizacionTratamiento.fechaInicio = new Date (moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.fechaFin = new Date (moment(fecha).add(6, "months").format("YYYY-MM-DD"));
             actualizacionTratamiento.indicaciones += "Revisión de HbA1c en 6 meses" // no se modificará nada mas
             return actualizacionTratamiento;
         } else {
             dosisReturn = dosis;
-            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.medicamento = [medicamento];
             actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.fechaFin = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.indicaciones += "DERIVAR A MÉDICO DE FAMILIA" // no se modificará nada mas
@@ -1408,25 +1412,25 @@ function setMetformina({ dosis, varMed, medicamento, riesgos }) {
     if (dosisReturn == "850 mg") {
         actualizacionTratamiento.frecuencia = "12"
         actualizacionTratamiento.indicaciones = "Tomar dos veces al día, en el desayuno y en la cena.";
-        actualizacionTratamiento.medicamento = medicamento;
+        actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
     }
     else if (dosisReturn == "1275 mg") {
         actualizacionTratamiento.frecuencia = "8"
         actualizacionTratamiento.indicaciones = "Tomar tres veces al día, 1/2 pastilla en el desayuno, 1/2 pastilla en la comida y 1/2 pastilla en la cena.";
-        actualizacionTratamiento.medicamento = medicamento;
+        actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
     }
     else if (dosisReturn == "1700 mg") {
         actualizacionTratamiento.frecuencia = "12"
         actualizacionTratamiento.indicaciones = "Tomar una pastilla en el desayuno, y otra en la cena";
-        actualizacionTratamiento.medicamento = medicamento;
+        actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
     }
     else if (dosisReturn == "2125 mg") {
         actualizacionTratamiento.frecuencia = "8"
         actualizacionTratamiento.indicaciones = "Tres tomas al día, una pastilla en el desayuno, otra en la comida y 1/2 en la cena. Si se considera necesario, aumentar dosis a 2550 mg/dia, una pastilla cada 8 horas, desayuno, comida y cena.";
-        actualizacionTratamiento.medicamento = medicamento;
+        actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
     } else if (dosisReturn == "425 mg") {
         actualizacionTratamiento.frecuencia = "24"
@@ -1479,14 +1483,14 @@ function setGliclazida({ dosis, varMed, medicamento, riesgos }) {
         if (valor < 7.0) {
             dosisReturn = dosis;
             actualizacionTratamiento.dosis = dosisReturn;
-            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.medicamento = [medicamento];
             actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(6, "months").format("YYYY-MM-DD"));
             actualizacionTratamiento.indicaciones += "Revisión de HbA1c en 6 meses" // no se modificará nada mas
             return actualizacionTratamiento;
         } else {
             dosisReturn = dosis;
-            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.medicamento = [medicamento];
             actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.fechaFin = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.indicaciones += "DERIVAR A MÉDICO DE FAMILIA" // no se modificará nada mas
@@ -1563,18 +1567,18 @@ function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
         if (valor < 7.0) {
             dosisReturn = dosis;
             actualizacionTratamiento.dosis = dosisReturn;
-            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.medicamento = [medicamento];
             actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(6, "months").format("YYYY-MM-DD"));
             actualizacionTratamiento.indicaciones += "Revisión de HbA1c en 6 meses" // no se modificará nada mas
-            return actualizacionTratamiento;
+            return { actualizarTratamiento: actualizacionTratamiento, salida: true };
         } else {
             dosisReturn = dosis;
-            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.medicamento = [medicamento];
             actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.fechaFin = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.indicaciones += "DERIVAR A MÉDICO DE FAMILIA" // no se modificará nada mas
-            return actualizacionTratamiento;
+            return { actualizarTratamiento: actualizacionTratamiento, salida: true };
         }
     }
 
@@ -1650,14 +1654,14 @@ function setGlimepirida({ dosis, varMed, medicamento, riesgos }) {
         if (valor < 7.0) {
             dosisReturn = dosis;
             actualizacionTratamiento.dosis = dosisReturn;
-            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.medicamento = [medicamento];
             actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(6, "months").format("YYYY-MM-DD"));
             actualizacionTratamiento.indicaciones += "Revisión de HbA1c en 6 meses" // no se modificará nada mas
             return actualizacionTratamiento;
         } else {
             dosisReturn = dosis;
-            actualizacionTratamiento.medicamento = medicamento;
+            actualizacionTratamiento.medicamento = [medicamento];
             actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.fechaFin = new Date(moment(fecha).format("YYYY-MM-DD"));
             actualizacionTratamiento.indicaciones += "DERIVAR A MÉDICO DE FAMILIA" // no se modificará nada mas
@@ -1698,6 +1702,35 @@ function setGlimepirida({ dosis, varMed, medicamento, riesgos }) {
     return salida;
 }
 
+async function setInsulina({ dosis, varMed, medicamento, riesgos }) { 
+
+
+    let actualizarTratamiento = { //este sera el objeto devuelto por la funcion
+        medicamento,
+        indicaciones: "",
+        dosis,
+        frecuencia: "",
+        fechaInicio: "",
+        fechaFin: ""
+    }
+    if (medicamento.PrincipioActivo != "insulina") { //es decir en caso de que su tratamiento actual no sea insulina
+        let opciones = await buscarMedicamento("insulina isofana")
+        let dosis = riesgos.peso * 0.2;
+        // transformar dosis a string y cambiar "." por ","
+        dosis = dosis.toString();
+        dosis = dosis.replace(".", ",");
+        actualizarTratamiento = {
+            medicamento: opciones,
+            indicaciones: "Hay que cambiar el tratamiento y empezar a usar insulina. \nLa siguiente revisión será en cuatro días. \nRemitir a médico para revisión de tratamiento ",
+            dosis: `${dosis} UI`,
+            frecuencia: 12,
+            fechaInicio: new Date(moment().format("YYYY-MM-DD")),
+            fechaFin: new Date(moment().add(4, "days").format("YYYY-MM-DD"))
+        }
+        salida = true;
+        return { actualizarTratamiento, salida };
+    }
+}
 
 
 
@@ -1800,6 +1833,19 @@ function verPrevias(varMed) {
     previa = varMed
 }
 
+function buscarMedicamento(prAct) {
+    let petBBDD = `SELECT * FROM farmacos where PrincipioActivo like '%${prAct}%'`;
+    return new Promise((resolve, reject) => {
+        baseDatos.query(petBBDD, (err, medicamentos) => {
+            if (err) reject(err);
+            if (medicamentos.length > 0) {
+                resolve(medicamentos);
+            } else {
+                resolve(null);
+            }
+        })
+    })
+}
 
 //INICIO DEL SERVIDOR
 app.listen(app.get('port'), () => {

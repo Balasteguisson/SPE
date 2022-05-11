@@ -1766,7 +1766,7 @@ async function verCita(idCita){
         document.getElementById('citaListaMaternidad').style.display = "none"
     }
 
-    document.getElementById('medicamentoSeleccionado').innerHTML = "";
+    document.getElementById('medicamentoSeleccionado').value = "placeHolderMedicamento";
     solicitarPrescripcion(idCitaActual);
     cargarMedicionesPaciente(idPacienteCita);
     cambiarPantalla('menuCita')
@@ -2365,7 +2365,7 @@ async function solicitarPrescripcion(idCitaActual) {
     //     enfPrev: ,
     //     varMed: 
     // }
-    document.getElementById('medicamentoSeleccionado').innerHTML = "";
+    document.getElementById('medicamentoSeleccionado').value = "placeHolderMedicamento";
     let url = `/api/enfermero/:id/solicitarPrescripcion/${idCitaActual}`;
 
     let peticion = {
@@ -2381,11 +2381,16 @@ async function solicitarPrescripcion(idCitaActual) {
     } else {
         try {
             let desplegable = document.getElementById("medicamentoSeleccionado");
-            let option = document.createElement("option");
-            option.value = respuesta.medicamento.IDFarmaco;
-            option.text = respuesta.medicamento.Nombre;
-            desplegable.appendChild(option);
-            desplegable.value = respuesta.medicamento.IDFarmaco;
+            desplegable.innerHTML = "<option hidden selected value='placeHolderMedicamento'>Escoge un medicamento</option>";
+            console.log(respuesta.medicamento);
+            console.log(typeof(respuesta.medicamento));
+            for (let i = 0; i < respuesta.medicamento.length; i++) {
+                let option = document.createElement("option");
+                option.value = respuesta.medicamento[i].IDFarmaco;
+                option.text = respuesta.medicamento[i].Nombre;
+                desplegable.appendChild(option);
+                desplegable.value = respuesta.medicamento.IDFarmaco;
+            }
 
             document.getElementById("posologiaMedicamento").value = respuesta.dosis;
             document.getElementById("intervaloTomas").value = `${respuesta.frecuencia} horas`;
@@ -2395,6 +2400,7 @@ async function solicitarPrescripcion(idCitaActual) {
 
             document.getElementById("fechaInicioMedicacion").valueAsDate = new Date(respuesta.fechaInicio);
             document.getElementById("fechaFinMedicacion").valueAsDate = new Date(respuesta.fechaFin);
+            document.getElementById("medicamentoSeleccionado").value = "placeHolderMedicamento"
         } catch (e) {
             console.log(e);
         }
