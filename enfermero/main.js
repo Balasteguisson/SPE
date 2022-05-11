@@ -365,8 +365,7 @@ async function crearTest(){
     let datosTest = {
         idTest : IDTest,
         tipo : modalidad,
-        fechaCreacion : fechaCreacion,
-        periodo : periodo
+        fechaCreacion : fechaCreacion
     }
     let petPost = {
         method: 'POST',
@@ -1402,11 +1401,11 @@ function getResultados(dni) {
 
 
 //FUNCIONES PARA TEST
-async function cargarTest({periodo, tipo}){
+async function cargarTest({tipo}){
     //obtiene un unico test y sus preguntas, y genera un array con el ID del test, los ids de las preguntas
     // return ID test, ciclotest, preguntas[]
     let idEnfermero = await getIDEnfermero(dniEnfermeroActual)
-    let url = `/api/enfermero/${idEnfermero}/getTest/${tipo}/${periodo}`
+    let url = `/api/enfermero/${idEnfermero}/getTest/${tipo}`
     let peticion = {
         method: "GET"
     }
@@ -1598,8 +1597,8 @@ async function verTest0(){
     preguntasActivas = []
     preguntaActual = 1
     let hoy = new Date()
-    let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
-    let test = await cargarTest({ periodo: periodo, tipo: "Diabetes" })
+    let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`;
+    let test = await cargarTest({ tipo: "Diabetes" })
     console.log(test);
     if(test != 403 && test != 404){
         tipoTestActual = "Diabetes"

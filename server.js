@@ -227,7 +227,8 @@ app.post("/api/admin/:id/crearTest", (req, res) => {
     let IDTest = datosTest.idTest;
     console.log(IDTest);
     let tipo = datosTest.tipo; let fechaCreacion = datosTest.fechaCreacion;
-    let petPush1 = `INSERT INTO Test (IDTest, Tipo, FechaCreacion, Periodo) VALUES (${IDTest}, "${tipo}", "${fechaCreacion}", "${datosTest.periodo}")`;
+    let periodo = moment().format('MM-YYYY');
+    let petPush1 = `INSERT INTO Test (IDTest, Tipo, FechaCreacion, Periodo) VALUES (${IDTest}, "${tipo}", "${fechaCreacion}", "${periodo}")`;
     console.log(petPush1);
     baseDatos.query(petPush1, (err, respuesta) => {
         if (err) {
@@ -705,10 +706,11 @@ app.get('/api/enfermero/getIDEnfermero/:dni', (req, res) => {
 })
 
 //FUNCIONES PARA LA FORMACION DEL ENFERMERO
-app.get("/api/enfermero/:id/getTest/:tipo/:periodo", (req, res) => {
+app.get("/api/enfermero/:id/getTest/:tipo", (req, res) => {
     let tipo = req.params.tipo
-    let periodo = req.params.periodo
     let idEnfermero = req.params.id
+    let periodo = moment().format('MM-YYYY')
+    console.log(periodo);
     let petBBDD = `SELECT * FROM Test WHERE (Tipo = '${tipo}') AND (Periodo = '${periodo}')`
     baseDatos.query(petBBDD, (err, respuesta) => {
         if (err) {
@@ -1274,7 +1276,7 @@ function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enfPrev, 
         } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
     } else if (regla1[enfPrin] == 1 && regla3[medicamentoActual.PrincipioActivo] == 3) { //TRATAMIENTO EN SULFONILUREAS 2
         resultado = setGlipizida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-
+        console.log(resultado);
         if (resultado.salida != true) {
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         } //AHORA IRIA LOS DE INSULINA PERO LES DEJO PARA MAS TARDE
@@ -1434,7 +1436,7 @@ function setMetformina({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
         actualizacionTratamiento.indicaciones += " Se debe citar dentro de 3 meses para una revisión de HbA1c.";
     }
-    let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
+    let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
 
     return salida;
 
@@ -1521,7 +1523,7 @@ function setGliclazida({ dosis, varMed, medicamento, riesgos }) {
     actualizacionTratamiento.dosis = dosisReturn;
     actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
 
-    let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
+    let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
     return salida;
 
 }
@@ -1579,6 +1581,7 @@ function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
     let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2 || GBCsHoy[0];
     // transformar GBCMedia a entero
     GBCMedia = Math.round(GBCMedia);
+    console.log(GBCMedia);
     if (GBCMedia < 130) {
         dosisReturn = dosis;
     } else if (GBCMedia > 130) {
@@ -1607,7 +1610,7 @@ function setGlipizida({ dosis, varMed, medicamento, riesgos }) {
     actualizacionTratamiento.dosis = dosisReturn;
     actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
 
-    let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
+    let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
     return salida;
 }
 
@@ -1691,7 +1694,7 @@ function setGlimepirida({ dosis, varMed, medicamento, riesgos }) {
     actualizacionTratamiento.dosis = dosisReturn;
     actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
 
-    let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
+    let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
     return salida;
 }
 
@@ -1772,7 +1775,7 @@ function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         
     }
 
-    let salida = { actualizacionTratamiento: actualizacionTratamiento, salida: true };
+    let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
     return salida;
     
 }
