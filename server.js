@@ -2369,8 +2369,8 @@ async function setAcenocumarol({ dosis, varMed, medicamento, riesgos }) {
     let medidas = verPreviasINR(varMedicas);
     console.log(medidas);
 
-    if (2.3 < medidas.actuales < 3.7) {
-        console.log("buena");
+    if (2.3 < medidas.actuales < 3.7 && 2.3 < medidas.previas1 < 3.7) {
+
     }
 
     return { actualizarTratamiento: null, salida: true }
