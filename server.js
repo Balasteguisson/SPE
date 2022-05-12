@@ -986,7 +986,7 @@ app.put('/api/enfermero/:id/actualizarTratamiento/:idPaciente/:idFarmaco/:idCita
     let idFarmaco = req.params.idFarmaco
     let idCita = req.params.idCita
     let datos = req.body
-
+    console.log(datos);
     let petBBDD = `UPDATE tratamiento SET IDFarmaco = '${datos.medicamento}', FechaInicio = '${datos.fechaInicio}', FechaFin = '${datos.fechaFin}', IntervaloTomas = '${datos.intervalo}', Cantidad = '${datos.cantidad}', Anotaciones = '${datos.indicaciones}', IDCita ='${idCita}' WHERE IdPaciente = '${idPaciente}' AND IDFarmaco = '${idMedicamentoActual}'`;
     let respuesta = await actualizarTratamiento(petBBDD)
 
@@ -1816,7 +1816,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     if (actual === 2 && previa1 === 0) {
         console.log("entrando a salida rapida");
         dosisReturn = dosis; // se mantiene la dosis
-        actualizacionTratamiento.medicamento = medicamento;
+        actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
@@ -1826,7 +1826,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     }
     if (actual === 2 && previa1 === 2 && previa2 === 0) {
         dosisReturn = dosis; // se mantiene la dosis
-        actualizacionTratamiento.medicamento = medicamento;
+        actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
@@ -1835,7 +1835,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     }
     if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 0) {
         dosisReturn = dosis; // se mantiene la dosis
-        actualizacionTratamiento.medicamento = medicamento;
+        actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
@@ -1844,7 +1844,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     }
     if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 2) { 
         dosisReturn = dosis; // se mantiene la dosis
-        actualizacionTratamiento.medicamento = medicamento;
+        actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Derivación anual a médico de familia. \nMantener dosis y tomar una vez al día. \nSolicitar analíticas y ECG.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
@@ -1852,10 +1852,10 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.dosis = dosisReturn;
     };
 
-    actual = 1; previa1 = 0;
     if (actual === 1 && previa1 === 0) {
+        console.log("entrando aqui");
         dosisReturn = dosis; // se mantiene la dosis
-        actualizacionTratamiento.medicamento = medicamento;
+        actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta, tiene que mejorar, está fuera de objetivos.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
@@ -1863,7 +1863,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.dosis = dosisReturn;
     } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) < 40) { // si lleva dos citas fuera de los objetivos
         dosisReturn = `${parseInt(dosis.substring(0, dosis.length - 2)) * 2} mg`; // se duplica la dosis
-        actualizacionTratamiento.medicamento = medicamento;
+        actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Duplicar la dosis, hablar con el paciente si desea tomar todo en una toma o prefiere dividir la medicamento en una toma cada 12 horas.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
@@ -1872,7 +1872,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) == 40) { // si lleva citas fuera de los objetivos y el tratamiento ha alcanzado el maximo
         console.log("entrando a desvio medico");
         dosisReturn = dosis;
-        actualizacionTratamiento.medicamento = medicamento;
+        actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Se ha alcanzado la dosis máxima. \nDerivar a médico de familia para revisar tratamiento y mantener tratamiento mientras tanto.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
@@ -1881,7 +1881,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     }
 
     
-
+;
     
 
     let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };

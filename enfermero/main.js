@@ -1968,6 +1968,7 @@ async function actualizarTratamiento() {
         fechaInicio: document.getElementById("fechaInicioMedicacion").value,
         fechaFin: document.getElementById("fechaFinMedicacion").value
     }
+    console.log(datos);
     
     datos.intervalo = datos.intervalo.substring(0, datos.intervalo.length - 5)
     let peticion = {
@@ -2378,7 +2379,7 @@ async function solicitarPrescripcion(idCitaActual) {
         document.getElementById("recomendacionesMedicamento").style.color = "red";
     } else {
         try {
-            console.log(respuesta.medicamento);
+            console.log(respuesta.indicaciones);
             let desplegable = document.getElementById("medicamentoSeleccionado");
             desplegable.innerHTML = "<option hidden selected value='placeHolderMedicamento'>Escoge un medicamento</option>";
             for (let i = 0; i < respuesta.medicamento.length; i++) {
