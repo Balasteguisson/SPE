@@ -1327,7 +1327,9 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
             resultado = setRamipril({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
     } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 8) { //TRATAMIENTO EN RAMIPRIL
+        resultado = await setRamipril({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
     } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 9) { //TRATAMIENTO EN CLORTALIDONA
+        resultado = await setClortalidona({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
     } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 10) { //TRATAMIENTO EN AMLODIPINO
 
 
@@ -1922,11 +1924,19 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.dosis = dosisReturn;
     } else if (actual === 3) {
         actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento.";
-        if (parseInt(dosis.substring(0, dosis.length - 2)) == 50) {
-            dosisReturn = "25 mg";
-        } else if (parseInt(dosis.substring(0, dosis.length - 2)) == 25) {
+        if (parseFloat(dosis.substring(0, dosis.length - 2)) == 40) {
             dosisReturn = "20 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 20mg/día, revisar si es correcto.";
+        } else if (parseFloat(dosis.substring(0, dosis.length - 2)) == 20) {
+            dosisReturn = "10 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 10mg/día, revisar si es correcto.";
+        }
+        else if (parseFloat(dosis.substring(0, dosis.length - 2)) == 10) {
+            dosisReturn = "5 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 5mg/día, revisar si es correcto.";
+        }else if (parseFloat(dosis.substring(0, dosis.length - 2)) == 5) {
+            dosisReturn = "5 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión.\nYa no se puede reducir más la dosis. Derivar a médico de familia para revisar el tratamiento.";
         }
         actualizacionTratamiento.medicamento = [medicamento];
 
@@ -2054,11 +2064,16 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.dosis = dosisReturn;
     } else if (actual === 3) {
         actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento.";
-        if (parseInt(dosis.substring(0, dosis.length - 2)) == 50) {
-            dosisReturn = "25 mg";
-        } else if (parseInt(dosis.substring(0, dosis.length - 2)) == 25) {
-            dosisReturn = "20 mg";
-            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 20mg/día, revisar si es correcto.";
+        if (parseFloat(dosis.substring(0, dosis.length - 2)) == 10) {
+            dosisReturn = "5 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 5mg/día, revisar si es correcto.";
+        } else if (parseFloat(dosis.substring(0, dosis.length - 2)) == 5) {
+            dosisReturn = "2,5 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 2,5mg/día, revisar si es correcto.";
+        }
+        else if (parseFloat(dosis.substring(0, dosis.length - 2)) == 2.5) {
+            dosisReturn = "2,5 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión.\nYa no se puede reducir más la dosis. Derivar a médico de familia para revisar el tratamiento.";
         }
         actualizacionTratamiento.medicamento = [medicamento];
 
@@ -2188,8 +2203,11 @@ async function setClortalidona({ dosis, varMed, medicamento, riesgos }) {
         if (parseInt(dosis.substring(0, dosis.length - 2)) == 50) {
             dosisReturn = "25 mg";
         } else if (parseInt(dosis.substring(0, dosis.length - 2)) == 25) { 
-            dosisReturn = "20 mg";
-            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 20mg/día, revisar si es correcto.";
+            dosisReturn = "12,5 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 12,5mg/día, revisar si es correcto.";
+        } else if (parseInt(dosis.substring(0, dosis.length - 2)) == 12.5) {
+            dosisReturn = "12,5 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión.\nYa no se puede reducir más la dosis. Derivar a médico de familia para revisar el tratamiento.";
         }
         actualizacionTratamiento.medicamento = [medicamento];
         
