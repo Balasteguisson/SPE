@@ -1920,10 +1920,21 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
-    }
+    } else if (actual === 3) {
+        actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento.";
+        if (parseInt(dosis.substring(0, dosis.length - 2)) == 50) {
+            dosisReturn = "25 mg";
+        } else if (parseInt(dosis.substring(0, dosis.length - 2)) == 25) {
+            dosisReturn = "20 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 20mg/día, revisar si es correcto.";
+        }
+        actualizacionTratamiento.medicamento = [medicamento];
 
-    
-;
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    }
     
 
     let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
@@ -2041,10 +2052,22 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
+    } else if (actual === 3) {
+        actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento.";
+        if (parseInt(dosis.substring(0, dosis.length - 2)) == 50) {
+            dosisReturn = "25 mg";
+        } else if (parseInt(dosis.substring(0, dosis.length - 2)) == 25) {
+            dosisReturn = "20 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 20mg/día, revisar si es correcto.";
+        }
+        actualizacionTratamiento.medicamento = [medicamento];
+
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
     }
 
-
-    ;
 
 
     let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
@@ -2156,6 +2179,20 @@ async function setClortalidona({ dosis, varMed, medicamento, riesgos }) {
         dosisReturn = dosis;
         actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Se ha alcanzado la dosis máxima. \nDerivar a médico de familia para revisar tratamiento y mantener tratamiento mientras tanto.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    } else if (actual === 3) {
+        actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento.";
+        if (parseInt(dosis.substring(0, dosis.length - 2)) == 50) {
+            dosisReturn = "25 mg";
+        } else if (parseInt(dosis.substring(0, dosis.length - 2)) == 25) { 
+            dosisReturn = "20 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 20mg/día, revisar si es correcto.";
+        }
+        actualizacionTratamiento.medicamento = [medicamento];
+        
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
         actualizacionTratamiento.frecuencia = "24";
