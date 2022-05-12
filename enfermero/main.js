@@ -2379,7 +2379,6 @@ async function solicitarPrescripcion(idCitaActual) {
         document.getElementById("recomendacionesMedicamento").style.color = "red";
     } else {
         try {
-            console.log(respuesta.indicaciones);
             let desplegable = document.getElementById("medicamentoSeleccionado");
             desplegable.innerHTML = "<option hidden selected value='placeHolderMedicamento'>Escoge un medicamento</option>";
             for (let i = 0; i < respuesta.medicamento.length; i++) {
@@ -2392,7 +2391,6 @@ async function solicitarPrescripcion(idCitaActual) {
             if (respuesta.medicamento.length === 1) { 
                 document.getElementById("medicamentoSeleccionado").options[0].removeAttribute("selected");
                 let option = document.getElementById("medicamentoSeleccionado").options[1];
-                console.log(option);
                 option.selected = true;
 
             }

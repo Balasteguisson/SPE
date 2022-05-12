@@ -1761,7 +1761,6 @@ async function setInsulina({ dosis, varMed, medicamento, riesgos }) {
 function setSimvastatina({ dosis, varMed, medicamento, riesgos }) {
     if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
     var fecha = new Date();
-    //el id de var med es 7 para el ldl
     let actualizarTratamiento = { //este sera el objeto devuelto por la funcion
         medicamento,
         indicaciones: "",
@@ -1771,16 +1770,51 @@ function setSimvastatina({ dosis, varMed, medicamento, riesgos }) {
         fechaFin: ""
     }
 
-    let medidas = verPreviasLDL(varMed);
+    let medidas = verPreviasLDL(varMed); //devuelve si las mediciones de LDL son buenas, nulas o malas, 3 es si es demasiado baja
     
     let actual = medidas.actual;
     let previa1 = medidas.previa1;
-    let previa2 = medidas.previa2;
-    let previa3 = medidas.previa3;
+    if (previa1 === 0) {
+        actualizarTratamiento.indicaciones = "No hay mediciones de LDL previas.\nComprobar efectos secundarios en el paciente, si menciona alguno relacionado con el medicamento, se debe derivar a médico de familia. \nRegistrar medidas de LDL de la cita de hoy y dar cita para dentro de 6 meses.";
+        actualizarTratamiento.fechaInicio = fecha;
+        actualizarTratamiento.fechaFin = new Date(moment(fecha).add(6, "months").format("YYYY-MM-DD"));
+        actualizarTratamiento.medicamento = medicamento;
+        actualizarTratamiento.dosis = dosis;
+        actualizarTratamiento.frecuencia = "24";
+    } else if (previa1 != 0 && actual == 2) { //si va bien
+        actualizarTratamiento.dosis = dosis;
+        actualizarTratamiento.frecuencia = "24";
+        actualizarTratamiento.fechaInicio = fecha;
+        actualizarTratamiento.fechaFin = new Date(moment(fecha).add(6, "months").format("YYYY-MM-DD"));
+        actualizarTratamiento.medicamento = medicamento;
+        actualizarTratamiento.indicaciones = "Animar al paciente a mantener su estilo de vida y recordarle la importancia de la dieta. \nSi menciona efectos secundarios se debe derivar al médico de familia."
+    } else if (previa1 != 0 && actual == 1) { //si va mal
+        actualizarTratamiento.frecuencia = "24";
+        actualizarTratamiento.fechaInicio = fecha;
+        actualizarTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizarTratamiento.medicamento = medicamento;
+        actualizarTratamiento.indicaciones = "Recordar al paciente la importancia de los hábitos de vida saludables y la dieta. \nSi menciona efectos secundarios se debe derivar al médico de familia."
+        if (parseInt(dosis.substring(0, dosis.length - 2)) == 20) {
+            actualizarTratamiento.dosis = "40 mg";
+        } else if (parseInt(dosis.substring(0, dosis.length - 2)) < 20) {
+            actualizarTratamiento.dosis = "20 mg";
+        }
 
-    console.log(medidas);
+
+    } else if (previa1 != 0 && actual == 3) {
+        actualizarTratamiento.frecuencia = "24";
+        actualizarTratamiento.fechaInicio = fecha;
+        actualizarTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizarTratamiento.medicamento = medicamento;
+        actualizarTratamiento.indicaciones = "El LDL es demasiado bajo, hay que reducir la dosis. \nSi menciona efectos secundarios se debe derivar al médico de familia."
+        if (parseInt(dosis.substring(0, dosis.length - 2)) == 40) {
+            actualizarTratamiento.dosis = "40 mg";
+        } else if (parseInt(dosis.substring(0, dosis.length - 2)) == 20) { 
+            actualizarTratamiento.dosis = "15 mg";
+            actualizarTratamiento.indicaciones = "El LDL es demasiado bajo, hay que reducir la dosis, se ha reducido a 15 mg/día, confirmar que es correcto. \nSi menciona efectos secundarios se debe derivar al médico de familia."
+        }
+    }
     
-
     return { actualizarTratamiento: actualizarTratamiento, salida: true }
     
 
@@ -1828,7 +1862,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
         return { actualizarTratamiento: actualizacionTratamiento, salida: true };
     }
@@ -1838,7 +1872,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     }
     if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 0) {
@@ -1847,7 +1881,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     }
     if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 2) { 
@@ -1856,7 +1890,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Derivación anual a médico de familia. \nMantener dosis y tomar una vez al día. \nSolicitar analíticas y ECG.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     };
 
@@ -1867,7 +1901,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta, tiene que mejorar, está fuera de objetivos.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) < 40) { // si lleva dos citas fuera de los objetivos
         dosisReturn = `${parseInt(dosis.substring(0, dosis.length - 2)) * 2} mg`; // se duplica la dosis
@@ -1875,7 +1909,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Duplicar la dosis, hablar con el paciente si desea tomar todo en una toma o prefiere dividir la medicamento en una toma cada 12 horas.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) == 40) { // si lleva citas fuera de los objetivos y el tratamiento ha alcanzado el maximo
         dosisReturn = dosis;
@@ -1883,7 +1917,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Se ha alcanzado la dosis máxima. \nDerivar a médico de familia para revisar tratamiento y mantener tratamiento mientras tanto.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     }
 
@@ -1949,7 +1983,7 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
         return { actualizarTratamiento: actualizacionTratamiento, salida: true };
     }
@@ -1959,7 +1993,7 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     }
     if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 0) {
@@ -1968,7 +2002,7 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     }
     if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 2) {
@@ -1977,7 +2011,7 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Derivación anual a médico de familia. \nMantener dosis y tomar una vez al día. \nSolicitar analíticas y ECG.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     };
 
@@ -1988,7 +2022,7 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta, tiene que mejorar, está fuera de objetivos.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) < 40) { // si lleva dos citas fuera de los objetivos
         dosisReturn = `${parseInt(dosis.substring(0, dosis.length - 2)) * 2} mg`; // se duplica la dosis
@@ -1996,7 +2030,7 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Duplicar la dosis, hablar con el paciente si desea tomar todo en una toma o prefiere dividir la medicamento en una toma cada 12 horas.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) == 10) { // si lleva citas fuera de los objetivos y el tratamiento ha alcanzado el maximo
         dosisReturn = dosis;
@@ -2004,7 +2038,7 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Se ha alcanzado la dosis máxima. \nDerivar a médico de familia para revisar tratamiento y mantener tratamiento mientras tanto.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
-        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     }
 
