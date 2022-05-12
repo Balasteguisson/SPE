@@ -1810,9 +1810,10 @@ function setSimvastatina({ dosis, varMed, medicamento, riesgos }) {
         actualizarTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
         actualizarTratamiento.medicamento = medicamento;
         actualizarTratamiento.indicaciones = "El LDL es demasiado bajo, hay que reducir la dosis. \nSi menciona efectos secundarios se debe derivar al médico de familia."
-        if (parseInt(dosis.substring(0, dosis.length - 2)) == 40) {
+        dosis = dosis.substring(0, dosis.length - 2);
+        if (dosis == "40") {
             actualizarTratamiento.dosis = "40 mg";
-        } else if (parseInt(dosis.substring(0, dosis.length - 2)) == 20) { 
+        } else if (dosis == 20) { 
             actualizarTratamiento.dosis = "15 mg";
             actualizarTratamiento.indicaciones = "El LDL es demasiado bajo, hay que reducir la dosis, se ha reducido a 15 mg/día, confirmar que es correcto. \nSi menciona efectos secundarios se debe derivar al médico de familia."
         }
@@ -1924,17 +1925,18 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.dosis = dosisReturn;
     } else if (actual === 3) {
         actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento.";
-        if (parseFloat(dosis.substring(0, dosis.length - 2)) == 40) {
+        let dosis = dosis.substring(0, dosis.length - 2);
+        if (dosis == "40") {
             dosisReturn = "20 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 20mg/día, revisar si es correcto.";
-        } else if (parseFloat(dosis.substring(0, dosis.length - 2)) == 20) {
+        } else if (dosis == "20") {
             dosisReturn = "10 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 10mg/día, revisar si es correcto.";
         }
-        else if (parseFloat(dosis.substring(0, dosis.length - 2)) == 10) {
+        else if (dosis == 10) {
             dosisReturn = "5 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 5mg/día, revisar si es correcto.";
-        }else if (parseFloat(dosis.substring(0, dosis.length - 2)) == 5) {
+        }else if (dosis == 5) {
             dosisReturn = "5 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión.\nYa no se puede reducir más la dosis. Derivar a médico de familia para revisar el tratamiento.";
         }
@@ -2064,14 +2066,15 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.dosis = dosisReturn;
     } else if (actual === 3) {
         actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento.";
-        if (parseFloat(dosis.substring(0, dosis.length - 2)) == 10) {
+        let dosis = dosis.substring(0, dosis.length - 2);
+        if (dosis == "10") {
             dosisReturn = "5 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 5mg/día, revisar si es correcto.";
-        } else if (parseFloat(dosis.substring(0, dosis.length - 2)) == 5) {
+        } else if (dosis == "5") {
             dosisReturn = "2,5 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 2,5mg/día, revisar si es correcto.";
         }
-        else if (parseFloat(dosis.substring(0, dosis.length - 2)) == 2.5) {
+        else if (dosis == "2.5") {
             dosisReturn = "2,5 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión.\nYa no se puede reducir más la dosis. Derivar a médico de familia para revisar el tratamiento.";
         }
@@ -2174,7 +2177,7 @@ async function setClortalidona({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
-    } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) == 25) { // si lleva dos citas fuera de los objetivos
+    } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) == "25") { // si lleva dos citas fuera de los objetivos
         dosisReturn = `${parseInt(dosis.substring(0, dosis.length - 2)) * 2} mg`; // se duplica la dosis
         actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Subir dosis a 50 mg/día, hablar con el paciente si desea tomar todo en una toma o prefiere dividir la medicamento en una toma cada 12 horas.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta.";
@@ -2199,13 +2202,14 @@ async function setClortalidona({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     } else if (actual === 3) {
+        let dosis = dosis.substring(0, dosis.length - 2);
         actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento.";
-        if (parseInt(dosis.substring(0, dosis.length - 2)) == 50) {
+        if (dosis == "50") {
             dosisReturn = "25 mg";
-        } else if (parseInt(dosis.substring(0, dosis.length - 2)) == 25) { 
+        } else if (dosis == "25") { 
             dosisReturn = "12,5 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 12,5mg/día, revisar si es correcto.";
-        } else if (parseInt(dosis.substring(0, dosis.length - 2)) == 12.5) {
+        } else if (dosis == "12,5") {
             dosisReturn = "12,5 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión.\nYa no se puede reducir más la dosis. Derivar a médico de familia para revisar el tratamiento.";
         }
@@ -2218,13 +2222,144 @@ async function setClortalidona({ dosis, varMed, medicamento, riesgos }) {
     }
 
 
-    ;
+    let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
+    console.log("return");
+    return salida;
+
+}
+
+async function setAmlodipino({ dosis, varMed, medicamento, riesgos }) {
+    let idPaciente = varMed[1].IDPaciente;
+    let varMedicas = await allVarMed(idPaciente);
+    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+    let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
+    if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
+
+    var fecha = new Date();
+
+
+
+    // en las siguientes variables se almacenan los estados de las medidas para saber si estan bien o mal
+    let actual = 0; //0 para no hay datos, 1 para mal, 2 para bien
+    let previa1 = 0;
+    let previa2 = 0;
+    let previa3 = 0;
+
+
+    // let varMed = await allVarMed()
+    let previas = verPreviasTension(varMedicas);
+
+    let dosisReturn;
+    let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
+        medicamento,
+        indicaciones: "",
+        dosis,
+        frecuencia: "",
+        fechaInicio: "",
+        fechaFin: ""
+    }
+
+    actual = previas.actual;
+    previa1 = previas.previa1;
+    previa2 = previas.previa2;
+    previa3 = previas.previa3;
+    if (actual === 0) return { actualizarTratamiento: null, salida: true }
+    if (actual === 2 && previa1 === 0) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+        return { actualizarTratamiento: actualizacionTratamiento, salida: true };
+    }
+    if (actual === 2 && previa1 === 2 && previa2 === 0) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    }
+    if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 0) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    }
+    if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 2) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Derivación anual a médico de familia. \nMantener dosis y tomar una vez al día. \nSolicitar analíticas y ECG.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    };
+
+    if (actual === 1 && previa1 === 0) {
+        console.log("entrando aqui");
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta, tiene que mejorar, está fuera de objetivos.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    } else if (actual === 1 && previa1 === 1 && parseFloat(dosis.substring(0, dosis.length - 2)) < 10) { // si lleva dos citas fuera de los objetivos
+        dosisReturn = `${parseFloat(dosis.substring(0, dosis.length - 2)) * 2} mg`; // se duplica la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = `Subir dosis a ${dosisReturn}mg/día, hablar con el paciente si desea tomar todo en una toma o prefiere dividir la medicamento en una toma cada 12 horas.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta.`;
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    } else if (actual === 1 && previa1 === 1 && parseFloat(dosis.substring(0, dosis.length - 2)) == 10) { // si lleva citas fuera de los objetivos y el tratamiento ha alcanzado el maximo
+        dosisReturn = dosis;
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Se ha alcanzado la dosis máxima. \nDerivar a médico de familia para revisar tratamiento y mantener tratamiento mientras tanto.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    } else if (actual === 1 && previa1 === 1 && previa2 === 1) {
+        dosisReturn = dosis;
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Se ha alcanzado la dosis máxima. \nDerivar a médico de familia para revisar tratamiento y mantener tratamiento mientras tanto.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    } else if (actual === 3) {
+        actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento.";
+        let dosis = parseFloat(dosis.substring(0, dosis.length - 2));
+        dosis = dosis.replace(",", ".");
+        if (dosis == 10) {
+            dosisReturn = "5 mg";
+        } else if (dosis == 5) {
+            dosisReturn = "2,5 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 12,5mg/día, revisar si es correcto.";
+        } else if (dosis == "2,5") {
+            dosisReturn = "2,5 mg";
+            actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión.\nYa no se puede reducir más la dosis. Derivar a médico de familia para revisar el tratamiento.";
+        }
+        actualizacionTratamiento.medicamento = [medicamento];
+
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    }
 
 
     let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
     console.log("return");
     return salida;
-
 }
 
 
