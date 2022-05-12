@@ -1903,8 +1903,8 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
-    } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) < 40) { // si lleva dos citas fuera de los objetivos
-        dosisReturn = `${parseInt(dosis.substring(0, dosis.length - 2)) * 2} mg`; // se duplica la dosis
+    } else if (actual === 1 && previa1 === 1 && dosis.substring(0, dosis.length - 2) < "40") { // si lleva dos citas fuera de los objetivos
+        dosisReturn = `${parseFloat(dosis.substring(0, dosis.length - 2)) * 2} mg`; // se duplica la dosis
         actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Duplicar la dosis, hablar con el paciente si desea tomar todo en una toma o prefiere dividir la medicamento en una toma cada 12 horas.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta.";
         actualizacionTratamiento.fechaInicio = fecha;
@@ -2044,15 +2044,15 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
-    } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) < 40) { // si lleva dos citas fuera de los objetivos
-        dosisReturn = `${parseInt(dosis.substring(0, dosis.length - 2)) * 2} mg`; // se duplica la dosis
+    } else if (actual === 1 && previa1 === 1 && dosis.substring(0, dosis.length - 2) < "10") { // si lleva dos citas fuera de los objetivos
+        dosisReturn = `${parseFloat(dosis.substring(0, dosis.length - 2)) * 2} mg`; // se duplica la dosis
         actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Duplicar la dosis, hablar con el paciente si desea tomar todo en una toma o prefiere dividir la medicamento en una toma cada 12 horas.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta.";
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
-    } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) == 10) { // si lleva citas fuera de los objetivos y el tratamiento ha alcanzado el maximo
+    } else if (actual === 1 && previa1 === 1 && dosis.substring(0, dosis.length - 2) == "10") { // si lleva citas fuera de los objetivos y el tratamiento ha alcanzado el maximo
         dosisReturn = dosis;
         actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Se ha alcanzado la dosis máxima. \nDerivar a médico de familia para revisar tratamiento y mantener tratamiento mientras tanto.";
@@ -2358,6 +2358,11 @@ async function setAmlodipino({ dosis, varMed, medicamento, riesgos }) {
     return salida;
 }
 
+async function setAcenocumarol({ dosis, varMed, medicamento, riesgos }) {
+    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+}
+
+
 
 function verPreviasTension(varMed) {
     let citas = [];
@@ -2459,7 +2464,6 @@ function verPreviasTension(varMed) {
     return { actual, previa1, previa2, previa3 };
 }
 
-
 function verPreviasLDL(varMed) {
     let citas = [];
     let actual;
@@ -2545,6 +2549,57 @@ function verPreviasLDL(varMed) {
 
     return { actual, previa1, previa2, previa3 };
 }
+
+function verPreviasINR(varMed) {
+    let citas = [];
+    let actual;
+    let previa1; // aqui se asignan los valores para ver si estaba bien o no en las semanas anteriores
+    let previa2;
+    let previa3;
+    let citaActual;
+    let citaPrevia1;
+    let citaPrevia2;
+    let citaPrevia3;
+    varMed.sort(function (a, b) { //se ordenan las var med de mayor a menor por su cita
+        return b.Cita - a.Cita;
+    });
+
+    for (let a = 0; a < varMed.length; a++) { //se guardan las citas
+        if (varMed[a].Tipo === 8) {
+            citas.push(varMed[a].Cita);
+        }
+    }
+    let citasUnicas = citas.filter(function (value, index, self) { // se obtienen las citas unicas
+        return self.indexOf(value) === index;
+    });
+    citaActual = citasUnicas[0];
+    citaPrevia1 = citasUnicas[1];
+    citaPrevia2 = citasUnicas[2];
+    citaPrevia3 = citasUnicas[3];
+
+    let actuales; let previas1; let previas2; let previas3;
+
+    for (let a = 0; a < varMed.length; a++) {
+        if (varMed[a].Cita === citaActual) {
+            actuales = varMed[a].Valor;
+        }
+        if (varMed[a].Cita === citaPrevia1) {
+            previas1 = varMed[a].Valor;
+        }
+        if (varMed[a].Cita === citaPrevia2) {
+            previas2 = varMed[a].Valor;
+        }
+        if (varMed[a].Cita === citaPrevia3) {
+            previas3 = varMed[a].Valor;
+        }
+    }
+
+
+    return { actuales, previas1, previas2, previas3 };
+}
+
+
+
 
 function buscarMedicamento(prAct) {
     let petBBDD = `SELECT * FROM farmacos where PrincipioActivo like '%${prAct}%'`;
