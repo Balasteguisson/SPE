@@ -1753,7 +1753,6 @@ async function setInsulina({ dosis, varMed, medicamento, riesgos }) {
             fechaFin: new Date(moment().add(4, "days").format("YYYY-MM-DD"))
         }
         salida = true;
-        console.log("return cuando no esta en insulina ya");
         return { actualizarTratamiento, salida };
     }
     return {actualizarTratamiento: null, salida: true}
@@ -1765,7 +1764,6 @@ function setSimvastatina({ dosis, varMed, medicamento, riesgos }) {
 }
 
 async function setEnalapril({ dosis, varMed, medicamento, riesgos }) { 
-    console.log("entrando a enalapril");
     let idPaciente = varMed[1].IDPaciente;
     let varMedicas = await allVarMed(idPaciente);
     if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
@@ -1811,10 +1809,8 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     previa1 = previas.previa1;
     previa2 = previas.previa2;
     previa3 = previas.previa3;
-    console.log(dosis);
     if (actual === 0) return { actualizarTratamiento: null, salida: true }
     if (actual === 2 && previa1 === 0) {
-        console.log("entrando a salida rapida");
         dosisReturn = dosis; // se mantiene la dosis
         actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
@@ -1870,7 +1866,6 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.frecuencia = 24;
         actualizacionTratamiento.dosis = dosisReturn;
     } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) == 40) { // si lleva citas fuera de los objetivos y el tratamiento ha alcanzado el maximo
-        console.log("entrando a desvio medico");
         dosisReturn = dosis;
         actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Se ha alcanzado la dosis máxima. \nDerivar a médico de familia para revisar tratamiento y mantener tratamiento mientras tanto.";
@@ -1890,7 +1885,124 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     
 }
 function setRamipril({ dosis, varMed, medicamento, riesgos }) { 
-    
+    let idPaciente = varMed[1].IDPaciente;
+    let varMedicas = await allVarMed(idPaciente);
+    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+    let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
+    if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
+
+    var fecha = new Date();
+    let fechaCita = moment(fecha).format("YYYY-MM-DD");
+
+
+
+    let tensionSHoy; //medidas de tension diastolica de hoy
+    let tensionDHoy; //medidas de tension sistolica
+    let tensionSPrevia; //ultima medida
+    let tensionDPrevia;
+    let tensionSPrevia1; // penultima medida
+    let tensionDPrevia1;
+    let tensionSPrevia2; // antepenultima medida
+    let tensionDPrevia2;
+
+
+    // en las siguientes variables se almacenan los estados de las medidas para saber si estan bien o mal
+    let actual = 0; //0 para no hay datos, 1 para mal, 2 para bien
+    let previa1 = 0;
+    let previa2 = 0;
+    let previa3 = 0;
+
+
+    // let varMed = await allVarMed()
+    let previas = verPrevias(varMedicas);
+
+    let dosisReturn;
+    let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
+        medicamento,
+        indicaciones: "",
+        dosis,
+        frecuencia: "",
+        fechaInicio: "",
+        fechaFin: ""
+    }
+
+    actual = previas.actual;
+    previa1 = previas.previa1;
+    previa2 = previas.previa2;
+    previa3 = previas.previa3;
+    if (actual === 0) return { actualizarTratamiento: null, salida: true }
+    if (actual === 2 && previa1 === 0) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.dosis = dosisReturn;
+        return { actualizarTratamiento: actualizacionTratamiento, salida: true };
+    }
+    if (actual === 2 && previa1 === 2 && previa2 === 0) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.dosis = dosisReturn;
+    }
+    if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 0) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.dosis = dosisReturn;
+    }
+    if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 2) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Derivación anual a médico de familia. \nMantener dosis y tomar una vez al día. \nSolicitar analíticas y ECG.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.dosis = dosisReturn;
+    };
+
+    if (actual === 1 && previa1 === 0) {
+        console.log("entrando aqui");
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta, tiene que mejorar, está fuera de objetivos.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.dosis = dosisReturn;
+    } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) < 40) { // si lleva dos citas fuera de los objetivos
+        dosisReturn = `${parseInt(dosis.substring(0, dosis.length - 2)) * 2} mg`; // se duplica la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Duplicar la dosis, hablar con el paciente si desea tomar todo en una toma o prefiere dividir la medicamento en una toma cada 12 horas.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.dosis = dosisReturn;
+    } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) == 10) { // si lleva citas fuera de los objetivos y el tratamiento ha alcanzado el maximo
+        dosisReturn = dosis;
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Se ha alcanzado la dosis máxima. \nDerivar a médico de familia para revisar tratamiento y mantener tratamiento mientras tanto.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = 24;
+        actualizacionTratamiento.dosis = dosisReturn;
+    }
+
+
+    ;
+
+
+    let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
+    console.log("return");
+    return salida;
 }
 
 
