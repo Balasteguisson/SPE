@@ -1310,11 +1310,8 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
     } else if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 4) { //TRATAMIENTO EN SULFONILUREAS 3
         resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
-            //INSULINAS
+            resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
-
-
-
     } else if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 5) {
         resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
     } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 6) { //TRATAMIENTO EN SIMVASTATINA
@@ -1333,6 +1330,8 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
     } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 10) { //TRATAMIENTO EN AMLODIPINO
         resultado = await setAmlodipino({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
     } else if (regla1[enfPrin] == 3 && regla3[principioBuscado] == 11) { //TRATAMIENTO EN ACENOCUMAROL
+        resultado = await setAcenocumarol({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        console.log(resultado);
     } else if (regla1[enfPrin] == 3 && regla3[principioBuscado] == 12) { //TRATAMIENTO EN WARFARINA
     }
     tratamientoRecomendado = resultado.actualizarTratamiento;
@@ -2225,14 +2224,14 @@ async function setClortalidona({ dosis, varMed, medicamento, riesgos }) {
 }
 
 async function setAmlodipino({ dosis, varMed, medicamento, riesgos }) {
-    let idPaciente = varMed[1].IDPaciente;
-    let varMedicas = await allVarMed(idPaciente);
     if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
     let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
     if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
-
+    
     var fecha = new Date();
-
+    
+    let idPaciente = varMed[1].IDPaciente;
+    let varMedicas = await allVarMed(idPaciente);
 
 
     // en las siguientes variables se almacenan los estados de las medidas para saber si estan bien o mal
@@ -2360,6 +2359,21 @@ async function setAmlodipino({ dosis, varMed, medicamento, riesgos }) {
 
 async function setAcenocumarol({ dosis, varMed, medicamento, riesgos }) {
     if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+    let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
+    if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
+
+    let idPaciente = varMed[0].IDPaciente;
+    let varMedicas = await allVarMed(idPaciente);
+    var fecha = new Date();
+
+    let medidas = verPreviasINR(varMedicas);
+    console.log(medidas);
+
+    if (2.3 < medidas.actuales < 3.7) {
+        console.log("buena");
+    }
+
+    return { actualizarTratamiento: null, salida: true }
 }
 
 
