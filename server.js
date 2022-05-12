@@ -1760,6 +1760,7 @@ async function setInsulina({ dosis, varMed, medicamento, riesgos }) {
 
 function setSimvastatina({ dosis, varMed, medicamento, riesgos }) {
     if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+
     var fecha = new Date();
     let actualizarTratamiento = { //este sera el objeto devuelto por la funcion
         medicamento,
@@ -2052,6 +2053,126 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
 }
 
 
+async function setClortalidona({ dosis, varMed, medicamento, riesgos }) {
+    let idPaciente = varMed[1].IDPaciente;
+    let varMedicas = await allVarMed(idPaciente);
+    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+    let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
+    if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
+
+    var fecha = new Date();
+
+
+
+    // en las siguientes variables se almacenan los estados de las medidas para saber si estan bien o mal
+    let actual = 0; //0 para no hay datos, 1 para mal, 2 para bien
+    let previa1 = 0;
+    let previa2 = 0;
+    let previa3 = 0;
+
+
+    // let varMed = await allVarMed()
+    let previas = verPreviasTension(varMedicas);
+
+    let dosisReturn;
+    let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
+        medicamento,
+        indicaciones: "",
+        dosis,
+        frecuencia: "",
+        fechaInicio: "",
+        fechaFin: ""
+    }
+
+    actual = previas.actual;
+    previa1 = previas.previa1;
+    previa2 = previas.previa2;
+    previa3 = previas.previa3;
+    if (actual === 0) return { actualizarTratamiento: null, salida: true }
+    if (actual === 2 && previa1 === 0) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+        return { actualizarTratamiento: actualizacionTratamiento, salida: true };
+    }
+    if (actual === 2 && previa1 === 2 && previa2 === 0) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    }
+    if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 0) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 3 meses.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    }
+    if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 2) {
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Derivación anual a médico de familia. \nMantener dosis y tomar una vez al día. \nSolicitar analíticas y ECG.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(3, "months").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    };
+
+    if (actual === 1 && previa1 === 0) {
+        console.log("entrando aqui");
+        dosisReturn = dosis; // se mantiene la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Mantener la dosis, tomar una vez al día.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta, tiene que mejorar, está fuera de objetivos.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) == 25) { // si lleva dos citas fuera de los objetivos
+        dosisReturn = `${parseInt(dosis.substring(0, dosis.length - 2)) * 2} mg`; // se duplica la dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Subir dosis a 50 mg/día, hablar con el paciente si desea tomar todo en una toma o prefiere dividir la medicamento en una toma cada 12 horas.\nDar cita para revisión en 15 días. \nRecordar al paciente la importancia de sus hábitos de vida y la dieta.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    } else if (actual === 1 && previa1 === 1 && parseInt(dosis.substring(0, dosis.length - 2)) == 50) { // si lleva citas fuera de los objetivos y el tratamiento ha alcanzado el maximo
+        dosisReturn = dosis;
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Se ha alcanzado la dosis máxima. \nDerivar a médico de familia para revisar tratamiento y mantener tratamiento mientras tanto.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    } else if (actual === 1 && previa1 === 1 && previa2 === 1) {
+        dosisReturn = dosis;
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "Se ha alcanzado la dosis máxima. \nDerivar a médico de familia para revisar tratamiento y mantener tratamiento mientras tanto.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosisReturn;
+    }
+
+
+    ;
+
+
+    let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
+    console.log("return");
+    return salida;
+
+}
+
+
 function verPreviasTension(varMed) {
     let citas = [];
     let actual = 2;
@@ -2117,13 +2238,18 @@ function verPreviasTension(varMed) {
         actual = 2;
     } else if (actualS == undefined && actualD == undefined) {
         actual = 0;
+    } else if (actualS < 90 && actualD < 60) { 
+        actual = 3;
     }
+
     if (previas1S < 140 && previas1D < 90) {
         previa1 = 2;
     } else if (previas1S > 140 || previas1D > 90) {
         previa1 = 1;
     } else if (previas1S === undefined && previas1D === undefined) {
         previa1 = 0;
+    } else if (previas1S < 90 && previas1D < 60) {
+        previa1 = 3;
     }
     if (previas2S < 140 && previas2D < 90) {
         previa2 = 2;
@@ -2131,6 +2257,8 @@ function verPreviasTension(varMed) {
         previa2 = 1;
     } else if (previas2S === undefined && previas2D === undefined) {
         previa2 = 0;
+    } else if (previas2S < 90 && previas2D < 60) {
+        previa2 = 3;
     }
     if (previas3S < 140 && previas3D < 90) {
         previa3 = 2;
@@ -2138,6 +2266,8 @@ function verPreviasTension(varMed) {
         previa3 = 1;
     } else if (previas3S === undefined && previas3D === undefined) {
         previa3 = 0;
+    } else if (previas3S < 90 && previas3D < 60) {
+        previa3 = 3;
     }
 
     return { actual, previa1, previa2, previa3 };
