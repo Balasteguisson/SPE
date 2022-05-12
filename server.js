@@ -1270,9 +1270,6 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
     let resultado = { actualizacionTratamiento: null, salida: false };
     let principioBuscado;
     medicamentoActual.PrincipioActivo.includes("insulina") ? principioBuscado = "insulina" : principioBuscado = medicamentoActual.PrincipioActivo;
-
-    
-
     if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 1) { //TRATAMIENTO EN METFORMINA
         resultado = setMetformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
@@ -1322,6 +1319,7 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
         resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
     } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 6) { //TRATAMIENTO EN SIMVASTATINA
         resultado = setSimvastatina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos })
+        console.log(resultado);
     } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 7) { //TRATAMIENTO EN ENALAPRIL
         resultado = await setEnalapril({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         console.log(resultado);
@@ -1763,7 +1761,28 @@ async function setInsulina({ dosis, varMed, medicamento, riesgos }) {
 function setSimvastatina({ dosis, varMed, medicamento, riesgos }) {
     if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
     var fecha = new Date();
+    //el id de var med es 7 para el ldl
+    let actualizarTratamiento = { //este sera el objeto devuelto por la funcion
+        medicamento,
+        indicaciones: "",
+        dosis,
+        frecuencia: "",
+        fechaInicio: "",
+        fechaFin: ""
+    }
 
+    let medidas = verPreviasLDL(varMed);
+    
+    let actual = medidas.actual;
+    let previa1 = medidas.previa1;
+    let previa2 = medidas.previa2;
+    let previa3 = medidas.previa3;
+
+    console.log(medidas);
+    
+
+    return { actualizarTratamiento: actualizarTratamiento, salida: true }
+    
 
 }
 
@@ -2001,10 +2020,10 @@ async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
 
 function verPreviasTension(varMed) {
     let citas = [];
-    let actual;
-    let previa1; // aqui se asignan los valores para ver si estaba bien o no en las semanas anteriores
-    let previa2;
-    let previa3;
+    let actual = 2;
+    let previa1 = 2; // aqui se asignan los valores para ver si estaba bien o no en las semanas anteriores
+    let previa2 = 2;
+    let previa3 = 2;
     let actualS; let actualD;
     let previas1S; let previas2S; let previas3S;
     let previas1D; let previas2D; let previas3D;
@@ -2062,29 +2081,116 @@ function verPreviasTension(varMed) {
         actual = 1;
     } else if (actualS < 140 && actualD < 90) {
         actual = 2;
-    } else if (actualS == null && actualD == null) {
+    } else if (actualS == undefined && actualD == undefined) {
         actual = 0;
     }
     if (previas1S < 140 && previas1D < 90) {
         previa1 = 2;
     } else if (previas1S > 140 || previas1D > 90) {
         previa1 = 1;
-    } else if (previas1S === null && previas1D === null) {
+    } else if (previas1S === undefined && previas1D === undefined) {
         previa1 = 0;
     }
     if (previas2S < 140 && previas2D < 90) {
         previa2 = 2;
     } else if (previas2S > 140 || previas2D > 90) {
         previa2 = 1;
-    } else if (previas2S === null && previas2D === null) {
+    } else if (previas2S === undefined && previas2D === undefined) {
         previa2 = 0;
     }
     if (previas3S < 140 && previas3D < 90) {
         previa3 = 2;
     } else if (previas3S > 140 || previas3D > 90) {
         previa3 = 1;
-    } else if (previas3S === null && previas3D === null) {
+    } else if (previas3S === undefined && previas3D === undefined) {
         previa3 = 0;
+    }
+
+    return { actual, previa1, previa2, previa3 };
+}
+
+
+function verPreviasLDL(varMed) {
+    let citas = [];
+    let actual;
+    let previa1; // aqui se asignan los valores para ver si estaba bien o no en las semanas anteriores
+    let previa2;
+    let previa3;
+    let citaActual;
+    let citaPrevia1;
+    let citaPrevia2;
+    let citaPrevia3;
+    varMed.sort(function (a, b) { //se ordenan las var med de mayor a menor por su cita
+        return b.Cita - a.Cita;
+    });
+
+    for (let a = 0; a < varMed.length; a++) { //se guardan las citas
+        if (varMed[a].Tipo === 7) {
+            citas.push(varMed[a].Cita);
+        }
+    }
+    let citasUnicas = citas.filter(function (value, index, self) { // se obtienen las citas unicas
+        return self.indexOf(value) === index;
+    });
+    citaActual = citasUnicas[0];
+    citaPrevia1 = citasUnicas[1];
+    citaPrevia2 = citasUnicas[2];
+    citaPrevia3 = citasUnicas[3];
+
+    let actuales; let previas1; let previas2; let previas3;
+
+    for (let a = 0; a < varMed.length; a++) {
+        if (varMed[a].Cita === citaActual) {
+            actuales = varMed[a].Valor;
+        }
+        if (varMed[a].Cita === citaPrevia1) {
+            previas1 = varMed[a].Valor;
+        }
+        if (varMed[a].Cita === citaPrevia2) {
+            previas2 = varMed[a].Valor;
+        }
+        if (varMed[a].Cita === citaPrevia3) {
+            previas3 = varMed[a].Valor;
+        }
+    }
+
+    if (actuales > 160) {
+        actual = 1;
+    } else if (actuales < 160) {
+        actual = 2;
+    } else if (actuales == null) {
+        actual = 0;
+    } else if (actuales < 50) {
+        actual = 3; //esto es que es demasiado bajo
+    }
+    if (previas1 < 160) {
+        previa1 = 2;
+    } else if (previas1 > 160) {
+        previa1 = 1;
+    } else if (previas1 === undefined) {
+        previa1 = 0;
+    } else if (previas1 < 50) {
+        previa1 = 3;
+    }
+
+    if (previas2 < 160 ) {
+        previa2 = 2;
+    } else if (previas2 > 160) {
+        previa2 = 1;
+    } else if (previas2 === undefined) {
+        previa2 = 0;
+    } else if (previas2 < 50) {
+        previa2 = 3;
+    }
+
+    if (previas3 < 160 ) {
+        previa3 = 2;
+    } else if (previas3 > 160 ) {
+        previa3 = 1;
+    } else if (previas3 === undefined ) {
+        previa3 = 0;
+    } else if (previas3 < 50) {
+        previa3 = 3;
     }
 
     return { actual, previa1, previa2, previa3 };
