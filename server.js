@@ -1761,6 +1761,10 @@ async function setInsulina({ dosis, varMed, medicamento, riesgos }) {
 
 
 function setSimvastatina({ dosis, varMed, medicamento, riesgos }) {
+    if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
+    var fecha = new Date();
+
+
 }
 
 async function setEnalapril({ dosis, varMed, medicamento, riesgos }) { 
@@ -1771,18 +1775,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
 
     var fecha = new Date();
-    let fechaCita = moment(fecha).format("YYYY-MM-DD");
 
-
-
-    let tensionSHoy; //medidas de tension diastolica de hoy
-    let tensionDHoy; //medidas de tension sistolica
-    let tensionSPrevia; //ultima medida
-    let tensionDPrevia;
-    let tensionSPrevia1; // penultima medida
-    let tensionDPrevia1;
-    let tensionSPrevia2; // antepenultima medida
-    let tensionDPrevia2;
 
     
     // en las siguientes variables se almacenan los estados de las medidas para saber si estan bien o mal
@@ -1793,7 +1786,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     
 
     // let varMed = await allVarMed()
-    let previas = verPrevias(varMedicas);
+    let previas = verPreviasTension(varMedicas);
     
     let dosisReturn;
     let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
@@ -1884,7 +1877,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     return salida;
     
 }
-function setRamipril({ dosis, varMed, medicamento, riesgos }) { 
+async function setRamipril({ dosis, varMed, medicamento, riesgos }) { 
     let idPaciente = varMed[1].IDPaciente;
     let varMedicas = await allVarMed(idPaciente);
     if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
@@ -2006,7 +1999,7 @@ function setRamipril({ dosis, varMed, medicamento, riesgos }) {
 }
 
 
-function verPrevias(varMed) {
+function verPreviasTension(varMed) {
     let citas = [];
     let actual;
     let previa1; // aqui se asignan los valores para ver si estaba bien o no en las semanas anteriores

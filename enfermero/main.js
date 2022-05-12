@@ -927,6 +927,7 @@ async function borrarPaciente(idPaciente){
         }
     }
     let respuestaServidor = await peticionREST(url, peticionServer);
+    console.log(respuestaServidor);
     let lista = document.getElementById("cuerpoListadoPacientes");
     respuestaServidor == "Borrado" ? (verMenuListaPacientes()) : (alert('No se ha podido borrar el paciente'))
 }

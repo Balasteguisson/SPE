@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-04-2022 a las 10:33:20
+-- Tiempo de generación: 12-05-2022 a las 11:09:02
 -- Versión del servidor: 10.4.21-MariaDB
 -- Versión de PHP: 7.3.30
 
@@ -56,7 +56,11 @@ INSERT INTO `alergias` (`IDAlergia`, `IdPaciente`, `Alergeno`) VALUES
 (32, '49213961P', 'Gliclazida'),
 (33, '49213961P', 'Lactosa'),
 (34, '49213961P', 'Polen'),
-(37, '683947298B', 'Polen');
+(37, '683947298B', 'Polen'),
+(38, '123123456N', 'gliclazida'),
+(39, '341435123576A', 'metformina'),
+(41, '2384298374K', 'gliclazida'),
+(42, '13847612H', 'polen');
 
 -- --------------------------------------------------------
 
@@ -106,12 +110,38 @@ INSERT INTO `cita` (`IDCita`, `IdPaciente`, `IDEnfermero`, `TipoRevision`, `Onli
 (31, '49213961P', 5, 'Diabetes', 0, '', '', '2022-03-16 16:20', 0),
 (32, '34468343S', 5, 'RV', 1, '', '', '2022-03-16 15:04', 0),
 (33, '49213961P', 5, 'RV', 0, '', '', '2022-03-17 16:27', 0),
-(34, '49213961P', 5, 'Diabetes', 1, '', '', ' ', 0),
 (35, '49213961P', 5, 'Diabetes', 1, '', '', '2022-03-22 16:00', 0),
 (36, '49213961P', 5, 'Diabetes', 1, '', '', '2022-03-30 16:34', 0),
 (37, '49213961P', 5, 'RV', 0, '', '', '2022-03-30 17:17', 0),
 (38, '49213961P', 5, 'ACOs', 1, '', '', '2022-03-30 17:16', 0),
-(39, '49213961P', 5, 'Diabetes', 0, '', '', '2022-04-11 15:23', 0);
+(39, '49213961P', 5, 'Diabetes', 0, '', '', '2022-04-11 15:23', 0),
+(40, '49213961P', 5, 'Diabetes', 0, '', '', '2022-04-12 16:00', 0),
+(41, '49213961P', 5, 'Diabetes', 0, '', '', '2022-04-26 18:03', 0),
+(42, '49213961P', 5, 'Diabetes', 0, '', '', '2022-04-28 21:00', 0),
+(43, '49213961P', 5, 'Diabetes', 0, '', '', '2022-04-29 19:46', 0),
+(44, '49213961P', 5, 'Diabetes', 0, '', '', '2022-04-30 15:23', 0),
+(47, '49213961P', 5, 'Diabetes', 0, '', '', '2022-05-01 17:45', 0),
+(48, '49213961P', 5, 'RV', 0, '', '', '2022-05-01 18:23', 0),
+(49, '49213961P', 5, 'Diabetes', 0, '', '', '2022-05-06 13:14', 0),
+(50, '49213961P', 5, 'Diabetes', 0, '', '', '2022-05-07 14:56', 0),
+(51, '49213961P', 5, 'Diabetes', 0, '', '', '2022-05-07 19:32', 0),
+(52, '49213961P', 5, 'Diabetes', 0, '', '', '2022-05-08 13:25', 0),
+(53, '49213961P', 5, 'Diabetes', 0, '', '', '2022-05-08 15:50', 0),
+(54, '49213961P', 5, 'Diabetes', 1, '', '', '2022-05-09 14:00', 0),
+(55, '341435123576A', 5, 'Diabetes', 0, '', '', '2022-05-09 14:15', 0),
+(56, '49213961P', 5, 'Diabetes', 0, '', '', '2022-05-10 13:15', 0),
+(57, '341435123576A', 5, 'Diabetes', 0, '', '', '2022-05-10 13:34', 0),
+(59, '2836492873K', 5, 'RV', 0, '', '', '2022-05-10 15:05', 0),
+(60, '49213961P', 5, 'Diabetes', 0, '', '', '2022-05-10 16:35', 0),
+(61, '49213961P', 5, 'Diabetes', 0, '', '', '2022-05-10 18:00', 0),
+(62, '49213961P', 5, 'Diabetes', 0, '', '', '2022-05-11 13:42', 0),
+(63, '341435123576A', 5, 'Diabetes', 0, '', '', '2022-05-11 13:14', 0),
+(64, '49213961P', 5, 'Diabetes', 0, '', '', '2022-05-11 21:50', 0),
+(65, '2384298374K', 5, 'Diabetes', 0, '', '', '2022-05-11 21:30', 0),
+(66, '2836492873K', 5, 'RV', 0, '', '', '2022-05-12 14:01', 0),
+(67, '2836492873K', 5, 'RV', 0, '', '', '2022-05-12 11:00', 0),
+(69, '2836492873K', 5, 'RV', 0, '', '', '2022-05-12 11:30', 0),
+(70, '2836492873K', 5, 'RV', 0, '', '', '2022-05-12 12:01', 0);
 
 -- --------------------------------------------------------
 
@@ -234,7 +264,26 @@ CREATE TABLE `embarazo` (
 --
 
 INSERT INTO `embarazo` (`IDEmbarazo`, `IdPaciente`, `Activo`, `FechaInicio`, `FechaFin`) VALUES
-(16, '49213961P', 0, '2022-03-11', '2022-03-11');
+(16, '49213961P', 0, '2022-03-11', '2022-03-11'),
+(17, '49213961P', 0, '2022-04-12', '2022-04-12'),
+(18, '49213961P', 0, '2022-05-08', '2022-05-08'),
+(19, '49213961P', 0, '2022-05-08', '2022-05-08'),
+(20, '49213961P', 0, '2022-05-08', '2022-05-09'),
+(21, '49213961P', 0, '2022-05-09', '2022-05-10'),
+(22, '49213961P', 0, '2022-05-10', '2022-05-10'),
+(23, '49213961P', 0, '2022-05-10', '2022-05-10'),
+(24, '49213961P', 0, '2022-05-10', '2022-05-10'),
+(25, '49213961P', 0, '2022-05-10', '2022-05-10'),
+(26, '49213961P', 0, '2022-05-10', '2022-05-10'),
+(27, '49213961P', 0, '2022-05-10', '2022-05-10'),
+(28, '49213961P', 0, '2022-05-10', '2022-05-10'),
+(29, '49213961P', 0, '2022-05-11', '2022-05-11'),
+(30, '49213961P', 0, '2022-05-11', '2022-05-11'),
+(31, '49213961P', 0, '2022-05-11', '2022-05-11'),
+(32, '49213961P', 0, '2022-05-11', '2022-05-11'),
+(33, '49213961P', 0, '2022-05-11', '2022-05-11'),
+(34, '49213961P', 0, '2022-05-11', '2022-05-11'),
+(35, '2384298374K', 1, '2022-05-11', NULL);
 
 -- --------------------------------------------------------
 
@@ -304,7 +353,21 @@ INSERT INTO `farmacos` (`IDFarmaco`, `Nombre`, `PrincipioActivo`, `FormaFarm`, `
 (8, 'DORMIDINA DOXILAMINA 12,5 mg COMPRIMIDOS RECUBIERTOS CON PELICULA', 'doxilamina', 'COMPRIMIDO', '12,5 mg', 'VÍA ORAL', 60154, 1, 1, 'undefined', 'undefined'),
 (9, 'GELOCATIL 1 g COMPRIMIDOS', 'paracetamol', 'COMPRIMIDO', '1 g paracetamol', 'VÍA ORAL', 66204, 0, 0, 'undefined', 'undefined'),
 (10, 'DIANBEN 850 mg COMPRIMIDOS RECUBIERTOS CON PELICULA', 'metformina', 'COMPRIMIDO', '850 mg', 'VÍA ORAL', 55211, 1, 1, 'undefined', 'undefined'),
-(11, 'GLUCOLON 5 MG COMPRIMIDOS', 'glibenclamida', 'COMPRIMIDO', '5 mg', 'VÍA ORAL', 50337, 1, 1, 'undefined', 'undefined');
+(11, 'GLUCOLON 5 MG COMPRIMIDOS', 'glibenclamida', 'COMPRIMIDO', '5 mg', 'VÍA ORAL', 50337, 1, 1, 'undefined', 'undefined'),
+(12, 'ENANTYUM 12,5 mg COMPRIMIDOS', 'dexketoprofeno', 'COMPRIMIDO', '12,5 mg', 'VÍA ORAL', 60927, 0, 0, 'undefined', 'undefined'),
+(13, 'AVAMYS 27,5 MICROGRAMOS/PULVERIZACION, SUSPENSION PARA PULVERIZACION NASAL', 'fluticasona', 'PRODUCTO USO NASAL', '27.5 µg', 'VÍA NASAL', 7434003, 0, 0, 'undefined', 'undefined'),
+(14, 'FLUTICASONA ALDO-UNION 1 MG/ML SUSPENSION PARA INHALACION POR NEBULIZADOR', 'fluticasona', 'INHALACIÓN PULMONAR', '1 mg/ml', 'VÍA INHALATORIA', 84406, 1, 1, 'undefined', 'undefined'),
+(15, 'DIAMICRON 30 mg COMPRIMIDOS DE LIBERACION MODIFICADA', 'gliclazida', 'COMPRIMIDO LIBERACION MODIFICADA', '30 mg', 'VÍA ORAL', 63644, 1, 1, 'undefined', 'undefined'),
+(16, 'MINODIAB 5 mg COMPRIMIDOS', 'glipizida', 'COMPRIMIDO', '5 mg', 'VÍA ORAL', 51293, 1, 1, 'undefined', 'undefined'),
+(17, 'GLIMEPIRIDA CINFA 2 mg COMPRIMIDOS EFG', 'glimepirida', 'COMPRIMIDO', '2 mg', 'VÍA ORAL', 67512, 1, 1, 'undefined', 'undefined'),
+(19, 'EZETIMIBA/SIMVASTATINA CINFAMED 10 MG/20 MG COMPRIMIDOS EFG', 'simvastatina + ezetimiba', 'COMPRIMIDO', '10 MG/20 MG', 'VÍA ORAL', 82799, 1, 1, 'undefined', 'undefined'),
+(20, 'ENALAPRIL CINFA 10 mg COMPRIMIDOS', 'enalapril', 'COMPRIMIDO', '10 mg enalapril maleato', 'VÍA ORAL', 73300, 1, 1, 'undefined', 'undefined'),
+(21, 'ACTRAPID INNOLET 100 UI/ML SOLUCION INYECTABLE EN UNA PLUMA PRECARGADA', 'insulina regular', 'INYECTABLE', '100 U/ml', 'VÍA INTRAVENOSA', 2230011, 0, 0, 'undefined', 'undefined'),
+(22, 'ACTRAPID 100 UI/ML SOLUCION INYECTABLE EN UN VIAL', 'insulina regular', 'INYECTABLE', '100 U/ml', 'VÍA INTRAVENOSA', 2230003, 0, 0, 'undefined', 'undefined'),
+(23, 'INSULATARD FLEXPEN 100 UI/ml SUSPENSION INYECTABLE EN PLUMA PRECARGADA', 'insulina isófana (NPH)', 'INYECTABLE', '100 UI/ml', 'VÍA SUBCUTÁNEA', 2233014, 0, 0, 'undefined', 'undefined'),
+(24, 'INSULATARD 100 UI/ml SUSPENSION INYECTABLE EN VIAL', 'insulina isófana (NPH)', 'INYECTABLE', '100 UI/ml', 'VÍA SUBCUTÁNEA', 2233003, 0, 0, 'undefined', 'undefined'),
+(25, 'FLUMIL 100 MG/ML SOLUCION INYECTABLE', 'acetilcisteína', 'INYECTABLE', '10 % acetilcisteina', 'VÍA ENDOTRAQUEOPULMONAR', 41474, 0, 0, 'undefined', 'undefined'),
+(26, 'SIMVASTATINA CINFA 10 mg COMPRIMIDOS RECUBIERTOS CON PELICULA EFG', 'simvastatina', 'COMPRIMIDO', '10 mg simvastatina', 'VÍA ORAL', 64519, 1, 1, 'undefined', 'undefined');
 
 -- --------------------------------------------------------
 
@@ -338,7 +401,20 @@ INSERT INTO `lactancia` (`IDLactancia`, `IdPaciente`, `Activa`) VALUES
 (12, '49213961P', 0),
 (13, '49213961P', 0),
 (14, '49213961P', 0),
-(15, '49213961P', 0);
+(15, '49213961P', 0),
+(16, '49213961P', 0),
+(17, '49213961P', 0),
+(18, '49213961P', 0),
+(19, '49213961P', 0),
+(20, '49213961P', 0),
+(21, '49213961P', 0),
+(23, '49213961P', 0),
+(24, '49213961P', 0),
+(25, '49213961P', 0),
+(26, '49213961P', 0),
+(27, '49213961P', 1),
+(28, '2384298374K', 0),
+(29, '13847612H', 0);
 
 -- --------------------------------------------------------
 
@@ -361,7 +437,12 @@ CREATE TABLE `pacientes` (
 --
 
 INSERT INTO `pacientes` (`NIdentidad`, `Nombre`, `Apellidos`, `FechaNacimiento`, `Sexo`, `Talla`, `Peso`) VALUES
+('123123456N', 'Rodolfo', 'Pérez', '1987-12-19', 'M', 185, 81),
 ('123487718234', 'Rodrigo', 'Cifuentes', '1991-02-01', 'M', 177, 70),
+('13847612H', 'Julia', 'Simvastatina', '1985-04-03', 'F', 150, 65),
+('2384298374K', 'Gloria', 'Fuertes Dianben', '1991-01-01', 'F', 170, 60),
+('2836492873K', 'Paco', 'Márquez Enalapril', '1997-08-10', 'M', 190, 89),
+('341435123576A', 'Roberto', 'Perez Minodiab', '1990-06-05', 'M', 167, 85),
 ('34468343S', 'Guillermo', 'BG', '2000-08-29', 'M', 177, 76),
 ('49213961P', 'Cecilia ', 'Marcus', '1998-02-07', 'F', 165, 67),
 ('6578493', 'alvaro', 'ejemplo', '1995-01-03', 'M', 160, 70),
@@ -391,7 +472,10 @@ CREATE TABLE `patologiasprevias` (
 INSERT INTO `patologiasprevias` (`IDPatologia`, `IdPaciente`, `Nombre`, `Descripcion`, `Activo`, `FechaInicio`, `FechaFin`) VALUES
 (9, '34468343S', 'Neumonia', 'Faringitis mal tratada', 0, '2003-11-01', '2004-01-05'),
 (10, '49213961P', 'Hipotensión', 'Es ligeramente hipotensa, no requiere tratamiento por ahora', 1, '2021-07-13', NULL),
-(11, '00033345t', 'Celíaco', '', 1, '2006-11-22', NULL);
+(11, '00033345t', 'Celíaco', '', 1, '2006-11-22', NULL),
+(12, '884763482H', 'Colesterol alto', '', 1, '2022-05-03', NULL),
+(13, '2384298374K', 'Diabetes tipo 2', '', 0, '0000-00-00', '0000-00-00'),
+(14, '13847612H', 'hipercolesterolemia', '', 1, '2022-04-10', NULL);
 
 -- --------------------------------------------------------
 
@@ -459,7 +543,19 @@ INSERT INTO `preguntastest` (`IDTest`, `IDPregunta`) VALUES
 (5, 32),
 (5, 39),
 (5, 40),
-(5, 41);
+(5, 41),
+(6, 33),
+(6, 37),
+(6, 38),
+(6, 38),
+(6, 33),
+(6, 37),
+(6, 33),
+(6, 37),
+(6, 38),
+(6, 33),
+(6, 37),
+(6, 38);
 
 -- --------------------------------------------------------
 
@@ -494,7 +590,9 @@ INSERT INTO `test` (`IDTest`, `Tipo`, `FechaCreacion`, `Periodo`) VALUES
 (2, 'Diabetes', '2022-03-02', '2-2022'),
 (3, 'Diabetes', '2022-03-03', '2-2022'),
 (4, 'ACOs', '2022-03-03', '2-2022'),
-(5, 'RV', '2022-03-03', '2-2022');
+(5, 'RV', '2022-03-03', '2-2022'),
+(6, 'Diabetes', '2022-05-11', '05-2022'),
+(7, 'prueba', '2022-05-11', '05-2022');
 
 -- --------------------------------------------------------
 
@@ -512,11 +610,13 @@ CREATE TABLE `tiposvariables` (
 --
 
 INSERT INTO `tiposvariables` (`IDVariable`, `Nombre`) VALUES
-(12, 'Pulso'),
-(13, 'Tensión Sistólica'),
-(14, 'Tensión Diastólica'),
-(16, 'Glucemia'),
-(23, 'Ácido Láctico');
+(1, 'Pulso'),
+(2, 'Tensión Sistólica'),
+(3, 'Tensión Diastólica'),
+(4, 'Ácido Láctico'),
+(5, 'GBC-glucemia capilar'),
+(6, 'HbA1c'),
+(7, 'LDL');
 
 -- --------------------------------------------------------
 
@@ -544,8 +644,13 @@ CREATE TABLE `tratamiento` (
 INSERT INTO `tratamiento` (`IDTratamiento`, `IdPaciente`, `IDFarmaco`, `FechaInicio`, `FechaFin`, `IntervaloTomas`, `Cantidad`, `Anotaciones`, `EfectosSecundarios`, `IDCita`) VALUES
 (14, '683947298B', 5, '2022-04-08', '2022-04-15', NULL, NULL, NULL, NULL, NULL),
 (16, '49213961P', 6, '2022-04-11', '2022-04-18', NULL, NULL, NULL, NULL, NULL),
-(17, '49213961P', 10, '2022-04-04', '2022-04-25', NULL, NULL, NULL, NULL, NULL),
-(18, '49213961P', 5, '2022-04-04', '2022-04-08', NULL, NULL, NULL, NULL, NULL);
+(18, '49213961P', 5, '2022-04-04', '2022-04-08', NULL, NULL, NULL, NULL, NULL),
+(21, '123123456N', 10, '2022-04-25', '2022-10-21', '24', '425 mg', NULL, NULL, NULL),
+(24, '49213961P', 23, '2022-05-11', '2022-05-15', '12 ', '13,4 UI', 'Hay que cambiar el tratamiento y empezar a usar insulina. \nLa siguiente revisión será en cuatro días. \nRemitir a médico para revisión de tratamiento. \nTomar 8.93 UI antes de desayunar y 4.47 UI antes de cenar.', NULL, 62),
+(25, '341435123576A', 16, '2022-05-11', '2022-05-18', '24 ', '5 mg', 'Tomar antes del desayuno.', NULL, 63),
+(27, '2836492873K', 20, '2022-05-12', '2022-08-12', '24 ', '5 mg', 'Derivación anual a médico de familia. \nMantener dosis y tomar una vez al día. \nSolicitar analíticas y ECG.', NULL, 69),
+(28, '2384298374K', 10, '2022-05-11', '2022-05-18', '12 ', '850 mg', 'Tomar dos veces al día, en el desayuno y en la cena.', NULL, 65),
+(29, '13847612H', 26, '2022-05-05', '2022-05-19', '24', '20 mg', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -567,12 +672,14 @@ CREATE TABLE `unidadesvariables` (
 --
 
 INSERT INTO `unidadesvariables` (`IDUnidad`, `IDVariable`, `NombreUnidad`, `Abreviatura`, `ValorMax`, `ValorMin`) VALUES
-(1, 12, 'Pulsaciones por minuto', 'ppm', 80, 60),
-(2, 13, 'Milimetro de mercurio', 'mmHg', 125, 1100),
-(3, 14, 'Milimetro de mercurio', 'mmHg', 85, 70),
-(4, 16, 'Miligramos por decilitro de sangre', 'mg/dL', 100, 70),
-(6, 23, 'Miligramos por decilitro', 'mg/dL', 19.8, 4.5),
-(7, 23, 'Milimoles por litro', 'mmol/L', 2.2, 0.5);
+(1, 1, 'Pulsaciones por minuto', 'ppm', 80, 60),
+(2, 2, 'Milimetro de mercurio', 'mmHg', 125, 1100),
+(3, 3, 'Milimetro de mercurio', 'mmHg', 85, 70),
+(6, 4, 'Miligramos por decilitro', 'mg/dL', 19.8, 4.5),
+(7, 4, 'Milimoles por litro', 'mmol/L', 2.2, 0.5),
+(8, 5, 'miligramos por decilitro', 'mg/dL', 95, 60),
+(11, 6, 'Porcentaje', '%', 7, 4),
+(12, 7, 'miligramos/ decilitro', 'mg/dL', 100, 50);
 
 -- --------------------------------------------------------
 
@@ -610,7 +717,7 @@ CREATE TABLE `variablefisica` (
   `Tipo` int(10) NOT NULL,
   `Valor` float NOT NULL,
   `Unidades` varchar(10) NOT NULL,
-  `Fecha` date NOT NULL,
+  `Cita` int(11) NOT NULL,
   `IDEnfermero` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -618,16 +725,22 @@ CREATE TABLE `variablefisica` (
 -- Volcado de datos para la tabla `variablefisica`
 --
 
-INSERT INTO `variablefisica` (`IDVariable`, `IDPaciente`, `Tipo`, `Valor`, `Unidades`, `Fecha`, `IDEnfermero`) VALUES
-(2, '49213961P', 13, 120, 'mmHg', '2022-03-11', 5),
-(3, '49213961P', 14, 80, 'mmHg', '2022-03-11', 5),
-(4, '49213961P', 12, 53, 'ppm', '2022-03-11', 5),
-(5, '123487718234', 12, 56, 'ppm', '2022-03-14', 5),
-(6, '123487718234', 13, 119, 'mmHg', '2022-03-14', 5),
-(7, '123487718234', 14, 83, 'mmHg', '2022-03-14', 5),
-(8, '123487718234', 16, 110, 'mg/dL', '2022-03-14', 5),
-(9, '49213961P', 16, 95, 'mg/dL', '2022-04-11', 5),
-(10, '49213961P', 12, 73, 'ppm', '2022-04-11', 5);
+INSERT INTO `variablefisica` (`IDVariable`, `IDPaciente`, `Tipo`, `Valor`, `Unidades`, `Cita`, `IDEnfermero`) VALUES
+(36, '49213961P', 5, 85, 'mg/dL', 52, 12312312),
+(37, '49213961P', 5, 95, 'mg/dL', 52, 12312312),
+(58, '49213961P', 5, 80, 'mg/dL', 56, 12312312),
+(59, '2836492873K', 3, 80, 'mmHg', 59, 12312312),
+(60, '2836492873K', 2, 120, 'mmHg', 59, 12312312),
+(65, '49213961P', 5, 85, 'mg/dL', 62, 12312312),
+(66, '49213961P', 5, 92, 'mg/dL', 62, 12312312),
+(71, '2384298374K', 5, 135, 'mg/dL', 65, 12312312),
+(72, '2836492873K', 2, 120, 'mmHg', 66, 12312312),
+(73, '2836492873K', 3, 80, 'mmHg', 66, 12312312),
+(74, '2836492873K', 2, 120, 'mmHg', 67, 12312312),
+(75, '2836492873K', 3, 80, 'mmHg', 67, 12312312),
+(76, '2836492873K', 2, 120, 'mmHg', 69, 12312312),
+(77, '2836492873K', 3, 85, 'mmHg', 69, 12312312),
+(78, '2836492873K', 1, 50, 'ppm', 69, 12312312);
 
 --
 -- Índices para tablas volcadas
@@ -805,13 +918,13 @@ ALTER TABLE `variablefisica`
 -- AUTO_INCREMENT de la tabla `alergias`
 --
 ALTER TABLE `alergias`
-  MODIFY `IDAlergia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `IDAlergia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `IDCita` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `IDCita` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT de la tabla `datosusuarios`
@@ -823,7 +936,7 @@ ALTER TABLE `datosusuarios`
 -- AUTO_INCREMENT de la tabla `embarazo`
 --
 ALTER TABLE `embarazo`
-  MODIFY `IDEmbarazo` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `IDEmbarazo` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `enfermero`
@@ -835,7 +948,7 @@ ALTER TABLE `enfermero`
 -- AUTO_INCREMENT de la tabla `farmacos`
 --
 ALTER TABLE `farmacos`
-  MODIFY `IDFarmaco` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `IDFarmaco` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `fotos`
@@ -847,13 +960,13 @@ ALTER TABLE `fotos`
 -- AUTO_INCREMENT de la tabla `lactancia`
 --
 ALTER TABLE `lactancia`
-  MODIFY `IDLactancia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `IDLactancia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `patologiasprevias`
 --
 ALTER TABLE `patologiasprevias`
-  MODIFY `IDPatologia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `IDPatologia` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `preguntas`
@@ -871,19 +984,19 @@ ALTER TABLE `test`
 -- AUTO_INCREMENT de la tabla `tiposvariables`
 --
 ALTER TABLE `tiposvariables`
-  MODIFY `IDVariable` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `IDVariable` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `tratamiento`
 --
 ALTER TABLE `tratamiento`
-  MODIFY `IDTratamiento` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `IDTratamiento` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `unidadesvariables`
 --
 ALTER TABLE `unidadesvariables`
-  MODIFY `IDUnidad` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `IDUnidad` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -895,7 +1008,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `variablefisica`
 --
 ALTER TABLE `variablefisica`
-  MODIFY `IDVariable` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `IDVariable` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- Restricciones para tablas volcadas
@@ -917,7 +1030,7 @@ ALTER TABLE `alergias`
 -- Filtros para la tabla `cita`
 --
 ALTER TABLE `cita`
-  ADD CONSTRAINT `PacienteTratado` FOREIGN KEY (`IdPaciente`) REFERENCES `pacientes` (`NIdentidad`),
+  ADD CONSTRAINT `PacienteTratado` FOREIGN KEY (`IdPaciente`) REFERENCES `pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `Trata` FOREIGN KEY (`IDEnfermero`) REFERENCES `enfermero` (`ID`);
 
 --
@@ -970,6 +1083,19 @@ ALTER TABLE `lactancia`
 ALTER TABLE `tratamiento`
   ADD CONSTRAINT `Medicacion` FOREIGN KEY (`IDFarmaco`) REFERENCES `farmacos` (`IDFarmaco`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `PacienteMedicado` FOREIGN KEY (`IdPaciente`) REFERENCES `pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `unidadesvariables`
+--
+ALTER TABLE `unidadesvariables`
+  ADD CONSTRAINT `UnidadDe` FOREIGN KEY (`IDVariable`) REFERENCES `tiposvariables` (`IDVariable`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `variablefisica`
+--
+ALTER TABLE `variablefisica`
+  ADD CONSTRAINT `pacCorrespondiente` FOREIGN KEY (`IDPaciente`) REFERENCES `pacientes` (`NIdentidad`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `varMedCorrespondiente` FOREIGN KEY (`Tipo`) REFERENCES `tiposvariables` (`IDVariable`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
