@@ -1331,11 +1331,7 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
     } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 9) { //TRATAMIENTO EN CLORTALIDONA
         resultado = await setClortalidona({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
     } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 10) { //TRATAMIENTO EN AMLODIPINO
-
-
-
-
-
+        resultado = await setAmlodipino({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
     } else if (regla1[enfPrin] == 3 && regla3[principioBuscado] == 11) { //TRATAMIENTO EN ACENOCUMAROL
     } else if (regla1[enfPrin] == 3 && regla3[principioBuscado] == 12) { //TRATAMIENTO EN WARFARINA
     }
