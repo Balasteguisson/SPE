@@ -2549,7 +2549,7 @@ async function setACO2({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosis;
     } else if (actual !== 1) {
-        if (previa1 !== 1) {
+        if (previa1 === 0) {
             actualizacionTratamiento.medicamento = [medicamento];
             actualizacionTratamiento.indicaciones = "El paciente no se estabiliza, se debe desviar al médico.";
             actualizacionTratamiento.fechaInicio = fecha;
@@ -2557,28 +2557,73 @@ async function setACO2({ dosis, varMed, medicamento, riesgos }) {
             actualizacionTratamiento.frecuencia = "24";
             actualizacionTratamiento.dosis = dosis;
         } else if (previa1 === 1 || previa1 === undefined) {
-            actualizacionTratamiento.medicamento = [medicamento];
-            actualizacionTratamiento.indicaciones = "Preguntar a cerca de las causas, si son puntuales se debe mantener la dosis. \nSi no es puntual, cambiar la dosis a la sugerida debajo, si no, mantener la que se muestra en sus tratamientos en curso.";
-            actualizacionTratamiento.fechaInicio = fecha;
-            actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
-            actualizacionTratamiento.frecuencia = "24";
+            //Ajuste de DTS
+            let nombreMedicamento = medicamento.Nombre;
+            let sizePastilla = nombreMedicamento.substring(nombreMedicamento.indexOf(" ")).trim();
+            sizePastilla = sizePastilla.substring(0, sizePastilla.indexOf(" ")).trim();
+
+            let fraccionPastilla = sizePastilla / 4;
+            let variacionMax;
+            let variacionMin;
+            let DTSsuperior;
+            let DTSinferior;
+            let porcentajeCambio;
+            let incremento;
             if (medidas.actuales >= 2.1 && medidas.actuales <= 2.2) {
-                dts = dts * 1.1;
-                dosisFloat = dts / 7;
-                actualizacionTratamiento.dosis = `${dosisFloat} mg`;
+                variacionMax = 1.1;
+                variacionMin = 1.05;
+                incremento = Math.abs(1.7 - medidas.actuales) < Math.abs(1.6 - medidas.actuales);
             } else if (medidas.actuales >= 3.8 && medidas.actuales <= 3.9) {
-                dts = dts * 0.9;
-                dosisFloat = dts / 7;
-                actualizacionTratamiento.dosis = `${dosisFloat} mg`;
+                variacionMax = 0.90;
+                variacionMin = 0.95;
+                incremento = Math.abs(3.3 - medidas.actuales) < Math.abs(3.9 - medidas.actuales);
             } else if (medidas.actuales >= 4 && medidas.actuales <= 4.9) {
-                dts = dts * 0.85;
-                dosisFloat = dts / 7;
-                actualizacionTratamiento.dosis = `${dosisFloat} mg`;
+                variacionMax = 0.85;
+                variacionMin = 0.9;
+                incremento = Math.abs(4 - medidas.actuales) < Math.abs(4.9 - medidas.actuales);
             } else if (medidas.actuales <= 2) {
                 actualizacionTratamiento.indicaciones = "Desviar al médico, el INR es muy bajo.";
                 actualizacionTratamiento.dosis = dosis;
             } else if (medidas.actuales >= 5) {
                 actualizacionTratamiento.indicaciones = "Desviar al médico, el INR es muy alto. Recomendar al paciente no tomar la medicación durante ese día.";
+            }
+
+            if (variacionMax != undefined || variacionMin != undefined) {
+                let fraccionesPastilla; //cantidades de fraccionPastilla a tomar
+                let error = 0; //dice en cuanto difiere del tratamiento optimo
+                DTSsuperior = dts * variacionMax;
+                let fraccionesMaximas = Math.trunc(DTSsuperior / fraccionPastilla);
+                let restoSuperior = DTSsuperior % fraccionPastilla; //mg sobrantes max
+                DTSinferior = dts * variacionMin;
+                let fraccionesMinimas = Math.trunc(DTSinferior / fraccionPastilla);
+                let restoInferior = DTSinferior % fraccionPastilla; // mg sobrantes min
+                //buscar un valor entre DTSsuperior y DTSinferior que sea divisor de dts
+                if (restoInferior == 0) {
+                    fraccionesPastilla = fraccionesMinimas;
+                } else if (fraccionesMinimas != fraccionesMaximas) {
+                    fraccionesPastilla = fraccionesMinimas + 1; //sacar variacion
+                } else if (fraccionesMinimas == fraccionesMaximas) {
+                    fraccionesPastilla = incremento ? fraccionesMinimas + 1 : fraccionesMinimas;
+                }
+
+                let dtsEsperado = fraccionesPastilla * fraccionPastilla;
+                porcentajeCambio = (dtsEsperado / dts) * 100 - 100;
+
+                console.log("IRN: " + medidas.actuales);
+                console.log("DTS ESPERADO: " + dtsEsperado + "mg");
+                console.log("% CAMBIO: " + porcentajeCambio);
+                console.log("variacionesMaxYMin: " + variacionMax + '-' + variacionMin);
+                console.log("fraccionesMaxYMin: " + fraccionesMaximas + '-' + fraccionesMinimas + " / fracción resultante:" + (dtsEsperado / dts));
+                console.log("trozos de pastilla: " + fraccionesPastilla);
+
+
+                //calculo de dosis por dia
+                let trozosDia = Math.trunc(fraccionesPastilla / 7);
+                let resto = fraccionesPastilla % 7;
+                dosisFloat = dtsEsperado / 7;
+                console.log("trozos/dia: " + trozosDia + ", resto: " + resto);
+                // actualizacionTratamiento.indicaciones += `\n\nSe recomienda tomar ${trozosDia} cuartos de pastilla cada día y quedan ${resto} cuartos de pastilla para distribuir a lo largo de la semana.`;
+                actualizacionTratamiento.indicaciones += `\n\nSe recomienda tomar ${Math.trunc(trozosDia / 4)} pastillas al día y quedan ${resto + (trozosDia % 4)} cuartos para distribuir a lo largo de la semana.`;
             }
 
         }
