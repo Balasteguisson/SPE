@@ -1334,6 +1334,7 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
     } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 10) { //TRATAMIENTO EN AMLODIPINO
         resultado = await setAmlodipino({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
     } else if (regla1[enfPrin] == 3 && regla3[principioBuscado] == 11) { //TRATAMIENTO EN ACENOCUMAROL ACO 2-3
+        console.log("Entrando a ACO 2-3 ACENO");
         resultado = await setACO1({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         console.log(resultado);
     } else if (regla1[enfPrin] == 3 && regla3[principioBuscado] == 12) { //TRATAMIENTO EN WARFARINA ACO 2-3
@@ -2388,15 +2389,10 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
     var fecha = new Date();
 
     let medidas = verPreviasINR(varMedicas);
-    console.log("hola");
-    console.log(medidas);
-    let actual = 1.8 < medidas.actuales < 3.2 ? 1 : 0;
-    let previa1 = 1.8 < medidas.previa1 < 3.2 ? 1 : 0;
-    let previa2 = 1.8 < medidas.previa2 < 3.2 ? 1 : 0;
-    let previa3 = 1.8 < medidas.previa3 < 3.2 ? 1 : 0;
-
+    let actual = (medidas.actuales > 1.8 && medidas.actuales < 3.2) ? 1 : 0;
+    let previa1 = (1.8 < medidas.previas1 && medidas.previas1 < 3.2) ? 1 : 0;
     let dosisFloat = parseFloat(dosis.substring(0, dosis.length - 2));
-    let DTS = dosisFloat * 7; // la dosis se ajusta en funcion de la dosis terapeutica semanal
+    let dts = dosisFloat * 7; // la dosis se ajusta en funcion de la dosis terapeutica semanal
     if (actual === 1 && previa1 === 1) { // mantener dosis
         actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "El paciente va bien, mantener la dosis y dar cita para dentro de 4-6 semanas.";
@@ -2421,19 +2417,19 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
             actualizacionTratamiento.dosis = dosis;
         } else if (previa1 === 1 || previa1 === undefined) {
             actualizacionTratamiento.medicamento = [medicamento];
-            actualizacionTratamiento.indicaciones = "Preguntar a cerca de las causas, si son puntuales se debe mantener la dosis. \nSi no es puntual, cambiar la dosis a la sugerida, si no, mantener la que se muestra en sus tratamientos en curso.";
+            actualizacionTratamiento.indicaciones = "Preguntar a cerca de las causas, si son puntuales se debe mantener la dosis. \nSi no es puntual, cambiar la dosis a la sugerida debajo, si no, mantener la que se muestra en sus tratamientos en curso.";
             actualizacionTratamiento.fechaInicio = fecha;
             actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
             actualizacionTratamiento.frecuencia = "24";
-            if (1.6<=medidas.actuales < 1.7) {
+            if (medidas.actuales>=1.6 && medidas.actuales <= 1.7) {
                 dts = dts * 1.1;
                 dosisFloat = dts / 7;
                 actualizacionTratamiento.dosis = `${dosisFloat} mg`;
-            } else if (3.3 <= medidas.actuales <= 3.9) {
+            } else if (medidas.actuales >= 3.3 && medidas.actuales <= 3.9) {
                 dts = dts * 0.9;
                 dosisFloat = dts / 7;
                 actualizacionTratamiento.dosis = `${dosisFloat} mg`;
-            } else if (4<=medidas.actuales <= 4.9) {
+            } else if (medidas.actuales >= 4 && medidas.actuales <= 4.9) {
                 dts = dts * 0.85;
                 dosisFloat = dts / 7;
                 actualizacionTratamiento.dosis = `${dosisFloat} mg`;
@@ -2474,15 +2470,10 @@ async function setACO2({ dosis, varMed, medicamento, riesgos }) {
     var fecha = new Date();
 
     let medidas = verPreviasINR(varMedicas);
-    console.log("hola");
-    console.log(medidas);
-    let actual = 2.3 < medidas.actuales < 3.7 ? 1 : 0;
-    let previa1 = 2.3 < medidas.previa1 < 3.7 ? 1 : 0;
-    let previa2 = 2.3 < medidas.previa2 < 3.7 ? 1 : 0;
-    let previa3 = 2.3 < medidas.previa3 < 3.7 ? 1 : 0;
-
+    let actual = (medidas.actuales > 2.3 && medidas.actuales < 3.7) ? 1 : 0;
+    let previa1 = (2.3 < medidas.previas1 && medidas.previas1 < 3.7) ? 1 : 0;
     let dosisFloat = parseFloat(dosis.substring(0, dosis.length - 2));
-    let DTS = dosisFloat * 7; // la dosis se ajusta en funcion de la dosis terapeutica semanal
+    let dts = dosisFloat * 7; // la dosis se ajusta en funcion de la dosis terapeutica semanal
     if (actual === 1 && previa1 === 1) { // mantener dosis
         actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "El paciente va bien, mantener la dosis y dar cita para dentro de 4-6 semanas.";
@@ -2507,19 +2498,19 @@ async function setACO2({ dosis, varMed, medicamento, riesgos }) {
             actualizacionTratamiento.dosis = dosis;
         } else if (previa1 === 1 || previa1 === undefined) {
             actualizacionTratamiento.medicamento = [medicamento];
-            actualizacionTratamiento.indicaciones = "Preguntar a cerca de las causas, si son puntuales se debe mantener la dosis. \nSi no es puntual, cambiar la dosis a la sugerida, si no, mantener la que se muestra en sus tratamientos en curso.";
+            actualizacionTratamiento.indicaciones = "Preguntar a cerca de las causas, si son puntuales se debe mantener la dosis. \nSi no es puntual, cambiar la dosis a la sugerida debajo, si no, mantener la que se muestra en sus tratamientos en curso.";
             actualizacionTratamiento.fechaInicio = fecha;
             actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
             actualizacionTratamiento.frecuencia = "24";
-            if (2.1<=medidas.actuales <= 2.2) {
+            if (medidas.actuales >= 2.1 && medidas.actuales <= 2.2) {
                 dts = dts * 1.1;
                 dosisFloat = dts / 7;
                 actualizacionTratamiento.dosis = `${dosisFloat} mg`;
-            } else if (3.8 <= medidas.actuales <= 3.9) {
+            } else if (medidas.actuales >= 3.8 && medidas.actuales <= 3.9) {
                 dts = dts * 0.9;
                 dosisFloat = dts / 7;
                 actualizacionTratamiento.dosis = `${dosisFloat} mg`;
-            } else if (medidas.actuales > 3.9) { 
+            } else if (medidas.actuales >= 4 && medidas.actuales <= 4.9) {
                 dts = dts * 0.85;
                 dosisFloat = dts / 7;
                 actualizacionTratamiento.dosis = `${dosisFloat} mg`;
@@ -2529,7 +2520,7 @@ async function setACO2({ dosis, varMed, medicamento, riesgos }) {
             } else if (medidas.actuales >= 5) {
                 actualizacionTratamiento.indicaciones = "Desviar al médico, el INR es muy alto. Recomendar al paciente no tomar la medicación durante ese día.";
             }
-            
+
         }
     }
 
