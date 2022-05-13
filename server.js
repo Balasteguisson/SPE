@@ -2373,6 +2373,7 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
     if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
 
 
+
     if (varMed.length === 0) return { actualizarTratamiento: null, salida: true } // si no hay medidas tomadas, no se sigue
 
     let actualizacionTratamiento = {
@@ -2390,7 +2391,12 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
 
     let medidas = verPreviasINR(varMedicas);
     let actual = (medidas.actuales > 1.8 && medidas.actuales < 3.2) ? 1 : 0;
-    let previa1 = (1.8 < medidas.previas1 && medidas.previas1 < 3.2) ? 1 : 0;
+    let previa1;
+    if (medidas.previas1 === undefined) {
+        previa1 = undefined;
+    } else {
+        previa1 = (1.8 < medidas.previas1 && medidas.previas1 < 3.2) ? 1 : 0;
+    }
     let dosisFloat = parseFloat(dosis.substring(0, dosis.length - 2)); //dosis diaria
     let dts = dosisFloat * 7; // la dosis se ajusta en funcion de la dosis terapeutica semanal
     if (actual === 1 && previa1 === 1) { // mantener dosis
@@ -2408,7 +2414,7 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosis;
     } else if (actual !== 1) {
-        if (previa1 !== 1) {
+        if (previa1 === 0) {
             actualizacionTratamiento.medicamento = [medicamento];
             actualizacionTratamiento.indicaciones = "El paciente no se estabiliza, se debe desviar al médico.";
             actualizacionTratamiento.fechaInicio = fecha;
@@ -2423,7 +2429,11 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
             actualizacionTratamiento.frecuencia = "24";
 
             //Ajuste de DTS
-            let fraccionPastilla = 0.25;
+            let nombreMedicamento = medicamento.Nombre;
+            let sizePastilla = nombreMedicamento.substring(nombreMedicamento.indexOf(" ")).trim();
+            sizePastilla = sizePastilla.substring(0, sizePastilla.indexOf(" ")).trim();
+
+            let fraccionPastilla = sizePastilla/4;
             let variacionMax;
             let variacionMin;
             let DTSsuperior;
@@ -2460,17 +2470,35 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
                 let restoInferior = DTSinferior % fraccionPastilla; // mg sobrantes min
                 //buscar un valor entre DTSsuperior y DTSinferior que sea divisor de dts
                 if (restoInferior == 0) {
-                    porcentajeCambio = variancionMin;
-                } else if (fraccionesMinimas != fraccionesMinimas) {
+                    fraccionesPastilla = fraccionesMinimas;
+                } else if (fraccionesMinimas != fraccionesMaximas) {
                     fraccionesPastilla = fraccionesMinimas + 1; //sacar variacion
                 } else if (fraccionesMinimas == fraccionesMaximas) {
                     fraccionesPastilla = incremento ? fraccionesMinimas + 1 : fraccionesMinimas;
                 }
-                console.log(object);              
+
                 let dtsEsperado = fraccionesPastilla * fraccionPastilla;
-                porcentajeCambio = 100 - (dtsEsperado / dts)*100;
+                porcentajeCambio = (dtsEsperado / dts)*100 - 100;
+
+                console.log("IRN: " + medidas.actuales);
+                console.log("DTS ESPERADO: " + dtsEsperado +"mg");
+                console.log("% CAMBIO: " + porcentajeCambio);
+                console.log("variacionesMaxYMin: " + variacionMax + '-' + variacionMin);
+                console.log("fraccionesMaxYMin: " + fraccionesMaximas + '-' + fraccionesMinimas + " / fracción resultante:" + (dtsEsperado / dts));
+                console.log("trozos de pastilla: " + fraccionesPastilla);
+
+
+                //calculo de dosis por dia
+                let trozosDia = Math.trunc(fraccionesPastilla / 7);
+                let resto = fraccionesPastilla % 7;
+                dosisFloat = dtsEsperado / 7;
+                console.log("trozos/dia: " + trozosDia + ", resto: " + resto);
+                // actualizacionTratamiento.indicaciones += `\n\nSe recomienda tomar ${trozosDia} cuartos de pastilla cada día y quedan ${resto} cuartos de pastilla para distribuir a lo largo de la semana.`;
+                actualizacionTratamiento.indicaciones += `\n\nSe recomienda tomar ${Math.trunc(trozosDia / 4)} pastillas al día y quedan ${resto + (trozosDia % 4)} cuartos para distribuir a lo largo de la semana.`;
+                
             }
             actualizacionTratamiento.dosis = `${dosisFloat} mg`;
+
 
         }
     }
