@@ -490,6 +490,7 @@ app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req, res) => {
                             idTratamiento: respuesta[a].IDTratamiento,
                             nombre: nombres[a].Nombre,
                             principioActivo: nombres[a].PrincipioActivo,
+                            cantidad: respuesta[a].Cantidad
                         }
                         listaTratamientos.push(tratamiento);
                     }
@@ -687,7 +688,9 @@ app.post(`/api/admin/:id/crearCita`, (req, res) => {
     //se genera la peticion de la bbdd 
     let petBBDD = `INSERT INTO Cita (IDCita, IdPaciente, IDEnfermero, TipoRevision, Online, Sintomas, Signos, FechaHora, Realizada) VALUES (NULL, '${paciente}', '${enfermero}', '${tipoRevision}', '${presencialidad}', '', '', '${fechaHora}', '0');`
     baseDatos.query(petBBDD, (err, respuesta) => {
+        console.log(respuesta);
         err ? (res.status(502).json("Error en BBDD" + err)) : (res.status(201).json("Cita creada"))
+        
     })
 })
 
@@ -1212,7 +1215,8 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
     let regla1 = {
         Diabetes: 1,
         RV: 2,
-        ACOs: 3
+        "ACO INR 2-3": 3,
+        "ACO INR 2.5-3.5": 4
     }
 
     let regla2 = {
@@ -2362,16 +2366,83 @@ async function setAcenocumarol({ dosis, varMed, medicamento, riesgos }) {
     let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
     if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
 
+
+    if (varMed.length === 0) return { actualizarTratamiento: null, salida: true } // si no hay medidas tomadas, no se sigue
+    
+    let actualizacionTratamiento = {
+        medicamento: [],
+        indicaciones: "",
+        fechaInicio: null,
+        fechaFin: null,
+        frecuencia: "",
+        dosis: ""
+    };
+
     let idPaciente = varMed[0].IDPaciente;
     let varMedicas = await allVarMed(idPaciente);
     var fecha = new Date();
 
     let medidas = verPreviasINR(varMedicas);
+    console.log("hola");
     console.log(medidas);
+    let actual = 2.3 < medidas.actuales < 3.7 ? 1 : 0;
+    let previa1 = 2.3 < medidas.previa1 < 3.7 ? 1 : 0;
+    let previa2 = 2.3 < medidas.previa2 < 3.7 ? 1 : 0;
+    let previa3 = 2.3 < medidas.previa3 < 3.7 ? 1 : 0;
 
-    if (2.3 < medidas.actuales < 3.7 && 2.3 < medidas.previas1 < 3.7) {
-
+    let dosisFloat = parseFloat(dosis.substring(0, dosis.length - 2));
+    let DTS = dosisFloat * 7; // la dosis se ajusta en funcion de la dosis terapeutica semanal
+    if (actual === 1 && previa1 === 1) { // mantener dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "El paciente va bien, mantener la dosis y dar cita para dentro de 4-6 semanas.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(5, "weeks").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosis;
+    } else if (actual === 1 && previa1 !== 1) { // mantener dosis
+        actualizacionTratamiento.medicamento = [medicamento];
+        actualizacionTratamiento.indicaciones = "El paciente se ha estabilizado, mantener la dosis y dar cita para dentro de 4-6 semanas.";
+        actualizacionTratamiento.fechaInicio = fecha;
+        actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
+        actualizacionTratamiento.frecuencia = "24";
+        actualizacionTratamiento.dosis = dosis;
+    } else if (actual !== 1) {
+        if (previa1 !== 1) {
+            actualizacionTratamiento.medicamento = [medicamento];
+            actualizacionTratamiento.indicaciones = "El paciente no se estabiliza, se debe desviar al médico.";
+            actualizacionTratamiento.fechaInicio = fecha;
+            actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
+            actualizacionTratamiento.frecuencia = "24";
+            actualizacionTratamiento.dosis = dosis;
+        } else if (previa1 === 1 || previa1 === undefined) {
+            actualizacionTratamiento.medicamento = [medicamento];
+            actualizacionTratamiento.indicaciones = "Preguntar a cerca de las causas, si son puntuales se debe mantener la dosis. \nSi no es puntual, cambiar la dosis a la sugerida, si no, mantener la que se muestra en sus tratamientos en curso.";
+            actualizacionTratamiento.fechaInicio = fecha;
+            actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
+            actualizacionTratamiento.frecuencia = "24";
+            if (medidas.actuales < 2.3) {
+                dts = dts * 1.1;
+                dosisFloat = dts / 7;
+                actualizacionTratamiento.dosis = `${dosisFloat} mg`;
+            } else if (3.8 <= medidas.actuales <= 3.9) {
+                dts = dts * 0.9;
+                dosisFloat = dts / 7;
+                actualizacionTratamiento.dosis = `${dosisFloat} mg`;
+            } else if (medidas.actuales > 3.9) { 
+                dts = dts * 0.85;
+                dosisFloat = dts / 7;
+                actualizacionTratamiento.dosis = `${dosisFloat} mg`;
+            } else if (medidas.actuales <= 2) {
+                actualizacionTratamiento.indicaciones = "Desviar al médico, el INR es muy bajo.";
+                actualizacionTratamiento.dosis = dosis;
+            } else if (medidas.actuales >= 5) {
+                actualizacionTratamiento.indicaciones = "Desviar al médico, el INR es muy alto. Recomendar al paciente no tomar la medicación durante ese día.";
+            }
+            
+        }
     }
+
+
 
     return { actualizarTratamiento: null, salida: true }
 }

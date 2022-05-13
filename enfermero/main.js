@@ -1209,6 +1209,7 @@ async function crearCita(){
         presencialidad : presencialidad,
         fechaHora : fechaHora
     }
+    console.log(datosCita);
 
     if (datosCita.paciente == "" || datosCita.enfermero == "" || datosCita.tipo == "placeholderTipoRevision" || datosCita.presencialidad == "placeholderUbiCita" || datosCita.fechaHora == "") {
         alert("Rellene todos los campos")
@@ -1736,7 +1737,7 @@ async function verCita(idCita){
     let tratamientos = await peticionREST(urlTratamientos, peticionServer)
     document.getElementById('citaListaTratamientos').innerHTML = ""
     for (let a = 0; a < tratamientos.length; a++) {
-        document.getElementById('citaListaTratamientos').innerHTML += `<li>${tratamientos[a].nombre} - ${tratamientos[a].principioActivo}</li>`        
+        document.getElementById('citaListaTratamientos').innerHTML += `<li>${tratamientos[a].nombre} - ${tratamientos[a].principioActivo} - ${tratamientos[a].cantidad}</li>`        
     }
     //maternidad
     if (data.Sexo == "F"){
