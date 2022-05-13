@@ -2391,7 +2391,7 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
     let medidas = verPreviasINR(varMedicas);
     let actual = (medidas.actuales > 1.8 && medidas.actuales < 3.2) ? 1 : 0;
     let previa1 = (1.8 < medidas.previas1 && medidas.previas1 < 3.2) ? 1 : 0;
-    let dosisFloat = parseFloat(dosis.substring(0, dosis.length - 2));
+    let dosisFloat = parseFloat(dosis.substring(0, dosis.length - 2)); //dosis diaria
     let dts = dosisFloat * 7; // la dosis se ajusta en funcion de la dosis terapeutica semanal
     if (actual === 1 && previa1 === 1) { // mantener dosis
         actualizacionTratamiento.medicamento = [medicamento];
@@ -2421,24 +2421,56 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
             actualizacionTratamiento.fechaInicio = fecha;
             actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"));
             actualizacionTratamiento.frecuencia = "24";
+
+            //Ajuste de DTS
+            let fraccionPastilla = 0.25;
+            let variacionMax;
+            let variacionMin;
+            let DTSsuperior;
+            let DTSinferior;
+            let porcentajeCambio;
+            let incremento;
             if (medidas.actuales>=1.6 && medidas.actuales <= 1.7) {
-                dts = dts * 1.1;
-                dosisFloat = dts / 7;
-                actualizacionTratamiento.dosis = `${dosisFloat} mg`;
+                variacionMax = 1.1;
+                variacionMin = 1.05;
+                incremento = Math.abs(1.7 - medidas.actuales) < Math.abs(1.6 - medidas.actuales);
             } else if (medidas.actuales >= 3.3 && medidas.actuales <= 3.9) {
-                dts = dts * 0.9;
-                dosisFloat = dts / 7;
-                actualizacionTratamiento.dosis = `${dosisFloat} mg`;
+                variacionMax = 0.90;
+                variacionMin = 0.95;
+                incremento = Math.abs(3.3 - medidas.actuales) < Math.abs(3.9 - medidas.actuales);
             } else if (medidas.actuales >= 4 && medidas.actuales <= 4.9) {
-                dts = dts * 0.85;
-                dosisFloat = dts / 7;
-                actualizacionTratamiento.dosis = `${dosisFloat} mg`;
+                variacionMax = 0.85;
+                variacionMin = 0.9;
+                incremento = Math.abs(4 - medidas.actuales) < Math.abs(4.9 - medidas.actuales);
             } else if (medidas.actuales <= 2) {
                 actualizacionTratamiento.indicaciones = "Desviar al médico, el INR es muy bajo.";
                 actualizacionTratamiento.dosis = dosis;
             } else if (medidas.actuales >= 5) {
                 actualizacionTratamiento.indicaciones = "Desviar al médico, el INR es muy alto. Recomendar al paciente no tomar la medicación durante ese día.";
             }
+
+            if (variacionMax != undefined || variacionMin != undefined) {
+                let fraccionesPastilla; //cantidades de fraccionPastilla a tomar
+                let error = 0; //dice en cuanto difiere del tratamiento optimo
+                DTSsuperior = dts * variacionMax;
+                let fraccionesMaximas = Math.trunc(DTSsuperior / fraccionPastilla);
+                let restoSuperior = DTSsuperior % fraccionPastilla; //mg sobrantes max
+                DTSinferior = dts * variacionMin;
+                let fraccionesMinimas = Math.trunc(DTSinferior / fraccionPastilla);
+                let restoInferior = DTSinferior % fraccionPastilla; // mg sobrantes min
+                //buscar un valor entre DTSsuperior y DTSinferior que sea divisor de dts
+                if (restoInferior == 0) {
+                    porcentajeCambio = variancionMin;
+                } else if (fraccionesMinimas != fraccionesMinimas) {
+                    fraccionesPastilla = fraccionesMinimas + 1; //sacar variacion
+                } else if (fraccionesMinimas == fraccionesMaximas) {
+                    fraccionesPastilla = incremento ? fraccionesMinimas + 1 : fraccionesMinimas;
+                }
+                console.log(object);              
+                let dtsEsperado = fraccionesPastilla * fraccionPastilla;
+                porcentajeCambio = 100 - (dtsEsperado / dts)*100;
+            }
+            actualizacionTratamiento.dosis = `${dosisFloat} mg`;
 
         }
     }
