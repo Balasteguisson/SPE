@@ -9,24 +9,31 @@
         
     </head>
     <body>
-        
         <div id = 'login' class='seccion visible'><!--LOGIN-->
-            <h1>Login</h1>
-            <p><input type="text" class='inputLog' id='user' placeholder="Usuario"/></p>
-            <p><input type="password" class='inputLog' id='password' placeholder="Contraseña"></p>
-            <p id="errorLogin" style = "visibility: hidden;">*Usuario o contraseña incorrecto*</p>
-            <p><button onclick="log()" class="botonAvance">Entrar</button></p>
+            <div class="formularioLogin contenedorFlotante">
+                <h1>Login</h1>
+                <div class="groupInput">
+                    <input type="text" name="user" id="user" required>
+                    <span class="bar"></span>
+                    <label for="user">Usuario: </label>
+                </div>
+                <div class="groupInput">
+                    <input type="password" name="password" id="password" required>
+                    <span class="bar"></span>
+                    <label for="password" id="labelPassword">Contraseña: </label>
+                </div>
+                
+                <!-- <p><input type="text" class='inputLog' id='user' placeholder="Usuario" /></p> -->
+                <!-- <p><input type="password" class='inputLog' id='password' placeholder="Contraseña"></p> -->
+                <p id="errorLogin" style="display: none;">*Usuario o contraseña incorrecto*</p>
+                <p><button onclick="log()" class="botonAvance">Entrar</button></p>
+            </div>
         </div>
-        <div id = 'menuEleccion' class = 'seccion'>
-            <h2 id = 'bienvenidaEleccion'></h2>
-            <button type="submit" onclick="cambiarPantalla('menuEnfermero')">Menu enfermero</button>
-            <button type='submit' onclick="cambiarPantalla('menuAdmin')">Menu Administrador</button>
-        </div>
-        <div id= 'menuEnfermero' class = 'seccion contenedorEnfermero'><!--MENU ENFERMERO-->
+        <div id= 'menuEnfermero' class = 'seccion oculto contenedorEnfermero'><!--MENU ENFERMERO-->
             <div class="headerEnfermero">
                 <p><h1>Menú Principal</h1></p>
                 <p><h2 id = "bienvenida"></h2></p>
-                <p><button class="botonMenu botonRetroceso" onclick="logout()">Cerrar sesión</button></p>
+                <p><button class="botonRetroceso" onclick="logout()">Cerrar sesión</button></p>
             </div>
             <div id = 'formacion' class="seccionMEnf">
                 <h3 class="sectionTitleEnf">Formación</h3>
@@ -128,36 +135,38 @@
             </div>
             
         </div>
-        <div id = 'menuAdmin' class = 'seccion contenedorAdmin'><!--MENU ADMIN-->
-            <p><h2 id = 'bienvenidaAdmin'></h2><button class='botonMenu' onclick='logout()'>Cerrar sesión</button></p>
-            <div id='gestionEnf' class='card'>
-                <h4 class='cardHeader'>Enfermería</h4>
-                <p><button onclick='pantallaRegistrarEnfermero()'>Nuevo Enfermero</button></p>
-                <p><button onclick='fillListaEnfermeros()'>Lista de Enfermeros</button></p>
-                <p><button onclick='pantallaDarCita()'>Dar Cita</button></p>
-                <p><button onclick='pantallaMantenimientoCita()'>Medicamentos y mediciones</button></p>
-            </div>
-            <div id='gestionPac' class='card'>
-                <h4 class='cardHeader'>Pacientes</h4>
-                <p><button onclick="verMenuRegistroPaciente()">Nuevo Paciente</button></p>
-                <p><button onclick='verMenuListaPacientes()'>Lista de Pacientes</button></p>
-            </div>
-            <!-- <div id='gestionAdmin' class='card'>
-                <h4 class='cardHeader'>Administración</h4>
-                <p><button>Nuevo Administrador</button></p>
-                <p><button>Lista de Administradores</button></p>
-            </div> -->
-            <div id='gestionForm' class='card'>
-                <h4 class='cardHeader'>Formación</h4>
-                <p><button onclick="pantallaCrearPregunta()">Nueva Pregunta</button></p>
-                <p><button onclick="fillBanco()">Banco de Preguntas</button></p>
-                <p><button onclick="cambiarPantalla('menuMonitorRendimiento')">Monitor de Rendimiento</button></p>
-                <p><button onclick="verMenuCrearTest()">Crear test</button></p>
-                <!-- <p><button onclick=''>Ajustes de formación</button></p> MAS ADELANTE -->
+        <div id = 'menuAdmin' class = 'seccion oculto contenedorAdmin'><!--MENU ADMIN-->
+            <div class="headerAdmin contenedorFlotante"><h2 id = 'bienvenidaAdmin'></h2><button class='botonRetroceso' onclick='logout()'>Cerrar sesión</button></div>
+            <div class="bodyAdmin">
+                <div id='gestionEnf' class='card contenedorFlotante'>
+                    <h4 class='cardHeader'>Enfermería</h4>
+                    <p><button onclick='pantallaRegistrarEnfermero()'>Nuevo Enfermero</button></p>
+                    <p><button onclick='fillListaEnfermeros()'>Lista de Enfermeros</button></p>
+                    <p><button onclick='pantallaDarCita()'>Dar Cita</button></p>
+                    <p><button onclick='pantallaMantenimientoCita()'>Medicamentos y mediciones</button></p>
+                </div>
+                <div id='gestionPac' class='card contenedorFlotante'>
+                    <h4 class='cardHeader'>Pacientes</h4>
+                    <p><button onclick="verMenuRegistroPaciente()">Nuevo Paciente</button></p>
+                    <p><button onclick='verMenuListaPacientes()'>Lista de Pacientes</button></p>
+                </div>
+                <!-- <div id='gestionAdmin' class='card'>
+                    <h4 class='cardHeader'>Administración</h4>
+                    <p><button>Nuevo Administrador</button></p>
+                    <p><button>Lista de Administradores</button></p>
+                </div> -->
+                <div id='gestionForm' class='card contenedorFlotante'>
+                    <h4 class='cardHeader'>Formación</h4>
+                    <p><button onclick="pantallaCrearPregunta()">Nueva Pregunta</button></p>
+                    <p><button onclick="fillBanco()">Banco de Preguntas</button></p>
+                    <p><button onclick="cambiarPantalla('menuMonitorRendimiento')">Monitor de Rendimiento</button></p>
+                    <p><button onclick="verMenuCrearTest()">Crear test</button></p>
+                    <!-- <p><button onclick=''>Ajustes de formación</button></p> MAS ADELANTE -->
+                </div>
             </div>
         </div>
-        <div id = 'menuCrearPregunta' class='seccion'> <!--CREACION DE PREGUNTAS-->
-            <p><h1>Nueva Pregunta</h1><button onclick="cambiarPantalla('menuAdmin')">Volver</button></p>
+        <div id = 'menuCrearPregunta' class='seccion oculto'> <!--CREACION DE PREGUNTAS-->
+            <p><h1>Nueva Pregunta</h1><button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button></p>
             <form id="crearPregunta">
                 <p>
                     <label for="tipoPregunta">Modalidad:</label>
@@ -190,8 +199,8 @@
             </form>
             <p><button onclick="guardarPregunta()">Submit</button></p>
         </div>
-        <div id = 'menuEditarPregunta' class='seccion'> <!--EDICION DE PREGUNTAS-->
-            <p><h1>Editar Pregunta</h1><button onclick="cambiarPantalla('menuBancoPreguntas')">Volver</button></p>
+        <div id = 'menuEditarPregunta' class='seccion oculto'> <!--EDICION DE PREGUNTAS-->
+            <p><h1>Editar Pregunta</h1><button class="botonRetroceso" onclick="cambiarPantalla('menuBancoPreguntas')">Volver</button></p>
             <form id="editarPregunta">
                 <p>
                     <label for="tipoPreguntaE">Escoge la modalidad</label>
@@ -227,10 +236,10 @@
             </form>
             <p><button id = 'botonEditar' onclick="editarPregunta()">Guardar cambios</button></p>
         </div>
-        <div id = 'menuBancoPreguntas' class='seccion'> <!--BANCO DE PREGUNTAS-->
+        <div id = 'menuBancoPreguntas' class='seccion oculto'> <!--BANCO DE PREGUNTAS-->
             <h1>Banco de preguntas</h1>
             <select name="cicloText" id="cicloTest" onchange="getCicloSeleccionado()"></select> <!--Se rellena desde JS con info de la bbdd-->
-            <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
             <table id="listadoPreguntas">
                 <thead>
                     <th>Número</th>
@@ -243,7 +252,7 @@
             </table>
             <p id='avisosBanco'></p>
         </div>
-        <div id = 'menuMonitorRendimiento' class='seccion'> <!--MONITOR RENDIMIENTO-->
+        <div id = 'menuMonitorRendimiento' class='seccion oculto'> <!--MONITOR RENDIMIENTO-->
             <h1>Resultados de los enfermeros</h1>
             <p>
                 Selecciona el ciclo que quieres ver:
@@ -267,11 +276,11 @@
                     </tr>
                 </tbody>
             </table>
-            <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
         </div>
-        <div id ='menuCrearTest' class='seccion'> <!--MENU CREACION TEST-->
+        <div id ='menuCrearTest' class='seccion oculto'> <!--MENU CREACION TEST-->
             <h1>Nuevo Test</h1>
-            <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
             <button onclick="crearTest()">Generar test</button>
             <p>Escoge la modalidad a la que pertenece el test</p>
             <select id='tipoTest' onchange="fillSurtidor()">
@@ -318,62 +327,107 @@
             </section>
             
         </div>
-        <div id ='menuRegistrarEnfermero' class='seccion'> <!--REGISTRO DE ENFERMERO-->
-            <p>
-                <h1>Nuevo perfil de Enfermero</h1><button onclick="cambiarPantalla('menuAdmin')">Volver</button>
-                <button type="submit" id="botonRegistrarEnfermero" onclick="registrarEnfermero()">Guardar usuario</button>
-            </p>
-            <form>  
+        <div id ='menuRegistrarEnfermero' class='seccion oculto'> <!--REGISTRO DE ENFERMERO-->
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Nuevo perfil de Enfermero</h1><button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
+                
+            </div>
+            <form class="formulario formulario contenedorFlotante">  
                 <p>
-                    <label for="nombreEnfermero">Nombre: </label>
-                    <input type="text" name="nombreEnfermero" id="nombreEnfermero" placeholder="Nombre">
-                    <label for="apellidosEnfermero">Apellidos: </label>
-                    <input type="text" name="apellidosEnfermero" id="apellidosEnfermero" placeholder="Apellidos">
-                    <label for="dniEnfermero">DNI:</label>
-                    <input type="text" name="dniEnfermero" id="dniEnfermero" placeholder="11111111A">
+                    <div class="groupInput">
+                        <input type="text" name="nombreEnfermero" id="nombreEnfermero" required>
+                        <span class="bar"></span>
+                        <label for="nombreEnfermero">Nombre: </label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="text" name="apellidosEnfermero" id="apellidosEnfermero" required>
+                        <span class="bar"></span>
+                        <label for="apellidosEnfermero">Apellidos: </label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="text" name="dniEnfermero" id="dniEnfermero" required>
+                        <span class="bar"></span>
+                        <label for="dniEnfermero">DNI: </label>
+                    </div>
                 </p>
                 <p>
-                    <label for="fechaNacimientoEnfermero">Fecha Nacimiento:</label><input type="date" id="fechaNacimientoEnfermero">
-                    <label for="emailEnfermero">Email:</label><input type="email" name="emailEnfermero" id="emailEnfermero" placeholder="ejemplo@grupohla.es">
-                    <label for="fotoEnfermero">Foto:</label><input type="text" name="fotoEnfermero" id="fotoEnfermero">
+                    <div class="groupInput">
+                        <input type="date" name="fechaNacimientoEnfermero" id="fechaNacimientoEnfermero" required>
+                        <span class="bar"></span>
+                        <label for="fechaNacimientoEnfermero">Fecha Nacimiento: </label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="text" name="emailEnfermero" id="emailEnfermero" required>
+                        <span class="bar"></span>
+                        <label for="emailEnfermero">Email: </label>
+                    </div>
                 </p>
-                <p></p>
-                <button type="reset">Borrar Todo</button>
+                <div class="contenedorOpcionesFormulario">
+                    <button type="reset">Borrar Todo</button>
+                    <button type="button" id="botonRegistrarEnfermero" onclick="registrarEnfermero()">Guardar usuario</button>
+                </div>
             </form>
         </div>
-        <div id ='menuRegistrarPaciente' class='seccion'><!--REGISTRO DE PACIENTE-->
-            <p><h1>Registrar paciente</h1></p>
-            <p>
-                <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
-                <button type="submit" onclick="registrarPaciente()">Registrar paciente</button>
-            </p>
-            <form id="formularioRegistroPaciente">
+        <div id ='menuRegistrarPaciente' class='seccion oculto'><!--REGISTRO DE PACIENTE-->
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Registrar paciente</h1>
+                <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            </div>
+            <form id="formularioRegistroPaciente" class="formulario contenedorFlotante">
+                <div class="contenedorOpcionesFormulario">
+                    <button type="button" onclick="registrarPaciente()">Registrar paciente</button>
+                    <button type="reset">Borrar todo</button>
+                </div>
                 <section id="datosTablaPaciente">
-                    <p>
-                        <label for="nombrePaciente">Nombre</label>
-                        <input type="text" name="nombrePaciente" id="nombrePaciente" placeholder="Nombre">
-                        <label for="apellidosPaciente">Apellidos</label>
-                        <input type="text" name="apellidosPaciente" id="apellidosPaciente" placeholder="Apellidos">
-                        <label for="SIPPaciente">DNI/Pasaporte</label>
-                        <input type="text" name="SIPPaciente" id="SIPPaciente" placeholder="Documento Identidad">
-                    </p>
-                    <p>
-                        <label for="fechaNacimientoPaciente">Fecha de nacimiento</label>
-                        <input type="date" name="fechaNacimientoPaciente" id="fechaNacimientoPaciente">
-                        <label for="sexoPaciente">Sexo</label>
-                        <select name="sexoPaciente" id="sexoPaciente">
-                            <option hidden selected value="placeholderSexo">Selecciona sexo</option>
-                            <option value="M">Masculino</option>
-                            <option value="F">Femenino</option>
-                        </select>
-                        <label for="pesoPaciente">Peso</label>
-                        <input type="text" name="pesoPaciente" id="pesoPaciente" placeholder="Kilogramos">
-                        <label for="tallaPaciente">Talla</label>
-                        <input type="text" name="tallaPaciente" id="tallaPaciente" placeholder="Centímetros">
-                    </p>
+                    <div>
+                        <div class="groupInput">
+                            <input type="text" name="nombrePaciente" id="nombrePaciente" required>
+                            <span class="bar"></span>
+                            <label for="nombrePaciente">Nombre </label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="apellidosPaciente" id="apellidosPaciente" required>
+                            <span class="bar"></span>
+                            <label for="apellidosPaciente">Apellidos </label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="SIPPaciente" id="SIPPaciente" required>
+                            <span class="bar"></span>
+                            <label for="SIPPaciente">DNI/Pasaporte </label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="groupInput">
+                            <input type="date" name="fechaNacimientoPaciente" id="fechaNacimientoPaciente" required>
+                            <span class="bar"></span>
+                            <label for="fechaNacimientoPaciente">Fecha de nacimiento </label>
+                        </div>
+                        <p>
+                            <select name="sexoPaciente" id="sexoPaciente">
+                                <option hidden selected value="placeholderSexo">Selecciona sexo</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                        </p>
+                        <div class="groupInput">
+                            <input type="text" name="pesoPaciente" id="pesoPaciente" required>
+                            <span class="bar"></span>
+                            <label for="pesoPaciente">Peso (kg) </label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="tallaPaciente" id="tallaPaciente" required>
+                            <span class="bar"></span>
+                            <label for="tallaPaciente">Talla (cm) </label>
+                        </div>
+                    </div>
                 </section>
                 <section id="formularioAlergiasPaciente">
-                    <p><label for="alergenoPaciente">Alérgeno</label><input type="text" name="alergenoPaciente" id="alergenoPaciente" placeholder="Alérgeno"><button type = "button" id="submitAlergeno" onclick="addAlergia()">Añadir</button></p>
+                    <div class="groupInput">
+                        <input type="text" name="alergenoPaciente" id="alergenoPaciente" required>
+                        <span class="bar"></span>
+                        <label for="alergenoPaciente">Alérgeno</label>
+                    </div>
+                    <p><button type = "button" id="submitAlergeno" onclick="addAlergia()">Añadir</button></p>
                     <ul id="alergiasPaciente"></ul>
                 </section>
                 <section id="formularioEmbarazo">
@@ -383,9 +437,23 @@
                         <option value="ACTIVO">Sí</option>
                         <option value="NOACTIVO">No</option>
                     </select>
-                    <p><label for="embarazoDesde">¿Desde cuándo?</label><input disabled type="date" name="embarazoDesde" id="embarazoDesde"></p>
+                    <div class="groupInput">
+                        <input type="date" name="embarazoDesde" id="embarazoDesde" required>
+                        <span class="bar"></span>
+                        <label for="embarazoDesde">Fecha inicio</label>
+                    </div>
                     <p>¿Ha estado embarazada?</p>
-                    <p>Desde: <input type="date" name="inicioEmbarazo" id="inicioEmbarazo"> Hasta: <input type="date" name="finEmbarazo" id="finEmbarazo"> <button type="button" onclick="addEmbarazo()" id ="botonAddEmbarazo">Añadir</button></p>
+                    <div class="groupInput">
+                        <input type="date" name="inicioEmbarazo" id="inicioEmbarazo" required>
+                        <span class="bar"></span>
+                        <label for="inicioEmbarazo">Fecha inicio</label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="date" name="finEmbarazo" id="finEmbarazo" required>
+                        <span class="bar"></span>
+                        <label for="finEmbarazo">Fecha inicio</label>
+                    </div>
+                    <p><button type="button" onclick="addEmbarazo()" id ="botonAddEmbarazo">Añadir</button></p>
                     <ul id="listaEmbarazos"></ul>
                 </section>
                 <section id="formularioLactancia">
@@ -397,56 +465,77 @@
                     </select>
                 </section>
                 <section id="formularioTratamientos">
-                    <p>
                     <h3>Tratamiento en curso</h3>
-                    </p>
                     <section class="autocomplete" style="width:300px;">
-                        <p>
+                        <div class="groupInput">
+                            <input type="text" name="farmaco" id="farmaco" required>
+                            <span class="bar"></span>
                             <label for="farmaco">Fármaco</label>
-                            <input type="text" name="farmaco" id="farmaco">
-                        </p>
+                        </div>
                     </section>
-                    <p>
-                        <label for="fechaInicioTratamiento">Inicio del tratamiento:</label>
-                        <input type="date" name="fechaInicioTratamiento" id="fechaInicioTratamiento">
-                        <label for="fechaFinTratamiento">Fin del tratamiento:</label>
-                        <input type="date" name="fechaFinTratamiento" id="fechaFinTratamiento">
-                        <label for="dosisConsumida">Dosis</label>
-                        <input type="text" name="dosisConsumida" id="dosisConsumida" placeholder="Dosis">
-                        <label for="intervaloTomas">Intervalos</label>
-                        <input type="text" name="intervalosTratamiento" id="intervalosTratamiento" placeholder="Introducir nº horas entre tomas">
-                    </p>
+                    <div>
+                        <div class="groupInput">
+                            <input type="date" name="fechaInicioTratamiento" id="fechaInicioTratamiento" required>
+                            <span class="bar"></span>
+                            <label for="fechaInicioTratamiento">Fecha Inicio</label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="date" name="fechaFinTratamiento" id="fechaFinTratamiento" required>
+                            <span class="bar"></span>
+                            <label for="fechaFinTratamiento">Fecha Fin</label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="dosisConsumida" id="dosisConsumida" required>
+                            <span class="bar"></span>
+                            <label for="dosisConsumida">Dosis</label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="intervalosTratamiento" id="intervalosTratamiento" required>
+                            <span class="bar"></span>
+                            <label for="intervalosTratamiento">Horas entre tomas</label>
+                        </div>
+                    </div>
                     <p><button type="button" onclick="addTratamiento()">Añadir tratamiento</button></p>
                     <ul id="listaTratamientos"></ul>
                 </section>
                 <section id="formularioPatologiasPrevias">
                     <p><h3>¿Sufre o ha sufrido alguna enfermedad antes?</h3></p>
-                    <label for="enfermedadPrevia">¿Qué enfermedad?</label>
-                    <input type="text" name="enfermedadPrevia" id="enfermedadPrevia" placeholder="Enfermedad">
+                    <div class="groupInput">
+                        <input type="text" name="enfermedadPrevia" id="enfermedadPrevia" required>
+                        <span class="bar"></span>
+                        <label for="enfermedadPrevia">Nombre de la enfermedad</label>
+                    </div>
                     <p>
-                        <label for="enfermedadActiva">¿Está activa ahora?</label>
                         <select name="enfermedadActiva" id="enfermedadActiva">
-                            <option hidden selected value="placeholderPatAct">Escoge una opción</option>
+                            <option hidden selected value="placeholderPatAct">¿Está activa ahora?</option>
                             <option value="ACTIVA">Sí</option>    
                             <option value="NOACTIVA">No</option>
                         </select>
                     </p>
-                    <p>
-                        <label for="fechaInicioEnfermdad">Inicio de la enfermedad: </label>
-                        <input type="date" name="fechaInicioEnfermedad" id="fechaInicioEnfermedad">
-                        <label for="fechaFinEnfermedad">Fin de la enfermedad: </label>
-                        <input type="date" name="fechaFinEnfermedad" id="fechaFinEnfermedad">
-                    </p>
-                    <p><textarea name="descripcionEnfermedad" id="descripcionEnfermedad" cols="30" rows="5" placeholder="Pequeña descripción"></textarea></p>
-                    <button type="button" onclick="addPatologia()">Añadir enfermedad</button>
+                    <div class="groupInput">
+                        <input type="date" name="fechaInicioEnfermedad" id="fechaInicioEnfermedad" required>
+                        <span class="bar"></span>
+                        <label for="fechaInicioEnfermedad">Inicio de la enfermedad</label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="date" name="fechaFinEnfermedad" id="fechaFinEnfermedad" required>
+                        <span class="bar"></span>
+                        <label for="fechaFinEnfermedad">Fin de la enfermedad</label>
+                    </div>
+                    <div class="groupInput">
+                        <label for="descripcionEnfermedad">Pequeña descripción</label>
+                        <textarea name="descripcionEnfermedad" id="descripcionEnfermedad" cols="30" rows="5" required></textarea>
+                        <span class="bar"></span>
+                    </div>
+                    <p><button type="button" onclick="addPatologia()">Añadir enfermedad</button></p>
                     <ul id="listaPatologiasPrevias"></ul>
                 </section>
                 
             </form>
         </div>
-        <div id='menuListaPacientes' class='seccion'><!--LISTA DE PACIENTES-->
+        <div id='menuListaPacientes' class='seccion oculto'><!--LISTA DE PACIENTES-->
             <p><h1>Lista de Pacientes</h1></p>
-            <p><button onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
+            <p><button class="botonRetroceso" onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
             <table id="listaPacientes">
                 <thead>
                     <th>Identificador</th>
@@ -458,39 +547,67 @@
                 <tbody id = "cuerpoListadoPacientes"></tbody>
             </table>
         </div>
-        <div id ='menuEditarPaciente' class='seccion'><!--EDICIÓN DE PACIENTE-->
-            <p><h1>Editar paciente</h1></p>
-            <p>
-                <button onclick="verMenuListaPacientes()">Volver</button>
-                <button type="submit" id="submitCambiosPaciente">Guardar cambios</button>
-            </p>
-            <form id="formularioEditarPaciente">
+        <div id='menuEditarPaciente' class='seccion oculto'>
+            <!--REGISTRO DE PACIENTE-->
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Registrar paciente</h1>
+                <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            </div>
+            <form id="formularioEditarPaciente" class="formulario contenedorFlotante">
+                <div class="contenedorOpcionesFormulario">
+                    <button type="button" id="submitCambiosPaciente">Guardar cambios</button>
+                    <button type="reset">Borrar todo</button>
+                </div>
                 <section id="datosTablaPaciente">
-                    <p>
-                        <label for="nombrePacienteE">Nombre</label>
-                        <input type="text" name="nombrePacienteE" id="nombrePacienteE" placeholder="Nombre">
-                        <label for="apellidosPacienteE">Apellidos</label>
-                        <input type="text" name="apellidosPacienteE" id="apellidosPacienteE" placeholder="Apellidos">
-                        <label for="IdPacienteE">DNI/Pasaporte</label>
-                        <input type="text" name="IdPacienteE" id="IdPacienteE" placeholder="Documento Identidad">
-                    </p>
-                    <p>
-                        <label for="fechaNacimientoPacienteE">Fecha de nacimiento</label>
-                        <input type="date" name="fechaNacimientoPacienteE" id="fechaNacimientoPacienteE">
-                        <label for="sexoPacienteE">Sexo</label>
-                        <select name="sexoPacienteE" id="sexoPacienteE">
-                            <option hidden selected value="placeholderSexo">Selecciona sexo</option>
-                            <option value="M">Masculino</option>
-                            <option value="F">Femenino</option>
-                        </select>
-                        <label for="pesoPacienteE">Peso</label>
-                        <input type="text" name="pesoPacienteE" id="pesoPacienteE" placeholder="Kilogramos">
-                        <label for="tallaPacienteE">Talla</label>
-                        <input type="text" name="tallaPacienteE" id="tallaPacienteE" placeholder="Centímetros">
-                    </p>
+                    <div>
+                        <div class="groupInput">
+                            <input type="text" name="nombrePacienteE" id="nombrePacienteE" required>
+                            <span class="bar"></span>
+                            <label for="nombrePacienteE">Nombre </label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="apellidosPacienteE" id="apellidosPacienteE" required>
+                            <span class="bar"></span>
+                            <label for="apellidosPacienteE">Apellidos </label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="IdPacienteE" id="IdPacienteE" required>
+                            <span class="bar"></span>
+                            <label for="IdPacienteE">DNI/Pasaporte </label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="groupInput">
+                            <input type="date" name="fechaNacimientoPacienteE" id="fechaNacimientoPacienteE" required>
+                            <span class="bar"></span>
+                            <label for="fechaNacimientoPacienteE">Fecha de nacimiento </label>
+                        </div>
+                        <p>
+                            <select name="sexoPacienteE" id="sexoPacienteE">
+                                <option hidden selected value="placeholderSexo">Selecciona sexo</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                        </p>
+                        <div class="groupInput">
+                            <input type="text" name="pesoPacienteE" id="pesoPacienteE" required>
+                            <span class="bar"></span>
+                            <label for="pesoPacienteE">Peso (kg) </label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="tallaPacienteE" id="tallaPacienteE" required>
+                            <span class="bar"></span>
+                            <label for="tallaPacienteE">Talla (cm) </label>
+                        </div>
+                    </div>
                 </section>
                 <section id="formularioAlergiasPacienteE">
-                    <p><label for="alergenoPacienteE">Alérgeno</label><input type="text" name="alergenoPacienteE" id="alergenoPacienteE" placeholder="Alérgeno"><button type = "button" id="submitAlergenoE" onclick="addAlergiaE()">Añadir</button></p>
+                    <div class="groupInput">
+                        <input type="text" name="alergenoPacienteE" id="alergenoPacienteE" required>
+                        <span class="bar"></span>
+                        <label for="alergenoPacienteE">Alérgeno</label>
+                    </div>
+                    <p><button type="button" id="submitAlergenoE" onclick="addAlergiaE()">Añadir</button></p>
                     <ul id="alergiasPacienteE"></ul>
                 </section>
                 <section id="formularioEmbarazoE">
@@ -500,69 +617,107 @@
                         <option value="ACTIVO">Sí</option>
                         <option value="NOACTIVO">No</option>
                     </select>
-                    <p><label for="embarazoDesdeE">¿Desde cuándo?</label><input disabled type="date" name="embarazoDesdeE" id="embarazoDesdeE"></p>
+                    <div class="groupInput">
+                        <input type="date" name="embarazoDesdeE" id="embarazoDesdeE" required>
+                        <span class="bar"></span>
+                        <label for="embarazoDesdeE">Fecha inicio</label>
+                    </div>
                     <p>¿Ha estado embarazada?</p>
-                    <p>Desde: <input type="date" name="inicioEmbarazoE" id="inicioEmbarazoE"> Hasta: <input type="date" name="finEmbarazoE" id="finEmbarazoE"> <button type="button" onclick="addEmbarazoE()" id ="botonAddEmbarazoE">Añadir</button></p>
+                    <div class="groupInput">
+                        <input type="date" name="inicioEmbarazoE" id="inicioEmbarazoE" required>
+                        <span class="bar"></span>
+                        <label for="inicioEmbarazoE">Fecha inicio</label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="date" name="finEmbarazoE" id="finEmbarazoE" required>
+                        <span class="bar"></span>
+                        <label for="finEmbarazoE">Fecha inicio</label>
+                    </div>
+                    <p><button type="button" onclick="addEmbarazo()" id="botonAddEmbarazoE">Añadir</button></p>
                     <ul id="listaEmbarazosE"></ul>
                 </section>
                 <section id="formularioLactanciaE">
                     <p>¿Está dando lactancia?</p>
                     <select name="lactanciaE" id="lactanciaE">
                         <option hidden selected value="placeholderSexo">Escoge una opción</option>
-                        <option value="1">Sí</option>
-                        <option value="0">No</option>
+                        <option value="SI">Sí</option>
+                        <option value="NO">No</option>
                     </select>
                 </section>
                 <section id="formularioTratamientosE">
-                    <p>
                     <h3>Tratamiento en curso</h3>
-                    </p>
                     <section class="autocomplete" style="width:300px;">
-                        <p>
+                        <div class="groupInput">
+                            <input type="text" name="farmacoE" id="farmacoE" required>
+                            <span class="bar"></span>
                             <label for="farmacoE">Fármaco</label>
-                            <input type="text" name="farmacoE" id="farmacoE">
-                        </p>
+                        </div>
                     </section>
-                    <p>
-                        <label for="fechaInicioTratamientoE">Inicio del tratamiento:</label>
-                        <input type="date" name="fechaInicioTratamientoE" id="fechaInicioTratamientoE">
-                        <label for="fechaFinTratamientoE">Fin del tratamiento:</label>
-                        <input type="date" name="fechaFinTratamientoE" id="fechaFinTratamientoE">
-                        <label for="dosisConsumidaE">Dosis</label>
-                        <input type="text" name="dosisConsumidaE" id="dosisConsumidaE" placeholder="Dosis">
-                        <label for="intervaloTomasE">Intervalos</label>
-                        <input type="text" name="intervaloTomasE" id="intervaloTomasE" placeholder="Introducir nº horas entre tomas">
-                    </p>
+                    <div>
+                        <div class="groupInput">
+                            <input type="date" name="fechaInicioTratamientoE" id="fechaInicioTratamientoE" required>
+                            <span class="bar"></span>
+                            <label for="fechaInicioTratamientoE">Fecha Inicio</label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="date" name="fechaFinTratamientoE" id="fechaFinTratamientoE" required>
+                            <span class="bar"></span>
+                            <label for="fechaFinTratamientoE">Fecha Fin</label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="dosisConsumidaE" id="dosisConsumidaE" required>
+                            <span class="bar"></span>
+                            <label for="dosisConsumidaE">Dosis</label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="intervaloTomasE" id="intervaloTomasE" required>
+                            <span class="bar"></span>
+                            <label for="intervaloTomasE">Horas entre tomas</label>
+                        </div>
+                    </div>
                     <p><button type="button" onclick="addTratamientoE()">Añadir tratamiento</button></p>
                     <ul id="listaTratamientosE"></ul>
                 </section>
                 <section id="formularioPatologiasPreviasE">
-                    <p><h3>¿Sufre o ha sufrido alguna enfermedad antes?</h3></p>
-                    <label for="enfermedadPreviaE">¿Qué enfermedad?</label>
-                    <input type="text" name="enfermedadPreviaE" id="enfermedadPreviaE" placeholder="Enfermedad">
                     <p>
-                        <label for="enfermedadActivaE">¿Está activa ahora?</label>
+                    <h3>¿Sufre o ha sufrido alguna enfermedad antes?</h3>
+                    </p>
+                    <div class="groupInput">
+                        <input type="text" name="enfermedadPreviaE" id="enfermedadPreviaE" required>
+                        <span class="bar"></span>
+                        <label for="enfermedadPreviaE">Nombre de la enfermedad</label>
+                    </div>
+                    <p>
                         <select name="enfermedadActivaE" id="enfermedadActivaE">
-                            <option hidden selected value="placeholderPatAct">Escoge una opción</option>
-                            <option value="ACTIVA">Sí</option>    
+                            <option hidden selected value="placeholderPatAct">¿Está activa ahora?</option>
+                            <option value="ACTIVA">Sí</option>
                             <option value="NOACTIVA">No</option>
                         </select>
                     </p>
-                    <p>
-                        <label for="fechaInicioEnfermedadE">Inicio de la enfermedad: </label>
-                        <input type="date" name="fechaInicioEnfermedadE" id="fechaInicioEnfermedadE">
-                        <label for="fechaFinEnfermedadE">Fin de la enfermedad: </label>
-                        <input type="date" name="fechaFinEnfermedadE" id="fechaFinEnfermedadE">
-                    </p>
-                    <p><textarea name="descripcionEnfermedadE" id="descripcionEnfermedadE" cols="30" rows="5" placeholder="Pequeña descripción"></textarea></p>
-                    <button type="button" onclick="addPatologiaE()">Añadir enfermedad</button>
+                    <div class="groupInput">
+                        <input type="date" name="fechaInicioEnfermedadE" id="fechaInicioEnfermedadE" required>
+                        <span class="bar"></span>
+                        <label for="fechaInicioEnfermedadE">Inicio de la enfermedad</label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="date" name="fechaFinEnfermedadE" id="fechaFinEnfermedadE" required>
+                        <span class="bar"></span>
+                        <label for="fechaFinEnfermedadE">Fin de la enfermedad</label>
+                    </div>
+                    <div class="groupInput">
+                        <label for="descripcionEnfermedadE">Pequeña descripción</label>
+                        <textarea name="descripcionEnfermedadE" id="descripcionEnfermedadE" cols="30" rows="5" required></textarea>
+                        <span class="bar"></span>
+                    </div>
+                    <p><button type="button" onclick="addPatologiaE()">Añadir enfermedad</button></p>
                     <ul id="listaPatologiasPreviasE"></ul>
                 </section>
+        
             </form>
         </div>
-        <div id='menuListaEnfermeros' class='seccion'> <!--LISTA DE ENFERMEROS-->
+        <div id='menuListaEnfermeros' class='seccion oculto'> <!--LISTA DE ENFERMEROS-->
             <p><h1>Lista de enfermeros</h1></p>
-            <p><button onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
+            <p><button class="botonRetroceso" onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
             <table id="listaEnfermeros">
                 <thead>
                     <th>DNI</th>
@@ -574,9 +729,9 @@
                 <tbody id = "cuerpoListaEnfermeros"></tbody>
             </table>
         </div>
-        <div id='menuEditarEnfermero' class='seccion'> <!--EDITAR ENFERMERO-->
+        <div id='menuEditarEnfermero' class='seccion oculto'> <!--EDITAR ENFERMERO-->
             <p>
-                <h1>Editar Enfermero</h1><button onclick="fillListaEnfermeros()">Volver</button>
+                <h1>Editar Enfermero</h1><button class="botonRetroceso" onclick="fillListaEnfermeros()">Volver</button>
                 <button type="submit" id="botonEditarEnfermero">Guardar cambios</button>
             </p>
             <form>  
@@ -597,12 +752,13 @@
                 <button type="reset">Borrar Todo</button>
             </form>
         </div>
-        <div id='menuDarCita' class="seccion"><!--MENU CITA-->
-            <p><h1>Crear nueva cita</h1></p>
-            <p><button onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
-            <form id='formularioCita' autocomplete="off">
-                <p>
-                    <label for="fechaCita">Fecha y hora</label><input type="datetime-local" name="fechaCita" id="fechaCita">
+        <div id='menuDarCita' class="seccion oculto"><!--MENU CITA-->
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Crear nueva cita</h1>
+                <button class="botonRetroceso" onclick = "cambiarPantalla('menuAdmin')">Volver</button>
+            </div>
+            <form id='formularioCita' autocomplete="off" class="formulario contenedorFlotante">
+                <div>
                     <select name="tipoRevision" id="tipoRevision">
                         <option hidden selected value="placeholderTipoRevision">Selecciona tratamiento</option>
                         <option value="ACO INR 2-3">Tratamiento ACOs INR 2-3</option>
@@ -615,18 +771,31 @@
                         <option value="online">Cita Online</option>
                         <option value="presencial">Cita Presencial</option>
                     </select>
-                </p>
-                <section class="autocomplete" style="width:300px;">
-                    <label for="nombrePacienteCita">Paciente: </label>
-                    <input type="text" id="nombrePacienteCita" name="nombrePacienteCita" placeholder="Paciente">
-                    <label for="nombreEnfermeroCita">Enfermero: </label>
-                    <input type="text" name="nombreEnfermeroCita" id="nombreEnfermeroCita" placeholder="Enfermero">
+                </div>
+                <div class="groupInput">
+                    <input type="datetime-local" name="fechaCita" id="fechaCita" required>
+                    <span class="bar"></span>
+                    <label for="fechaCita">Fecha y hora</label>
+                </div>
+                <section class="autocomplete">
+                    <div class="groupInput">
+                        <input type="text" name="nombrePacienteCita" id="nombrePacienteCita" required>
+                        <span class="bar"></span>
+                        <label for="nombrePacienteCita">Paciente</label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="text" name="nombreEnfermeroCita" id="nombreEnfermeroCita" required>
+                        <span class="bar"></span>
+                        <label for="nombreEnfermeroCita">Enfermero</label>
+                    </div>
                 </section>
-                
+                <div class="contenedorOpcionesFormulario">
+                    <button type="reset">Borrar todo</button>
+                    <button type="button" onclick="crearCita()">Crear cita</button>
+                </div>
             </form>
-            <button type="button" onclick="crearCita()">Crear cita</button>
         </div>
-        <div id='pantallaTest' class='seccion'><!--PANTALLA PARA MOSTRAR PREGUNTAS TEST-->
+        <div id='pantallaTest' class='seccion oculto'><!--PANTALLA PARA MOSTRAR PREGUNTAS TEST-->
             <div id='encabezadoTest' class="encabezadoTest">
                 <h1 id="nombreTest"></h1>
                 <h2 id="periodoTest"></h2>
@@ -645,7 +814,7 @@
                 <p><button id="botonAbandonarTest" onclick="verMenuEnfermeroHTML()">Abandonar test</button></p>
             </div>
         </div>
-        <div id='pantallaReviewTest' class='seccion'> <!--PANTALLA REVIEW TEST FINALIZADO-->
+        <div id='pantallaReviewTest' class='seccion oculto'> <!--PANTALLA REVIEW TEST FINALIZADO-->
             <h1>Test Finalizado</h1>
             <section id="resultados">
                 <p id="testRealizado"></p>
@@ -661,8 +830,8 @@
                 </p>
             </section>
         </div>
-        <div id='menuCita' class='seccion contenedorCita'> <!--PANTALLA CITA-->
-            <div id="citaDatosPaciente" class="contenedorDatosPaciente"><!--Info del paciente-->
+        <div id='menuCita' class='seccion oculto contenedorCita'> <!--PANTALLA CITA-->
+            <div id="citaDatosPaciente" class="contenedorDatosPaciente contenedorFlotante"><!--Info del paciente-->
                 <h2 class="identificadoresPaciente">Paciente: <span id="indNombreApellidos"></span> - <span id="indIdPaciente"></span></h2>
                 <p class="cajaDatos">
                     <b>Sexo:</b> <span id="indSexo"></span> <b>Peso:</b> <span id="indPeso"></span> kgs <b>Edad:</b> <span id="indEdad"></span> <b>Motivo de cita:</b> <span id="indMotivo"></span>
@@ -675,25 +844,37 @@
                     <ul id="citaListaTratamientos" aria-label="Tratamiento en curso" class="listaDatos"></ul>
                 </div>
                 <div id="citaSintomasSignos">
-                    <p><label for="citaSintomas"> Síntomas indicados por el paciente: </label></p>
-                    <p><textarea name="citaSintoma" id="citaSintomas" class="textAreaCita" cols="50" rows="4"></textarea></p>
-                    <p><label for="citaSignos">Signos observados: </label></p>
-                    <p><textarea name="citaSignos" id="citaSignos"class="textAreaCita" cols="50" rows="4"></textarea></p>
+                    <div class="groupInput">
+                        <textarea name="citaSintoma" id="citaSintomas" class="textAreaCita"  rows="4" required></textarea>
+                        <span class="bar"></span>
+                        <label for="citaSintoma">Síntomas indicados por el paciente </label>
+                    </div>
+                    <div class="groupInput">
+                        <textarea name="citaSignos" id="citaSignos" class="textAreaCita"  rows="4" required></textarea>
+                        <span class="bar"></span>
+                        <label for="citaSignos">Síntomas indicados por el paciente </label>
+                    </div>
                 </div>
                 <p><button onclick="citaGuardarCambios()">Guardar cambios</button></p>
-                <p><button onclick="verMenuEnfermeroHTML()" class="botonCita">Volver</button></p>
+                <p><button class="botonRetroceso" onclick="verMenuEnfermeroHTML()" class="botonCita">Volver</button></p>
             </div>
             <div id="citaSeguimientoVariables" class="contenedorVariables"><!--Seguimiento de variables-->
                 <h2 class="cajaDatos">Mediciones del paciente</h2>
                 <p>
                     <p><button onclick="verGraficasPaciente()">Ver gráficas</button> <!--<button onclick="guardarMedidas()">Guardar mediciones
                             tomadas</button>--></p>
-                    <select name="tipoVariable" id="tipoVariable">
-                        <option hidden selected value="placeholderVariable">Escoge un parámetro médico</option>
-                    </select>
-                    <input type="number" name="cantidadVariable" id="cantidadVariable" placeholder="Introduce la cantidad">
-                    <select name="unidadVariable" id="unidadVariable"></select><!--Deberia mostrar automaticamente la del SI y luego dar el resto de opciones-->
-                    <button onclick="addMedicion()">Añadir</button>
+                    <div class="contenedorParametros">
+                        <select name="tipoVariable" id="tipoVariable">
+                            <option hidden selected value="placeholderVariable">Escoge un parámetro médico</option>
+                        </select>
+                        <div class="groupInput">
+                            <input type="text" name="cantidadVariable" id="cantidadVariable" required>
+                            <span class="bar"></span>
+                            <label for="cantidadVariable">Introduce la cantidad </label>
+                        </div>
+                        <select name="unidadVariable" id="unidadVariable"></select><!--Deberia mostrar automaticamente la del SI y luego dar el resto de opciones-->
+                        <button onclick="addMedicion()">Añadir</button>
+                    </div>
                 </p>
                 <ul id="listaMediciones" aria-label="Medidas tomadas:"></ul>
                 
@@ -706,65 +887,139 @@
                     </select>
                     <button onclick="prescribirMedicamento()">Actualizar</button>
                 </p>
-                <p><textarea name="recomendacionesMedicamento" value="" id="recomendacionesMedicamento" class="textAreaCita" cols="30" rows="8" placeholder="Indicaciones"></textarea></p>
-                <p><input type="text" name="posologiaMedicamento" id="posologiaMedicamento" placeholder="Posología"></p>
-                <p><input type="text" name="intervaloTomas" id="intervaloTomas" placeholder="Horas entre tomas"></p>
-                <p><label for="fechaInicioMedicacion">Fecha Inicio: </label><input type="date" name="fechaInicioMedicacion" id="fechaInicioMedicacion"></p><p><label for="fechaFinMedicacion">Fin del tratamiento: </label><input type="date" name="fechaFinMedicacion" id="fechaFinMedicacion"></p>
+                <div class="groupInput">
+                    <textarea name="recomendacionesMedicamento" value="" id="recomendacionesMedicamento" class="textAreaCita" required></textarea>
+                    <span class="bar"></span>
+                    <label for="cantidadVariable">Recomendaciones </label>
+                </div>
+                <div class="groupInput">
+                    <input type="text" name="posologiaMedicamento" id="posologiaMedicamento" required>
+                    <span class="bar"></span>
+                    <label for="posologiaMedicamento">Posología </label>
+                </div>
+                <div class="groupInput">
+                    <input type="text" name="intervaloTomas" id="intervaloTomas" required>
+                    <span class="bar"></span>
+                    <label for="intervaloTomas">Horas entre tomas </label>
+                </div>
+                <div class="groupInput">
+                    <input type="date" name="fechaInicioMedicacion" id="fechaInicioMedicacion" required>
+                    <span class="bar"></span>
+                    <label for="fechaInicioMedicacion">Fecha inicio</label>
+                </div>
+                <div class="groupInput">
+                    <input type="date" name="fechaFinMedicacion" id="fechaFinMedicacion" required>
+                    <span class="bar"></span>
+                    <label for="fechaFinMedicacion">Fin del tratamiento </label>
+                </div>
                 <p><button type = "button" onclick="actualizarTratamiento()">Actualizar tratamiento</button></p>
                 <p id="statusActualizarTratamiento"></p>
             </div>
         </div>
-        <div id='mantenimientoCita' class='seccion'><!-- PANTALLA PARA CREAR VARIABLES Y AÑADIR MEDICAMENTOS (MANTENIMIENTO CITA)-->
-            <h1>Variables médicas del paciente y Medicamentos</h1>
-            <button onclick="cambiarPantalla('menuAdmin')">Volver</button>
-            <div id='creacionVariablesPaciente'>
-                <h2>Crear variables</h2>
-                <form id='creacionVariable'>
-                    <p><label for="nombreVariable">Nombre</label><input type="text" name="nombreVariable" id="nombreVariable"></p>
-                    <p>
-                        <label for="unidadesVariable">Unidades</label><input type="text" name="unidadesVariable" id="unidadesVariable">
-                        <label for="abreviaturaUnidad">Abreviatura</label><input type="text" name="abreviaturaUnidad" id="abreviaturaUnidad">
-                    </p>
-                    <p>
-                        <label for="rangoHabitual">Valores normales</label>
-                        <input type="number" name="rangoHabitual" id="rangoHabitualMax" placeholder="Máximo">
-                        <input type="number  " name="rangoHabitual" id="rangoHabitualMin" placeholder="Mínimo">
-                    </p>
-                    <button type="button" onclick="addUnidad()">Añadir unidad y rango</button>
-                    <ul id="listaUnidadesVariable" aria-label="Unidades"></ul>
-                    <button type="button" onclick="crearVariable()">Crear variable</button>
-                </form>
+        <div id='mantenimientoCita' class='seccion oculto'><!-- PANTALLA PARA CREAR VARIABLES Y AÑADIR MEDICAMENTOS (MANTENIMIENTO CITA)-->
+            
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Variables médicas del paciente y Medicamentos</h1>
+                <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
             </div>
-            <div id='registroMedicamentos'>
-                <h2>Buscar medicamentos</h2>
-                <div id="busquedaMedicamento">
-                    <input type="text" name="nomMedicamento" id="nomMedicamento" placeholder="Nombre del medicamento">
-                    <input type="text" name="prActMed" id="prActMed" placeholder="Principio Activo del medicamento">
-                    <button onclick="buscarMedicamento()">Buscar medicamento</button></div>
-                <div id="resultBusqMed">
-
-                </div>
-                <div id="medicamentosEncontrados">
-                    <h2>Medicamentos encontrados</h2>
-                    <ul id="listaMedicamentosEncontrados" aria-label="Medicamentos encontrados"></ul>
-                </div>
-                <div id="datosMedSeleccionado" style="display: none">
-                    <button onclick="undoSelectMedicamento()">Deshacer selección</button>
-                    <form id="formMedicamentoSeleccionado">
-                        <p><input type="text" name="nomSeleccion" id="nomSeleccion" placeholder="Nombre"><input type="text" name="prActSeleccion" id="prActSeleccion" placeholder="Principio Activo"></p>
-                        <p><input type="text" name="formFarmSeleccion" id="formFarmSeleccion" placeholder="Forma farmacéutica"><input type="text" name="viaAdminSeleccion" id="viaAdminSeleccion" placeholder="Via Administración"><input type="text" name="dosisSeleccion" id="dosisSeleccion" placeholder="Dosis"></p>
-                        <p><input type="text" name="nRegistroSeleccion" id="nRegistroSeleccion" placeholder="Nº Registro"></p>
-                        <p>Consulte la ficha técnica para rellenar los dos siguientes campos: <a href="" id="linkFT" target="_blank" rel="noreferrer noopener">Ficha Técnica</a></p>
-                        <section>
-                            <p>Riesgos maternidad: </p>
-                            <p>
-                                <label for="rEmbarazo">Riesgo para embarazo: </label><input type="checkbox" name="rEmbarazo" id="rEmbarazo">
-                                <label for="rLactancia">Riesgo para lactante: </label><input type="checkbox" name="rLactancia" id="rLactancia">
-                            </p>
-                        </section>
+            <div class="bodyMantenimientoCita">
+                <div id='creacionVariablesPaciente' class="contenedorFlotante">
+                    <h2>Crear variables</h2>
+                    <form id='creacionVariable'>
+                        <div class="groupInput">
+                            <input type="text" name="nombreVariable" id="nombreVariable" required>
+                            <span class="bar"></span>
+                            <label for="nombreVariable">Nombre: </label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="unidadesVariable" id="unidadesVariable" required>
+                            <span class="bar"></span>
+                            <label for="unidadesVariable">Unidades: </label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="abreviaturaUnidad" id="abreviaturaUnidad" required>
+                            <span class="bar"></span>
+                            <label for="abreviaturaUnidad">Abreviatura </label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="rangoHabitualMax" id="rangoHabitualMax" required>
+                            <span class="bar"></span>
+                            <label for="rangoHabitualMax">Máximo </label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="rangoHabitualMin" id="rangoHabitualMin" required>
+                            <span class="bar"></span>
+                            <label for="rangoHabitualMin">Mínimo </label>
+                        </div>
+                        <button type="button" onclick="addUnidad()">Añadir unidad y rango</button>
+                        <ul id="listaUnidadesVariable" aria-label="Unidades"></ul>
+                        <button type="button" onclick="crearVariable()">Crear variable</button>
                     </form>
-                    <p><img id="imgCajaSeleccion"><img id="imgFormaSeleccion"></p>
-                    <button onclick="registrarMedicamento()">Registrar medicamento</button>
+                </div>
+                <div id='registroMedicamentos' class="contenedorFlotante">
+                    <h2>Buscar medicamentos</h2>
+                    <div id="busquedaMedicamento">
+                        <div class="groupInput">
+                            <input type="text" name="nomMedicamento" id="nomMedicamento" required>
+                            <span class="bar"></span>
+                            <label for="nomMedicamento">Nombre medicamento </label>
+                        </div>
+                        <div class="groupInput">
+                            <input type="text" name="prActMed" id="prActMed" required>
+                            <span class="bar"></span>
+                            <label for="prActMed">Principio activo </label>
+                        </div>
+                        <button onclick="buscarMedicamento()">Buscar medicamento</button>
+                    </div>
+                    <div id="medicamentosEncontrados">
+                        <h2>Medicamentos encontrados</h2>
+                        <ul id="listaMedicamentosEncontrados" aria-label="Medicamentos encontrados"></ul>
+                    </div>
+                    <div id="datosMedSeleccionado" style="display: none">
+                        <button onclick="undoSelectMedicamento()">Deshacer selección</button>
+                        <form id="formMedicamentoSeleccionado">
+                            <div class="groupInput">
+                                <input type="text" name="nomSeleccion" id="nomSeleccion" required>
+                                <span class="bar"></span>
+                                <label for="nomSeleccion">Nombre </label>
+                            </div>
+                            <div class="groupInput">
+                                <input type="text" name="prActSeleccion" id="prActSeleccion" required>
+                                <span class="bar"></span>
+                                <label for="prActSeleccion">Principio activo</label>
+                            </div>
+                            <div class="groupInput">
+                                <input type="text" name="formFarmSeleccion" id="formFarmSeleccion" required>
+                                <span class="bar"></span>
+                                <label for="formFarmSeleccion">Forma farmaceútica </label>
+                            </div>
+                            <div class="groupInput">
+                                <input type="text" name="viaAdminSeleccion" id="viaAdminSeleccion" required>
+                                <span class="bar"></span>
+                                <label for="viaAdminSeleccion">Via administracion </label>
+                            </div>
+                            <div class="groupInput">
+                                <input type="text" name="dosisSeleccion" id="dosisSeleccion" required>
+                                <span class="bar"></span>
+                                <label for="dosisSeleccion">Nombre </label>
+                            </div>
+                            <div class="groupInput">
+                                <input type="text" name="nRegistroSeleccion" id="nRegistroSeleccion" required>
+                                <span class="bar"></span>
+                                <label for="nRegistroSeleccion">Nombre </label>
+                            </div>
+                            <p>Consulte la ficha técnica para rellenar los dos siguientes campos: <a href="" id="linkFT" target="_blank" rel="noreferrer noopener">Ficha Técnica</a></p>
+                            <section>
+                                <p>Riesgos maternidad: </p>
+                                <p>
+                                    <label for="rEmbarazo">Riesgo para embarazo: </label><input type="checkbox" name="rEmbarazo" id="rEmbarazo">
+                                    <label for="rLactancia">Riesgo para lactante: </label><input type="checkbox" name="rLactancia" id="rLactancia">
+                                </p>
+                            </section>
+                        </form>
+                        <p><img id="imgCajaSeleccion"><img id="imgFormaSeleccion"></p>
+                        <button onclick="registrarMedicamento()">Registrar medicamento</button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -107,8 +107,18 @@ function fecha(){
 }
 
 function cambiarPantalla(destino){
-    document.getElementById(pantallaActual).classList.remove('visible');
-    document.getElementById(destino).classList.add('visible');
+    let secciones = document.getElementsByClassName('seccion');
+    for (let i = 0; i < secciones.length; i++) { 
+        if (secciones[i].id == destino) { 
+            secciones[i].classList.add('visible');
+            secciones[i].classList.remove('oculto');
+        } else {
+            secciones[i].classList.add('oculto');
+            secciones[i].classList.remove('visible');
+        }
+    }
+    // document.getElementById(pantallaActual).classList.remove('visible');
+    // document.getElementById(destino).classList.add('visible');
     pantallaActual = destino;
 }
 
@@ -121,7 +131,6 @@ function logout(){
     cambiarPantalla('login');
     //se vacian todos los campos rellenados al hacer log
     document.getElementById('bienvenida').innerHTML='';
-    document.getElementById('bienvenidaEleccion').innerHTML='';
     document.getElementById('bienvenidaAdmin').innerHTML='';
     document.getElementById('user').value='';
     document.getElementById('password').value='';
@@ -156,20 +165,26 @@ async function log() {
             document.getElementById('bienvenida').appendChild(mensajeBienvenida)
             verMenuEnfermeroHTML(datosUser.DNI)
         } else if (dataLog.permisos == 'administrador') {
-            let mensajeBienvenida = document.createTextNode(`Bienvenido administrador ${datosUser.Nombre}`);
-            document.getElementById('bienvenidaAdmin').appendChild(mensajeBienvenida);
-            cambiarPantalla('menuAdmin');
+            verMenuAdmin()
+            document.getElementById('bienvenidaAdmin').innerHTML = `Bienvenido administrador ${datosUser.Nombre}`;
         }
     } catch (error) {
-        document.getElementById("errorLogin").style.color = "red";
-        document.getElementById("errorLogin").style.visibility = "visible";
+        console.log(error);
+        document.getElementById("labelPassword").innerHTML = "Usuario o Contraseña incorrectos";
+        document.getElementById("labelPassword").style.color = "red";
         setTimeout(() => {
-            document.getElementById("errorLogin").style.visibility = "hidden";
+            document.getElementById("labelPassword").innerHTML = "Contraseña: ";
+            document.getElementById("labelPassword").style.color = "black";
         }, 3000)
+
+        
     }
     
 }
-
+function verMenuAdmin() {
+    cambiarPantalla('menuAdmin');
+    document.getElementById('bienvenidaAdmin').innerHTML = "";
+}
 
 
 
