@@ -957,6 +957,19 @@ app.post('/api/enfermero/:id/abrirLactancia/:idPaciente', (req, res) => {
     })
 })
 
+app.put(`/api/enfermero/:id/citaGuardarCambios/:idCita`, async (req, res) => {
+    let sintomas = req.body.sintomas
+    let signos = req.body.signos
+    let petBBDD = `UPDATE cita SET Sintomas = '${sintomas}', Signos = '${signos}' WHERE IDCita = '${req.params.idCita}'`
+    baseDatos.query(petBBDD, (err, respuesta) => {
+        if (err) {
+            res.status(502).json("Error base de datos" + err)
+        } else {
+            res.status(201).json(respuesta);
+        }
+    })
+})
+
 
 
 app.post('/api/admin/:id/registrarMedicamento', (req, res) => {

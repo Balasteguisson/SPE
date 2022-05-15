@@ -1969,6 +1969,40 @@ async function guardarMedidas(){
     
 }
 
+async function citaGuardarCambios() {
+    let url = `/api/enfermero/${dniEnfermeroActual}/citaGuardarCambios/${idCitaActual}`
+    let sintomasSignos = {
+        sintomas: document.getElementById('citaSintomas').value,
+        signos: document.getElementById('citaSignos').value
+    }
+
+
+    let peticionServer = {
+        method: 'PUT',
+        body: JSON.stringify(sintomasSignos),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    let respuesta = await peticionREST(url, peticionServer)
+    console.log(respuesta);
+    if (respuesta.serverStatus === 2) {
+        document.getElementById('labelSintomas').innerHTML = "Datos guardados correctamente"
+        document.getElementById('labelSintomas').style.color = "green"
+        setTimeout(() => {
+            document.getElementById('labelSintomas').innerHTML = "Síntomas indicados por el paciente";
+            document.getElementById('labelSintomas').style.color = "#1b4965"
+        }, 2000);
+    } else {
+        document.getElementById('labelSintomas').innerHTML = "No se pudo actualizar la información"
+        document.getElementById('labelSintomas').style.color = "red"
+        setTimeout(() => {
+            document.getElementById('statusActualizarTratamiento').innerHTML = "Síntomas indicados por el paciente";
+            document.getElementById('labelSintomas').style.color = "#1b4965"
+        }, 2000);
+    }
+}
+
 function verGraficasPaciente(){
     console.log("cargando graficas")
 }

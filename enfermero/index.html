@@ -549,18 +549,22 @@
             </form>
         </div>
         <div id='menuListaPacientes' class='seccion oculto'><!--LISTA DE PACIENTES-->
-            <p><h1>Lista de Pacientes</h1></p>
-            <p><button class="botonRetroceso" onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
-            <table id="listaPacientes">
-                <thead>
-                    <th>Identificador</th>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Editar</th>
-                    <th>Borrar</th>
-                </thead>
-                <tbody id = "cuerpoListadoPacientes"></tbody>
-            </table>
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Lista de Pacientes</h1>
+                <button class="botonRetroceso" onclick = "cambiarPantalla('menuAdmin')">Volver</button>
+            </div>
+            <div class="contenedorFlotante contenedorTabla">
+                <table id="listaPacientes" class="listaPersonas">
+                    <thead>
+                        <th>Identificador</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Editar</th>
+                        <th>Borrar</th>
+                    </thead>
+                    <tbody id = "cuerpoListadoPacientes"></tbody>
+                </table>
+            </div>
         </div>
         <div id='menuEditarPaciente' class='seccion oculto'>
             <!--REGISTRO DE PACIENTE-->
@@ -731,18 +735,22 @@
             </form>
         </div>
         <div id='menuListaEnfermeros' class='seccion oculto'> <!--LISTA DE ENFERMEROS-->
-            <p><h1>Lista de enfermeros</h1></p>
-            <p><button class="botonRetroceso" onclick = "cambiarPantalla('menuAdmin')">Volver</button></p>
-            <table id="listaEnfermeros">
-                <thead>
-                    <th>DNI</th>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Editar</th>
-                    <th>Borrar</th>
-                </thead>
-                <tbody id = "cuerpoListaEnfermeros"></tbody>
-            </table>
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Lista de enfermeros</h1>
+                <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            </div>
+            <div class="contenedorFlotante contenedorTabla">
+                <table id="listaEnfermeros" class="listaPersonas">
+                    <thead>
+                        <th>DNI</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Editar</th>
+                        <th>Borrar</th>
+                    </thead>
+                    <tbody id="cuerpoListaEnfermeros"></tbody>
+                </table>
+            </div> 
         </div>
         <div id='menuEditarEnfermero' class='seccion oculto'> <!--EDITAR ENFERMERO-->
             <p>
@@ -858,16 +866,16 @@
                     <ul id="citaListaMaternidad" aria-label="Maternidad" class="listaDatos"></ul>
                     <ul id="citaListaTratamientos" aria-label="Tratamiento en curso" class="listaDatos"></ul>
                 </div>
-                <div id="citaSintomasSignos">
+                <div id="citaSintomasSignos" class="cajaDatos">
                     <div class="groupInput">
                         <textarea name="citaSintoma" id="citaSintomas" class="textAreaCita"  rows="4" required></textarea>
                         <span class="bar"></span>
-                        <label for="citaSintoma">Síntomas indicados por el paciente </label>
+                        <label id="labelSintomas" for="citaSintoma">Síntomas indicados por el paciente </label>
                     </div>
                     <div class="groupInput">
                         <textarea name="citaSignos" id="citaSignos" class="textAreaCita"  rows="4" required></textarea>
                         <span class="bar"></span>
-                        <label for="citaSignos">Síntomas indicados por el paciente </label>
+                        <label for="citaSignos">Signos mostrados por el paciente </label>
                     </div>
                 </div>
                 <p><button onclick="citaGuardarCambios()">Guardar cambios</button></p>

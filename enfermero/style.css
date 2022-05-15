@@ -352,7 +352,7 @@ body {
 
 .bodyMantenimientoCita>div {
     flex-grow: 1;
-    margin: 0 8vw;
+    margin: 0 4vw;
 }
 
 .bodyMantenimientoCita>div:first-child {
@@ -603,4 +603,31 @@ button.botonRetroceso:hover {
 .contenedorTratamiento,
 .contenedorVariables {
     padding: 2% 5% 2% 5%;
+}
+
+.contenedorTabla{
+    overflow-y: scroll;
+    max-height: 65vh;
+}
+.listaPersonas{
+    border-collapse: collapse;
+    width: 100%;
+}
+.listaPersonas th,td{
+    text-align: center;
+    padding: 8px;
+}
+.listaPersonas tr{
+    border-bottom: 1px solid #4a4cbd;
+}
+.listaPersonas tr:nth-child(even) {
+    background-color: #7cf8be;
+}
+
+#menuDarCita .formulario{
+    align-self: center;
+}
+
+#citaSintomasSignos{
+    margin-top:21px;
 }
