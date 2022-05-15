@@ -64,7 +64,7 @@ app.post('/api/login', (req, res) => {
         for (let i = 0; i < users.length; i++) {
             if (user == users[i].Usuario && password == users[i].Password) {
                 let contenidoToken = {
-                    user: users[i].Usuario,
+                    usuario: users[i].Usuario,
                     expira : Date.now() + (60 * 60 * 1000) //expira en una hora
                 }
                 token = jwt.encode(contenidoToken, clave);
@@ -82,29 +82,38 @@ app.post('/api/login', (req, res) => {
 
 //MIDDLEWARE de Tokens
 
-app.use("/api", (req, res, next) => { 
+app.use("/api", (req, res, next) => {
+    console.log("pasando middleware");
     var token = req.query.token;
+    console.log(token);
     if (!token) {
+        console.log("no hay token");
         res.status(301).status("No hay token");
         return;
     }
     try {
         var contenidoToken = jwt.decode(token, clave);
+        console.log(!contenidoToken);
+        console.log(!contenidoToken.expira);
+        console.log(!contenidoToken.usuario);
     } catch (error) {
+        console.log("token incorrecto");
         res.status(301).status("Token incorrecto");
         return;
     }
 
     if (!contenidoToken || !contenidoToken.expira || !contenidoToken.usuario) {
+        console.log("mal formato de token");
         res.status(301).status("Formato de token incorrecto");
         return;
     }
 
     if (contenidoToken.expira < Date.now()) {
+        console.log("token expirado");
         res.status(301).status("Token expirado");
         return;
     }
-
+    console.log("token correcto");
     next();
 })
 

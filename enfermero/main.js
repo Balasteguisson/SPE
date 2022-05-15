@@ -5,7 +5,7 @@ document.getElementById('password').value = ''
 
 //Parametros de estado del cliente
 let pantallaActual = 'login';
-
+let crendenciales;
 
 //clases para mover informacion
 class Medicamento {
@@ -151,7 +151,9 @@ async function log() {
     try {
         const dataLog = await peticionREST(url, peticion)
         console.log(dataLog);
-        let urlGet = `/api/enfermero/${dataLog.id}`;
+        crendenciales = dataLog.token;
+        console.log(crendenciales);
+        let urlGet = `/api/enfermero/${dataLog.id}?token=${crendenciales}`;
         let peticionGet = { method: 'GET' };
         const datosUser = await peticionREST(urlGet, peticionGet); //DATOS DEL ENFERMERO
 
@@ -210,7 +212,7 @@ async function guardarPregunta() {
         respuesta4: document.getElementById('respuesta4').value,
         respuestaCorrecta: document.getElementById('respuestaCorrecta').value
     }
-    let url = '/api/enfermero/:id/addPregunta';
+    let url = `/api/enfermero/:id/addPregunta?token=${crendenciales}`;
     let petPost = {
         method: 'POST',
         body: JSON.stringify(datosPregunta),
@@ -233,7 +235,7 @@ async function guardarPregunta() {
 
 async function fillBanco(){ //RELLENAR BANCO DE PREGUNTAS
     cambiarPantalla("menuBancoPreguntas");
-    let url = "/api/admin/:id/getPreguntas";
+    let url = `/api/admin/:id/getPreguntas?token=${crendenciales}`;
     let peticionGet = { method: 'GET' };
     let preguntas = await peticionREST(url, peticionGet);
     let tabla = document.getElementById('cuerpoListadoPreguntas');
@@ -251,7 +253,7 @@ async function fillBanco(){ //RELLENAR BANCO DE PREGUNTAS
 
 async function pantallaEditarPregunta(IDPregunta){
     cambiarPantalla('menuEditarPregunta')
-    let url = `/api/admin/:id/getPregunta/${IDPregunta}`;
+    let url = `/api/admin/:id/getPregunta/${IDPregunta}?token=${crendenciales}`;
     let peticionGet = { method: 'GET' };
     let pregunta = await peticionREST(url, peticionGet);
     let ID = pregunta[0].IDPregunta;
@@ -299,7 +301,7 @@ async function editarPregunta(IDPregunta){ //EDITAR PREGUNTA
 }
 
 async function borrarPregunta(IDPregunta){ //BORRAR PREGUNTA
-    let url = `/api/admin/:id/deletePregunta/${IDPregunta}`;
+    let url = `/api/admin/:id/deletePregunta/${IDPregunta}?token=${crendenciales}`;
     let petDelete = { 
         method: 'DELETE',
         headers: {
@@ -324,7 +326,7 @@ async function fillSurtidor(){
     let deposito = document.getElementById('cuerpoDepositoPreguntas');
     surtidor.innerHTML = '';
     deposito.innerHTML = '';
-    let url = `/api/admin/:id/getPreguntas/${modalidad}`;
+    let url = `/api/admin/:id/getPreguntas/${modalidad}?token=${crendenciales}`;
     let petGet = { 
         method: 'GET',
         headers: {
@@ -367,8 +369,8 @@ async function crearTest(){
         idsPreguntas.push(parseInt(fila.slice(4)));
     }
     
-    let urlPost = '/api/admin/:id/crearTest'
-    let urlGet = '/api/admin/:id/getIdTest'
+    let urlPost = `/api/admin/:id/crearTest?token=${crendenciales}`
+    let urlGet = `/api/admin/:id/getIdTest?token=${crendenciales}`
 
     let petGet = {
         method : 'GET'
@@ -390,7 +392,7 @@ async function crearTest(){
 
     let idTestCreado = await peticionREST(urlPost, petPost);
 
-    let urlPost2 = "/api/admin/:id/addPreguntas"
+    let urlPost2 = `/api/admin/:id/addPreguntas?token=${crendenciales}`
     let relaciones = {
         IDTest: idTestCreado,
         preguntas : idsPreguntas
@@ -425,7 +427,7 @@ async function registrarEnfermero(){
         email : document.getElementById('emailEnfermero').value,
         rutaFoto : document.getElementById('fotoEnfermero')
     }
-    let url = '/api/admin/:id/registrarEnfermero';
+    let url = `/api/admin/:id/registrarEnfermero?token=${crendenciales}`;
     let petPost = {
         method : 'POST',
         body : JSON.stringify(datosEnfermero),
@@ -438,7 +440,7 @@ async function registrarEnfermero(){
 }
 // LISTA DE ENFERMEROS
 async function fillListaEnfermeros(){
-    let url = '/api/admin/:id/getEnfermeros'
+    let url = `/api/admin/:id/getEnfermeros?token=${crendenciales}`
     let petGet = {
         method : "GET",
         headers: {
@@ -458,7 +460,7 @@ async function fillListaEnfermeros(){
 }
 
 async function borrarEnfermero(dniEnfermero){
-    let url = `/api/admin/:id/deleteEnfermero/${dniEnfermero}`
+    let url = `/api/admin/:id/deleteEnfermero/${dniEnfermero}?token=${crendenciales}`
     let petDelete = {
         method : 'DELETE',
         headers : {
@@ -482,7 +484,7 @@ async function verMenuEditarEnfermero(dniEnfermero){
     document.getElementById('fechaNacimientoEnfermeroE').value = "";
     document.getElementById('emailEnfermeroE').value = "";
     document.getElementById('fotoEnfermeroE').value = "";
-    let url = `/api/admin/:id/getEnfermero/${dniEnfermero}`
+    let url = `/api/admin/:id/getEnfermero/${dniEnfermero}?token=${crendenciales}`
     let petGet ={
         method : "GET",
         headers: {
@@ -507,7 +509,7 @@ async function verMenuEditarEnfermero(dniEnfermero){
 }
 
 async function editarEnfermero(dniEnfermero){
-    let url = `/api/admin/:id/editarEnfermero/${dniEnfermero}`
+    let url = `/api/admin/:id/editarEnfermero/${dniEnfermero}?token=${crendenciales}`
 
     datosEnfermero = {
         nombre : document.getElementById('nombreEnfermeroE').value,
@@ -816,7 +818,7 @@ var metaListaTratamientos = [];
 var listaFarmacos = [];
 
 async function fillListaFarmacos() {
-    let url = "/api/enfermero/:id/getFarmacos"
+    let url = `/api/enfermero/:id/getFarmacos?token=${crendenciales}`
     let peticion = {
         method: "GET"
     }
@@ -921,7 +923,7 @@ async function registrarPaciente(){
             tratamientos : extraerTratamientos()
         }
     }
-    let url = '/api/admin/:id/nuevoPaciente';
+    let url = `/api/admin/:id/nuevoPaciente?token=${crendenciales}`;
     let peticionServer = {
         method : 'POST',
         body : JSON.stringify(datosPaciente),
@@ -932,7 +934,7 @@ async function registrarPaciente(){
     let respuestaServidor = await peticionREST(url,peticionServer);
 }
 async function borrarPaciente(idPaciente){
-    let url = `/api/admin/:id/borrarPaciente/${idPaciente}`
+    let url = `/api/admin/:id/borrarPaciente/${idPaciente}?token=${crendenciales}`
     let peticionServer = {
         method : 'DELETE',
         headers : {
@@ -945,7 +947,7 @@ async function borrarPaciente(idPaciente){
 }
 
 async function deleteAlergiaBBDD(idAlergia){
-    let url = `/api/admin/:id/deleteAlergia/${idAlergia}`;
+    let url = `/api/admin/:id/deleteAlergia/${idAlergia}?token=${crendenciales}`;
     let petDelete = { 
         method: 'DELETE',
         headers: {
@@ -961,7 +963,7 @@ async function deleteAlergiaBBDD(idAlergia){
     }
 }
 async function borrarEmbarazoBBDD(idEmbarazo){
-    let url = `/api/admin/:id/deleteEmbarazo/${idEmbarazo}`;
+    let url = `/api/admin/:id/deleteEmbarazo/${idEmbarazo}?token=${crendenciales}`;
     let petDelete = { 
         method: 'DELETE',
         headers: {
@@ -977,7 +979,7 @@ async function borrarEmbarazoBBDD(idEmbarazo){
     }
 }
 async function deletePatologiaBBDD(idPatologia){
-    let url = `/api/admin/:id/deletePatologia/${idPatologia}`;
+    let url = `/api/admin/:id/deletePatologia/${idPatologia}?token=${crendenciales}`;
     let petDelete = { 
         method: 'DELETE',
         headers: {
@@ -994,7 +996,7 @@ async function deletePatologiaBBDD(idPatologia){
 }
 
 async function deleteTratamientoBBDD(idTratamiento){
-    let url = `/api/admin/:id/deleteTratamiento/${idTratamiento}`;
+    let url = `/api/admin/:id/deleteTratamiento/${idTratamiento}?token=${crendenciales}`;
     let petDelete = { 
         method: 'DELETE',
         headers: {
@@ -1026,10 +1028,10 @@ async function verMenuEditarPaciente(idPaciente) {
     metaListaTratamientos.splice(0,metaListaTratamientos.length)
 
 
-    let url = `/api/admin/:id/getPaciente/${idPaciente}`
-    let urlAlergias = `/api/admin/:id/getAlergiasPaciente/${idPaciente}`
-    let urlPatPrev = `/api/admin/:id/getPatPreviasPaciente/${idPaciente}`
-    let urlTratamientos = `/api/admin/:id/getTratamientosPaciente/${idPaciente}`
+    let url = `/api/admin/:id/getPaciente/${idPaciente}?token=${crendenciales}`
+    let urlAlergias = `/api/admin/:id/getAlergiasPaciente/${idPaciente}?token=${crendenciales}`
+    let urlPatPrev = `/api/admin/:id/getPatPreviasPaciente/${idPaciente}?token=${crendenciales}`
+    let urlTratamientos = `/api/admin/:id/getTratamientosPaciente/${idPaciente}?token=${crendenciales}`
     let peticionServer = {
         method : 'GET',
         headers : {
@@ -1045,8 +1047,8 @@ async function verMenuEditarPaciente(idPaciente) {
 
     //cambio de los formularios de maternidad
     if (data.Sexo == "F"){
-        let urlEmbarazos = `/api/admin/:id/getEmbarazosPaciente/${idPaciente}`
-        let urlLactancia = `/api/admin/:id/getLactanciaPaciente/${idPaciente}`
+        let urlEmbarazos = `/api/admin/:id/getEmbarazosPaciente/${idPaciente}?token=${crendenciales}`
+        let urlLactancia = `/api/admin/:id/getLactanciaPaciente/${idPaciente}?token=${crendenciales}`
         let embarazosPaciente = await peticionREST(urlEmbarazos, peticionServer);
         let lactanciaPaciente = await peticionREST(urlLactancia, peticionServer);
         document.getElementById('embarazoE').disabled = false;
@@ -1120,7 +1122,7 @@ async function verMenuEditarPaciente(idPaciente) {
 }
 
 async function editarPaciente(idPaciente){
-    let url = `/api/admin/:id/editPaciente/${idPaciente}`
+    let url = `/api/admin/:id/editPaciente/${idPaciente}?token=${crendenciales}`
     let formSexoPaciente = document.getElementById('sexoPacienteE').value;
 
     if(formSexoPaciente =='F'){
@@ -1154,7 +1156,7 @@ async function editarPaciente(idPaciente){
 }
 
 async function fillListaPacientes(){
-    let url = "/api/admin/:id/getPacientes";
+    let url = `/api/admin/:id/getPacientes?token=${crendenciales}`;
     let petGet = {
         method : "GET",
         headers: {
@@ -1193,7 +1195,7 @@ function pantallaDarCita() {
 }
 
 async function llenarListasCita() {
-    let url = `/api/admin/:id/getPacientesEnfermeros`
+    let url = `/api/admin/:id/getPacientesEnfermeros?token=${crendenciales}`
     let petGet = {
         method: 'GET'
     }
@@ -1228,7 +1230,7 @@ async function crearCita(){
         alert("Rellene todos los campos")
         return;
     }
-    let url = '/api/admin/:id/crearCita'
+    let url = `/api/admin/:id/crearCita?token=${crendenciales}`
     let petServer = {
         method : 'POST',
         body : JSON.stringify(datosCita),
@@ -1263,7 +1265,7 @@ const getCicloSeleccionado = () => {
 
 var dniEnfermeroActual
 async function getIDEnfermero(dniEnfermero){
-    let url = `/api/enfermero/getIDEnfermero/${dniEnfermero}`
+    let url = `/api/enfermero/getIDEnfermero/${dniEnfermero}?token=${crendenciales}`
     let peticionServer = {
         method: "GET",
         headers : {
@@ -1308,7 +1310,7 @@ async function verMenuEnfermero(dniEnfermero){
 //funcion para obtener citas
 async function getCitas(dni) {
     let idEnfermero = await getIDEnfermero(dni)
-    let url = `/api/enfermero/${idEnfermero}/citas`;
+    let url = `/api/enfermero/${idEnfermero}/citas?token=${crendenciales}`;
     let peticionGet = { method: 'GET' };
     let respuesta = await peticionREST(url,peticionGet);
     let citas = respuesta[0] //datos de las citas
@@ -1407,7 +1409,7 @@ async function getCitas(dni) {
 
 //funcion para obtener los resultados de los test
 function getResultados(dni) {
-    let url = `/api/enfermero/${dni}/resultados`;
+    let url = `/api/enfermero/${dni}/resultados?token=${crendenciales}`;
     let peticionGet = { method: 'GET'};
     let resultados = peticionREST(url, peticionGet);
     return resultados;
@@ -1419,7 +1421,7 @@ async function cargarTest({tipo}){
     //obtiene un unico test y sus preguntas, y genera un array con el ID del test, los ids de las preguntas
     // return ID test, ciclotest, preguntas[]
     let idEnfermero = await getIDEnfermero(dniEnfermeroActual)
-    let url = `/api/enfermero/${idEnfermero}/getTest/${tipo}`
+    let url = `/api/enfermero/${idEnfermero}/getTest/${tipo}?token=${crendenciales}`
     let peticion = {
         method: "GET"
     }
@@ -1428,7 +1430,7 @@ async function cargarTest({tipo}){
 }
 
 async function cargarPreguntas({idTest}){
-    let url = `/api/enfermero/:id/getPreguntasTest/${idTest}`
+    let url = `/api/enfermero/:id/getPreguntasTest/${idTest}?token=${crendenciales}`
     let peticionServer = {
         method: 'GET',
         headers : {
@@ -1512,7 +1514,7 @@ async function enviarResultadosTest(){
     for(let a  = 0; a<preguntasMalas.length; a++){
         listaPreguntasMalas.innerHTML += `<li>${preguntasMalas[a].Pregunta}</li>`
     }
-    let url = '/api/enfermero/:id/guardarTest'
+    let url = `/api/enfermero/:id/guardarTest?token=${crendenciales}`
     let peticion = {
         method: 'POST',
         body : JSON.stringify(datosTest),
@@ -1704,7 +1706,7 @@ async function verCita(idCita){
     //datos relacionados con el paciente
     //obtencion idPaciente
     idCitaActual = idCita;
-    let urlCita = `/api/enfermero/:id/getCita/${idCita}`
+    let urlCita = `/api/enfermero/:id/getCita/${idCita}?token=${crendenciales}`
     let peticionServer = {
         method : 'GET',
         headers : {
@@ -1716,10 +1718,10 @@ async function verCita(idCita){
     idPacienteCita = idPaciente;
     tipoCita = datosCita[0].TipoRevision;
 
-    let urlPaciente = `/api/admin/:id/getPaciente/${idPaciente}`
-    let urlAlergias = `/api/admin/:id/getAlergiasPaciente/${idPaciente}`
-    let urlPatPrev = `/api/admin/:id/getPatPreviasPaciente/${idPaciente}`
-    let urlTratamientos = `/api/admin/:id/getTratamientosPaciente/${idPaciente}`
+    let urlPaciente = `/api/admin/:id/getPaciente/${idPaciente}?token=${crendenciales}`
+    let urlAlergias = `/api/admin/:id/getAlergiasPaciente/${idPaciente}?token=${crendenciales}`
+    let urlPatPrev = `/api/admin/:id/getPatPreviasPaciente/${idPaciente}?token=${crendenciales}`
+    let urlTratamientos = `/api/admin/:id/getTratamientosPaciente/${idPaciente}?token=${crendenciales}`
     
     let datosPaciente = await peticionREST(urlPaciente,peticionServer);
     let data = datosPaciente[0];
@@ -1756,8 +1758,8 @@ async function verCita(idCita){
     if (data.Sexo == "F"){
         document.getElementById('citaListaMaternidad').style.display = ""
         document.getElementById('citaListaMaternidad').innerHTML = ""
-        let urlEmbarazos = `/api/admin/:id/getEmbarazosPaciente/${idPaciente}`
-        let urlLactancia = `/api/admin/:id/getLactanciaPaciente/${idPaciente}`
+        let urlEmbarazos = `/api/admin/:id/getEmbarazosPaciente/${idPaciente}?token=${crendenciales}`
+        let urlLactancia = `/api/admin/:id/getLactanciaPaciente/${idPaciente}?token=${crendenciales}`
         let embarazosPaciente = await peticionREST(urlEmbarazos, peticionServer);
         let lactanciaPaciente = await peticionREST(urlLactancia, peticionServer);
 
@@ -1788,7 +1790,7 @@ async function verCita(idCita){
 }
 
 async function cargarMedicionesPaciente(idPaciente) {
-    let url = `/api/enfermero/:id/getMedicionesPaciente/${idPaciente}/${idCitaActual}`
+    let url = `/api/enfermero/:id/getMedicionesPaciente/${idPaciente}/${idCitaActual}?token=${crendenciales}`
     let peticionServer = {
         method: 'GET',
         headers: {
@@ -1821,7 +1823,7 @@ function calcularEdad(fechaNacimiento){
 
 async function abrirEmbarazo(idPaciente){
     console.log(idPaciente)
-    let url = `/api/enfermero/:id/abrirEmbarazo/${idPaciente}`
+    let url = `/api/enfermero/:id/abrirEmbarazo/${idPaciente}?token=${crendenciales}`
     let fechaInicio = fecha();
     let datos = {fecha: fechaInicio}
     let peticion = {
@@ -1839,7 +1841,7 @@ async function abrirEmbarazo(idPaciente){
 } 
 
 async function cerrarEmbarazo(idEmbarazo){
-    let url = `/api/enfermero/:id/cerrarEmbarazo/${idEmbarazo}`
+    let url = `/api/enfermero/:id/cerrarEmbarazo/${idEmbarazo}?token=${crendenciales}`
     let datos = {fechaFin : fecha()}
     let peticion = { 
         method: 'PUT',
@@ -1857,7 +1859,7 @@ async function cerrarEmbarazo(idEmbarazo){
 
 async function abrirLactancia(idPaciente){
     console.log(idPaciente)
-    let url = `/api/enfermero/:id/abrirLactancia/${idPaciente}`
+    let url = `/api/enfermero/:id/abrirLactancia/${idPaciente}?token=${crendenciales}`
     let fechaInicio = fecha();
     let datos = {fecha: fechaInicio}
     let peticion = {
@@ -1875,7 +1877,7 @@ async function abrirLactancia(idPaciente){
 } 
 
 async function cerrarLactancia(idEmbarazo){
-    let url = `/api/enfermero/:id/cerrarLactancia/${idEmbarazo}`
+    let url = `/api/enfermero/:id/cerrarLactancia/${idEmbarazo}?token=${crendenciales}`
     let peticion = { 
         method: 'PUT',
         headers : {
@@ -1899,7 +1901,7 @@ async function addMedicion(){
     cantidad = cantidad.replace(",",".")
 
 
-    let url = `/api/enfermero/${dniEnfermeroActual}/guardarMedidaPaciente/${idPacienteCita}`
+    let url = `/api/enfermero/${dniEnfermeroActual}/guardarMedidaPaciente/${idPacienteCita}?token=${crendenciales}`
     let datos = {
         tipo: tipo,
         cantidad: cantidad,
@@ -1929,7 +1931,7 @@ async function addMedicion(){
 
 async function borrarMedicion(idMedicion) {
     
-    let url = `/api/enfermero/${dniEnfermeroActual}/borrarMedidaPaciente/${idMedicion}`
+    let url = `/api/enfermero/${dniEnfermeroActual}/borrarMedidaPaciente/${idMedicion}?token=${crendenciales}`
     let peticion = {
         method: 'DELETE',
         headers: {
@@ -1947,7 +1949,7 @@ async function borrarMedicion(idMedicion) {
 
 async function guardarMedidas(){
     let idEnfermero = await getIDEnfermero(dniEnfermeroActual)
-    let url = `/api/enfermero/${idEnfermero}/guardarMedidasPaciente/${idPacienteCita}`
+    let url = `/api/enfermero/${idEnfermero}/guardarMedidasPaciente/${idPacienteCita}?token=${crendenciales}`
     let datos = {
         ids : idMedidaTomada,
         cantidades : cantidadTomada,
@@ -1968,7 +1970,7 @@ async function guardarMedidas(){
 }
 
 async function citaGuardarCambios() {
-    let url = `/api/enfermero/${dniEnfermeroActual}/citaGuardarCambios/${idCitaActual}`
+    let url = `/api/enfermero/${dniEnfermeroActual}/citaGuardarCambios/${idCitaActual}?token=${crendenciales}`
     let sintomasSignos = {
         sintomas: document.getElementById('citaSintomas').value,
         signos: document.getElementById('citaSignos').value
@@ -2007,7 +2009,7 @@ function verGraficasPaciente(){
 
 async function actualizarTratamiento() {
     //esta funcion obtiene los datos que se muestran en el menu de tratamiento y los envia al servidor para que se guarden en la base de datos
-    let url = `/api/enfermero/:id/actualizarTratamiento/${idPacienteCita}/${document.getElementById("medicamentoSeleccionado").value}/${idCitaActual}`
+    let url = `/api/enfermero/:id/actualizarTratamiento/${idPacienteCita}/${document.getElementById("medicamentoSeleccionado").value}/${idCitaActual}?token=${crendenciales}`
     let datos = {
         medicamento: document.getElementById("medicamentoSeleccionado").value,
         indicaciones: document.getElementById("recomendacionesMedicamento").value,
@@ -2106,7 +2108,7 @@ async function crearVariable(){
     let datosVariable = [metaUnidades, metaAbreviaturas, metaRangosMax, metaRangosMin];
     //enviado de datos a servidor
     let datos = {nombre:nombreVariable, datosVariable: datosVariable}
-    let url = `/api/enfermero/:id/createVariable`
+    let url = `/api/enfermero/:id/createVariable?token=${crendenciales}`
     let peticionServer = {
         method: 'POST',
         body: JSON.stringify(datos),
@@ -2126,7 +2128,7 @@ async function crearVariable(){
 
 var unidades = []
 async function getTiposVariables(){
-    let url = "/api/enfermero/:id/getTiposVariables"
+    let url = `/api/enfermero/:id/getTiposVariables?token=${crendenciales}`
     let peticion = {
         method : "GET"
     }
@@ -2376,7 +2378,7 @@ async function registrarMedicamento() {
         rLactancia: rLac
     };
     
-    let url = "/api/admin/:id/registrarMedicamento";
+    let url = `/api/admin/:id/registrarMedicamento?token=${crendenciales}`;
     let peticion = {
         method: 'POST',
         body: JSON.stringify(datosMedicamento),
@@ -2413,7 +2415,7 @@ async function solicitarPrescripcion(idCitaActual) {
     //     varMed: 
     // }
     document.getElementById('medicamentoSeleccionado').value = "placeHolderMedicamento";
-    let url = `/api/enfermero/:id/solicitarPrescripcion/${idCitaActual}`;
+    let url = `/api/enfermero/:id/solicitarPrescripcion/${idCitaActual}?token=${crendenciales}`;
 
     let peticion = {
         method: "GET",
