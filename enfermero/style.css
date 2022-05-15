@@ -306,7 +306,6 @@ body {
     display: flex;
 }
 
-.card {}
 
 .bodyAdmin .card {
     flex-grow: 3;
@@ -562,6 +561,13 @@ button.botonRetroceso:hover {
 
 .contenedorParametros {
     display: flex;
+    align-items: center;
+}
+
+.contenedorParametros button {
+    line-height: initial;
+    min-height: initial;
+    padding: initial;
 }
 
 
