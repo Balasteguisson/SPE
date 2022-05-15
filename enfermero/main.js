@@ -150,12 +150,10 @@ async function log() {
     };    
     try {
         const dataLog = await peticionREST(url, peticion)
+        console.log(dataLog);
         let urlGet = `/api/enfermero/${dataLog.id}`;
         let peticionGet = { method: 'GET' };
         const datosUser = await peticionREST(urlGet, peticionGet); //DATOS DEL ENFERMERO
-        //A partir de aqui puede tomar 3 caminos, si el rol es enfermero, carga la pantalla
-        // de enfermero, si es admin, la pantalla de admin, si es ambos, le lleva a la de
-        // enfermero, pero habilita un boton para acceder a la admin.
 
         
         //Si es enfermero

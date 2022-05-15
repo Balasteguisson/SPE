@@ -5,6 +5,8 @@ const mysql = require('mysql')
 var morgan = require('morgan');
 var cors = require('cors');
 var moment = require('moment');
+var jwt = require('jwt-simple');
+
 const { CLIENT_LONG_FLAG, CLIENT_FOUND_ROWS, CLIENT_PLUGIN_AUTH } = require("mysql/lib/protocol/constants/client");
 
 var app = express();
@@ -44,6 +46,10 @@ baseDatos.connect(function (err) {
 
 })
 
+//params para jwt
+var clave = 'ArenalesDelSol';
+let token;
+
 //Funciones
 //LOGIN
 app.post('/api/login', (req, res) => {
@@ -57,7 +63,13 @@ app.post('/api/login', (req, res) => {
         }
         for (let i = 0; i < users.length; i++) {
             if (user == users[i].Usuario && password == users[i].Password) {
-                let datos = { usuario: users[i].Usuario, pass: users[i].Password, id: users[i].ID, permisos: users[i].Tipo };
+                let contenidoToken = {
+                    user: users[i].Usuario,
+                    expira : Date.now() + (60 * 60 * 1000) //expira en una hora
+                }
+                token = jwt.encode(contenidoToken, clave);
+
+                let datos = { usuario: users[i].Usuario, token: token, id: users[i].ID, permisos: users[i].Tipo };
                 // console.log(datos); debug
                 res.status(201).json(datos);
                 return;
@@ -67,6 +79,35 @@ app.post('/api/login', (req, res) => {
         res.status(403).json('Usuario o contraseña incorrectos');
     })
 });
+
+//MIDDLEWARE de Tokens
+
+app.use("/api", (req, res, next) => { 
+    var token = req.query.token;
+    if (!token) {
+        res.status(301).status("No hay token");
+        return;
+    }
+    try {
+        var contenidoToken = jwt.decode(token, clave);
+    } catch (error) {
+        res.status(301).status("Token incorrecto");
+        return;
+    }
+
+    if (!contenidoToken || !contenidoToken.expira || !contenidoToken.usuario) {
+        res.status(301).status("Formato de token incorrecto");
+        return;
+    }
+
+    if (contenidoToken.expira < Date.now()) {
+        res.status(301).status("Token expirado");
+        return;
+    }
+
+    next();
+})
+
 
 //DATOS DEL ENFERMERO
 app.get('/api/enfermero/:id', function (req, res) {
@@ -99,6 +140,11 @@ app.get('/api/enfermero/:id', function (req, res) {
 //         })
 //     })
 // })
+
+
+
+
+
 
 //RESULTADO DE LOS TEST- MENU ENFERMERO
 app.get('/api/enfermero/:dni/resultados', function (req, res) {
