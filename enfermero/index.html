@@ -169,14 +169,14 @@
             <p><h1>Nueva Pregunta</h1><button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button></p>
             <form id="crearPregunta">
                 <p>
-                    <label for="tipoPregunta">Modalidad:</label>
+                    <!-- <label for="tipoPregunta">Modalidad:</label> -->
                     <select id='tipoPregunta'>
                         <option hidden selected value="placeholderModalidad">Escoge modalidad</option>
                         <option value="Diabetes">Diabetes</option>
                         <option value="RV" selected='yes'>Riesgo Vascular</option>
                         <option value="ACOs">ACOs</option>
                     </select>
-                    <label for="respuestaCorrecta">Respuesta correcta: </label>
+                    <!-- <label for="respuestaCorrecta">Respuesta correcta: </label> -->
                     <select id='respuestaCorrecta'>
                         <option hidden selected value="placeholderRespuesta">Escoge respuesta correcta</option>
                         <option value=1>a)</option>
@@ -185,19 +185,34 @@
                         <option value=4>d)</option>
                     </select>
                 </p>
-                <label for="enunciado"><h2>Pregunta</h2></label>
-                <p><textarea id='enunciado' type="text" placeholder="Escribe la pregunta"></textarea></p>
-                <label for="respuesta1"><h3>Respuesta 1</h3></label>
-                <p><textarea class='inputPregunta' id='respuesta1' type="text" placeholder="Respuesta 1"></textarea></p>
-                <label for="respuesta2"><h3>Respuesta 2</h3></label>
-                <p><textarea class='inputPregunta' id='respuesta2' type="text" placeholder="Respuesta 2"></textarea></p>
-                <label for="respuesta3"><h3>Respuesta 3</h3></label>
-                <p><textarea class='inputPregunta' id='respuesta3' type="text" placeholder="Respuesta 3"></textarea></p>
-                <label for="respuesta4"><h3>Respuesta 4</h3></label>
-                <p><textarea class='inputPregunta' id='respuesta4' type="text" placeholder="Respuesta 4"></textarea></p>
+                <div class="groupInput">
+                    <textarea id='enunciado' type="text" required></textarea>
+                    <span class="bar"></span>
+                    <label for="enunciado">Enunciado </label>
+                </div>
+                <div class="groupInput">
+                    <textarea id='respuesta1' type="text" required></textarea>
+                    <span class="bar"></span>
+                    <label for="respuesta1">Respuesta 1 </label>
+                </div>
+                <div class="groupInput">
+                    <textarea id='respuesta2' type="text" required></textarea>
+                    <span class="bar"></span>
+                    <label for="respuesta2">Respuesta 2 </label>
+                </div>
+                <div class="groupInput">
+                    <textarea id='respuesta3' type="text" required></textarea>
+                    <span class="bar"></span>
+                    <label for="respuesta3">Respuesta 3 </label>
+                </div>
+                <div class="groupInput">
+                    <textarea id='respuesta4' type="text" required></textarea>
+                    <span class="bar"></span>
+                    <label for="respuesta4">Respuesta 4 </label>
+                </div>
                 <p><button type="reset">Borrar todo</button></p>
+                <p><button type="button" onclick="guardarPregunta()">Submit</button></p>
             </form>
-            <p><button onclick="guardarPregunta()">Submit</button></p>
         </div>
         <div id = 'menuEditarPregunta' class='seccion oculto'> <!--EDICION DE PREGUNTAS-->
             <p><h1>Editar Pregunta</h1><button class="botonRetroceso" onclick="cambiarPantalla('menuBancoPreguntas')">Volver</button></p>
@@ -831,7 +846,7 @@
             </section>
         </div>
         <div id='menuCita' class='seccion oculto contenedorCita'> <!--PANTALLA CITA-->
-            <div id="citaDatosPaciente" class="contenedorDatosPaciente contenedorFlotante"><!--Info del paciente-->
+            <div id="citaDatosPaciente" class="contenedorIzquierdo contenedorFlotante"><!--Info del paciente-->
                 <h2 class="identificadoresPaciente">Paciente: <span id="indNombreApellidos"></span> - <span id="indIdPaciente"></span></h2>
                 <p class="cajaDatos">
                     <b>Sexo:</b> <span id="indSexo"></span> <b>Peso:</b> <span id="indPeso"></span> kgs <b>Edad:</b> <span id="indEdad"></span> <b>Motivo de cita:</b> <span id="indMotivo"></span>
@@ -858,11 +873,15 @@
                 <p><button onclick="citaGuardarCambios()">Guardar cambios</button></p>
                 <p><button class="botonRetroceso" onclick="verMenuEnfermeroHTML()" class="botonCita">Volver</button></p>
             </div>
-            <div id="citaSeguimientoVariables" class="contenedorVariables"><!--Seguimiento de variables-->
-                <h2 class="cajaDatos">Mediciones del paciente</h2>
-                <p>
-                    <p><button onclick="verGraficasPaciente()">Ver gráficas</button> <!--<button onclick="guardarMedidas()">Guardar mediciones
-                            tomadas</button>--></p>
+            <div class="contenedorDerecho">
+                <div id="citaSeguimientoVariables" class="contenedorVariables contenedorFlotante">
+                    <!--Seguimiento de variables-->
+                    <h2 class="cajaDatos">Mediciones del paciente</h2>
+                    <p>
+                    <p><button onclick="verGraficasPaciente()">Ver gráficas</button>
+                        <!--<button onclick="guardarMedidas()">Guardar mediciones
+                                            tomadas</button>-->
+                    </p>
                     <div class="contenedorParametros">
                         <select name="tipoVariable" id="tipoVariable">
                             <option hidden selected value="placeholderVariable">Escoge un parámetro médico</option>
@@ -872,49 +891,54 @@
                             <span class="bar"></span>
                             <label for="cantidadVariable">Introduce la cantidad </label>
                         </div>
-                        <select name="unidadVariable" id="unidadVariable"></select><!--Deberia mostrar automaticamente la del SI y luego dar el resto de opciones-->
+                        <select name="unidadVariable" id="unidadVariable"></select>
+                        <!--Deberia mostrar automaticamente la del SI y luego dar el resto de opciones-->
                         <button onclick="addMedicion()">Añadir</button>
                     </div>
-                </p>
-                <ul id="listaMediciones" aria-label="Medidas tomadas:"></ul>
+                    </p>
+                    <ul id="listaMediciones" aria-label="Medidas tomadas:"></ul>
                 
+                </div>
+                <div id="citaTratamiento" class="contenedorTratamiento contenedorFlotante">
+                    <h2 class="cajaDatos">Tratamiento</h2>
+                    <p>
+                        <select name="medicamentoSeleccionado" id="medicamentoSeleccionado">
+                            <!--Se actualiza de forma dinamica segun las condiciones del paciente-->
+                            <option hidden selected value="placeHolderMedicamento">Escoge un medicamento</option>
+                        </select>
+                        <button onclick="prescribirMedicamento()">Actualizar</button>
+                    </p>
+                    <div class="groupInput">
+                        <textarea name="recomendacionesMedicamento" value="" id="recomendacionesMedicamento" class="textAreaCita"
+                            required></textarea>
+                        <span class="bar"></span>
+                        <label for="cantidadVariable">Recomendaciones </label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="text" name="posologiaMedicamento" id="posologiaMedicamento" required>
+                        <span class="bar"></span>
+                        <label for="posologiaMedicamento">Posología </label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="text" name="intervaloTomas" id="intervaloTomas" required>
+                        <span class="bar"></span>
+                        <label for="intervaloTomas">Horas entre tomas </label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="date" name="fechaInicioMedicacion" id="fechaInicioMedicacion" required>
+                        <span class="bar"></span>
+                        <label for="fechaInicioMedicacion">Fecha inicio</label>
+                    </div>
+                    <div class="groupInput">
+                        <input type="date" name="fechaFinMedicacion" id="fechaFinMedicacion" required>
+                        <span class="bar"></span>
+                        <label for="fechaFinMedicacion">Fin del tratamiento </label>
+                    </div>
+                    <p><button type="button" onclick="actualizarTratamiento()">Actualizar tratamiento</button></p>
+                    <p id="statusActualizarTratamiento"></p>
+                </div>
             </div>
-            <div id="citaTratamiento" class="contenedorTratamiento">
-                <h2 class="cajaDatos">Tratamiento</h2>
-                <p>
-                    <select name="medicamentoSeleccionado" id="medicamentoSeleccionado"><!--Se actualiza de forma dinamica segun las condiciones del paciente-->
-                        <option hidden selected value="placeHolderMedicamento">Escoge un medicamento</option>
-                    </select>
-                    <button onclick="prescribirMedicamento()">Actualizar</button>
-                </p>
-                <div class="groupInput">
-                    <textarea name="recomendacionesMedicamento" value="" id="recomendacionesMedicamento" class="textAreaCita" required></textarea>
-                    <span class="bar"></span>
-                    <label for="cantidadVariable">Recomendaciones </label>
-                </div>
-                <div class="groupInput">
-                    <input type="text" name="posologiaMedicamento" id="posologiaMedicamento" required>
-                    <span class="bar"></span>
-                    <label for="posologiaMedicamento">Posología </label>
-                </div>
-                <div class="groupInput">
-                    <input type="text" name="intervaloTomas" id="intervaloTomas" required>
-                    <span class="bar"></span>
-                    <label for="intervaloTomas">Horas entre tomas </label>
-                </div>
-                <div class="groupInput">
-                    <input type="date" name="fechaInicioMedicacion" id="fechaInicioMedicacion" required>
-                    <span class="bar"></span>
-                    <label for="fechaInicioMedicacion">Fecha inicio</label>
-                </div>
-                <div class="groupInput">
-                    <input type="date" name="fechaFinMedicacion" id="fechaFinMedicacion" required>
-                    <span class="bar"></span>
-                    <label for="fechaFinMedicacion">Fin del tratamiento </label>
-                </div>
-                <p><button type = "button" onclick="actualizarTratamiento()">Actualizar tratamiento</button></p>
-                <p id="statusActualizarTratamiento"></p>
-            </div>
+            
         </div>
         <div id='mantenimientoCita' class='seccion oculto'><!-- PANTALLA PARA CREAR VARIABLES Y AÑADIR MEDICAMENTOS (MANTENIMIENTO CITA)-->
             
