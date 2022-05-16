@@ -150,9 +150,7 @@ async function log() {
     };    
     try {
         const dataLog = await peticionREST(url, peticion)
-        console.log(dataLog);
         crendenciales = dataLog.token;
-        console.log(crendenciales);
         let urlGet = `/api/enfermero/${dataLog.id}?token=${crendenciales}`;
         let peticionGet = { method: 'GET' };
         const datosUser = await peticionREST(urlGet, peticionGet); //DATOS DEL ENFERMERO
@@ -424,8 +422,7 @@ async function registrarEnfermero(){
         apellidos : document.getElementById('apellidosEnfermero').value,
         dni : document.getElementById('dniEnfermero').value,
         fechaNacimiento : document.getElementById('fechaNacimientoEnfermero').value,
-        email : document.getElementById('emailEnfermero').value,
-        rutaFoto : document.getElementById('fotoEnfermero')
+        email : document.getElementById('emailEnfermero').value
     }
     let url = `/api/admin/:id/registrarEnfermero?token=${crendenciales}`;
     let petPost = {

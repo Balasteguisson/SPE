@@ -30,110 +30,135 @@
             </div>
         </div>
         <div id= 'menuEnfermero' class = 'seccion oculto contenedorEnfermero'><!--MENU ENFERMERO-->
-            <div class="headerEnfermero">
-                <p><h1>Menú Principal</h1></p>
-                <p><h2 id = "bienvenida"></h2></p>
-                <p><button class="botonRetroceso" onclick="logout()">Cerrar sesión</button></p>
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Menú Principal</h1>
+                <h2 id = "bienvenida"></h2>
+                <button class="botonRetroceso" onclick="logout()">Cerrar sesión</button>
             </div>
-            <div id = 'formacion' class="seccionMEnf">
-                <h3 class="sectionTitleEnf">Formación</h3>
-                <div id="formacionPropia">
-                    <div id="test0" class="test">
-                        <div class="test-info">
-                            <p>Test</p>
-                            <h3>Diabetes</h2>
+            <div class="bodyEnfermero">
+                <div id='formacion' class="contenedorIzquierdo contenedorFlotante">
+                    <h3 class="sectionTitleEnf">Formación</h3>
+                    <div id="formacionPropia">
+                        <div id="test0" class="test">
+                            <div class="test-info">
+                                <p>Test</p>
+                                <h3>Diabetes</h2>
+                            </div>
+                            <div class="test-status">
+                                <!-- <div class="barra-progreso">
+                                                <div class="progress-bar">
+                                                    <progress max="100" value="100">100%</progress>
+                                                </div>
+                                            </div> -->
+                                <h2 name="monthDisplay"></h2>
+                                <button class="botonAbrirTest" onclick="verTest0()">Realizar test</button>
+                            </div>
                         </div>
-                        <div class="test-status">
-                            <!-- <div class="barra-progreso">
-                                <div class="progress-bar">
-                                    <progress max="100" value="100">100%</progress>
-                                </div>
-                            </div> -->
-                            <h2 name="monthDisplay"></h2>
-                            <button class="botonAbrirTest" onclick="verTest0()">Realizar test</button>
+                        <div id="test1" class="test">
+                            <div class="test-info">
+                                <p>Test</p>
+                                <h3>ACOs</h2>
+                            </div>
+                            <div class="test-status">
+                                <!-- <div class="barra-progreso">
+                                                <div class="progress-bar">
+                                                    <progress max="100" value="10">10%</progress>
+                                                </div>
+                                            </div> -->
+                                <h2 name="monthDisplay"></h2>
+                                <button class="botonAbrirTest" onclick="verTest1()">Realizar test</button>
+                            </div>
+                        </div>
+                        <div id="test2" class="test">
+                            <div class="test-info">
+                                <p>Test</p>
+                                <h3>Riesgo Vascular</h2>
+                            </div>
+                            <div class="test-status">
+                                <!-- <div class="barra-progreso">
+                                                <div class="progress-bar">
+                                                    <progress max="100" value="40">40%</progress>
+                                                </div>
+                                            </div> -->
+                                <h2 name="monthDisplay"></h2>
+                                <button class="botonAbrirTest" onclick="verTest2()">Realizar test</button>
+                            </div>
                         </div>
                     </div>
-                    <div id="test1" class="test">
-                        <div class="test-info">
-                            <p>Test</p>
-                            <h3>ACOs</h2>
-                        </div>
-                        <div class="test-status">
-                            <!-- <div class="barra-progreso">
-                                <div class="progress-bar">
-                                    <progress max="100" value="10">10%</progress>
-                                </div>
-                            </div> -->
-                            <h2 name="monthDisplay"></h2>
-                            <button class="botonAbrirTest" onclick="verTest1()">Realizar test</button>
-                        </div>
-                    </div>
-                    <div id="test2" class="test">
-                        <div class="test-info">
-                            <p>Test</p>
-                            <h3>Riesgo Vascular</h2>
-                        </div>
-                        <div class="test-status">
-                            <!-- <div class="barra-progreso">
-                                <div class="progress-bar">
-                                    <progress max="100" value="40">40%</progress>
-                                </div>
-                            </div> -->
-                            <h2 name="monthDisplay"></h2>
-                            <button class="botonAbrirTest" onclick="verTest2()">Realizar test</button>
-                        </div>
-                    </div>
+                    <!-- <div id="formacionGeneral">
+                                    <div id="test3" class="test">
+                                        <div class="test-info"></div>
+                                        <div class="test-status"></div>
+                                    </div>
+                                    <div id="test4">
+                                        <div class="test-info"></div>
+                                        <div class="test-status"></div>
+                                    </div>
+                                    <div id="test5">
+                                        <div class="test-info"></div>
+                                        <div class="test-status"></div>
+                                    </div>
+                                </div> -->
                 </div>
-                <!-- <div id="formacionGeneral">
-                    <div id="test3" class="test">
-                        <div class="test-info"></div>
-                        <div class="test-status"></div>
-                    </div>
-                    <div id="test4">
-                        <div class="test-info"></div>
-                        <div class="test-status"></div>
-                    </div>
-                    <div id="test5">
-                        <div class="test-info"></div>
-                        <div class="test-status"></div>
-                    </div>
-                </div> -->
-            </div>
-            <div id = 'citas' class="seccionMEnf2">
-                <h3 class="sectionTitleEnf">Citas</h3>
-                <table id = 'horarioCitas'>
-                    <thead>
-                        <tr>
-                            <th>Día</th>
-                            <th id = 'dia0' colspan="4">D1</th>
-                            <!-- <th id = 'dia1'>D2</th>
-                            <th id = 'dia2'>D3</th> -->
-                        </tr>
-                        <tr id="fragHora">
-                            <td class="casillaHora">Hora</td>
-                            <td id="0/4h" class="casillaHora"></td>
-                            <td id="1/4h" class="casillaHora"></td>
-                            <td id="2/4h" class="casillaHora"></td>
-                            <td id="3/4h" class="casillaHora"></td>
-                        </tr>
-                    </thead>
-                    <tbody id="horarioEnfermero">
-                        <tr id="h0"><td id="ch0" class="casillaHora"></td></tr>
-                        <tr id="h1"><td id="ch1" class="casillaHora"></td></tr>
-                        <tr id="h2"><td id="ch2" class="casillaHora"></td></tr>
-                        <tr id="h3"><td id="ch3" class="casillaHora"></td></tr>
-                        <tr id="h4"><td id="ch4" class="casillaHora"></td></tr>
-                        <tr id="h5"><td id="ch5" class="casillaHora"></td></tr>
-                        <tr id="h6"><td id="ch6" class="casillaHora"></td></tr>
-                        <tr id="h7"><td id="ch7" class="casillaHora"></td></tr>
-                        <tr id="h8"><td id="ch8" class="casillaHora"></td></tr>
-                        <tr id="h9"><td id="ch9" class="casillaHora"></td></tr>
-                        <tr id="h10"><td id="ch10" class="casillaHora"></td></tr>
-                        <tr id="h11"><td id="ch11" class="casillaHora"></td></tr>
-                    </tbody>
-                </table>
-            </div>
-            
+                <div id='citas' class="contenedorDerechoEnfermero contenedorFlotante">
+                    <h3 class="sectionTitleEnf">Citas</h3>
+                    <table id='horarioCitas'>
+                        <thead>
+                            <tr>
+                                <th>Día</th>
+                                <th id='dia0' colspan="4">D1</th>
+                                <!-- <th id = 'dia1'>D2</th>
+                                            <th id = 'dia2'>D3</th> -->
+                            </tr>
+                            <tr id="fragHora">
+                                <td class="casillaHora">Hora</td>
+                                <td id="0/4h" class="casillaHora"></td>
+                                <td id="1/4h" class="casillaHora"></td>
+                                <td id="2/4h" class="casillaHora"></td>
+                                <td id="3/4h" class="casillaHora"></td>
+                            </tr>
+                        </thead>
+                        <tbody id="horarioEnfermero">
+                            <tr id="h0">
+                                <td id="ch0" class="casillaHora"></td>
+                            </tr>
+                            <tr id="h1">
+                                <td id="ch1" class="casillaHora"></td>
+                            </tr>
+                            <tr id="h2">
+                                <td id="ch2" class="casillaHora"></td>
+                            </tr>
+                            <tr id="h3">
+                                <td id="ch3" class="casillaHora"></td>
+                            </tr>
+                            <tr id="h4">
+                                <td id="ch4" class="casillaHora"></td>
+                            </tr>
+                            <tr id="h5">
+                                <td id="ch5" class="casillaHora"></td>
+                            </tr>
+                            <tr id="h6">
+                                <td id="ch6" class="casillaHora"></td>
+                            </tr>
+                            <tr id="h7">
+                                <td id="ch7" class="casillaHora"></td>
+                            </tr>
+                            <tr id="h8">
+                                <td id="ch8" class="casillaHora"></td>
+                            </tr>
+                            <tr id="h9">
+                                <td id="ch9" class="casillaHora"></td>
+                            </tr>
+                            <tr id="h10">
+                                <td id="ch10" class="casillaHora"></td>
+                            </tr>
+                            <tr id="h11">
+                                <td id="ch11" class="casillaHora"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> 
         </div>
         <div id = 'menuAdmin' class = 'seccion oculto contenedorAdmin'><!--MENU ADMIN-->
             <div class="headerAdmin contenedorFlotante"><h2 id = 'bienvenidaAdmin'></h2><button class='botonRetroceso' onclick='logout()'>Cerrar sesión</button></div>
@@ -252,20 +277,26 @@
             <p><button id = 'botonEditar' onclick="editarPregunta()">Guardar cambios</button></p>
         </div>
         <div id = 'menuBancoPreguntas' class='seccion oculto'> <!--BANCO DE PREGUNTAS-->
-            <h1>Banco de preguntas</h1>
-            <select name="cicloText" id="cicloTest" onchange="getCicloSeleccionado()"></select> <!--Se rellena desde JS con info de la bbdd-->
-            <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
-            <table id="listadoPreguntas">
-                <thead>
-                    <th>Número</th>
-                    <th>Categoría</th>
-                    <th>Enunciado</th>
-                    <th>Editar</th>
-                    <th>Borrar</th>
-                </thead>
-                <tbody id="cuerpoListadoPreguntas"></tbody>
-            </table>
-            <p id='avisosBanco'></p>
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Banco de preguntas</h1>
+                <!-- <select name="cicloText" id="cicloTest" onchange="getCicloSeleccionado()"></select> -->
+                <!--Se rellena desde JS con info de la bbdd-->
+                <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            </div>
+            <div class="contenedorTabla contenedorFlotante">
+                <table id="listadoPreguntas" class="listaPersonas">
+                    <thead>
+                        <th>Número</th>
+                        <th>Categoría</th>
+                        <th>Enunciado</th>
+                        <th>Editar</th>
+                        <th>Borrar</th>
+                    </thead>
+                    <tbody id="cuerpoListadoPreguntas"></tbody>
+                </table>
+                <p id='avisosBanco'></p>
+            </div>       
+            
         </div>
         <div id = 'menuMonitorRendimiento' class='seccion oculto'> <!--MONITOR RENDIMIENTO-->
             <h1>Resultados de los enfermeros</h1>
@@ -942,7 +973,7 @@
                         <span class="bar"></span>
                         <label for="fechaFinMedicacion">Fin del tratamiento </label>
                     </div>
-                    <p><button type="button" onclick="actualizarTratamiento()">Actualizar tratamiento</button></p>
+                    <p><button type="button" onclick="actualizarTratamiento()">Guardar tratamiento</button></p>
                     <p id="statusActualizarTratamiento"></p>
                 </div>
             </div>

@@ -75,19 +75,16 @@ app.post('/api/login', (req, res) => {
                 return;
             }
         }
-        console.log("solo se deberia llegar aqui con la pass incorrecta");
         res.status(403).json('Usuario o contraseña incorrectos');
+        return;
     })
 });
 
 //MIDDLEWARE de Tokens
 
 app.use("/api", (req, res, next) => {
-    console.log("pasando middleware");
     var token = req.query.token;
-    console.log(token);
     if (!token) {
-        console.log("no hay token");
         res.status(301).status("No hay token");
         return;
     }
@@ -97,19 +94,16 @@ app.use("/api", (req, res, next) => {
         console.log(!contenidoToken.expira);
         console.log(!contenidoToken.usuario);
     } catch (error) {
-        console.log("token incorrecto");
         res.status(301).status("Token incorrecto");
         return;
     }
 
     if (!contenidoToken || !contenidoToken.expira || !contenidoToken.usuario) {
-        console.log("mal formato de token");
         res.status(301).status("Formato de token incorrecto");
         return;
     }
 
     if (contenidoToken.expira < Date.now()) {
-        console.log("token expirado");
         res.status(301).status("Token expirado");
         return;
     }
@@ -319,7 +313,6 @@ app.post("/api/admin/:id/registrarEnfermero", (req, res) => {
     console.log(datos);
     let petBBDD = `INSERT INTO Usuarios (ID, Usuario, Password, Tipo) VALUES (NULL, '${datos.dni}','${datos.fechaNacimiento}', 'enfermero')`
     let petBBDDenfermero = `INSERT INTO Enfermero (ID, DNI, Nombre, Apellidos) VALUES (NULL, '${datos.dni}', '${datos.nombre}', '${datos.apellidos}')`
-    console.log(petBBDD)
     baseDatos.query(petBBDD, (err, respuesta) => {
         var idCreado;
         err ? (res.status(502).json("Fallo en la base de datos" + err)) : (idCreado = respuesta.insertId);
