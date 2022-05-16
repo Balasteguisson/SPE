@@ -90,9 +90,6 @@ app.use("/api", (req, res, next) => {
     }
     try {
         var contenidoToken = jwt.decode(token, clave);
-        console.log(!contenidoToken);
-        console.log(!contenidoToken.expira);
-        console.log(!contenidoToken.usuario);
     } catch (error) {
         res.status(301).status("Token incorrecto");
         return;

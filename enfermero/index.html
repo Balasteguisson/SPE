@@ -191,90 +191,114 @@
             </div>
         </div>
         <div id = 'menuCrearPregunta' class='seccion oculto'> <!--CREACION DE PREGUNTAS-->
-            <p><h1>Nueva Pregunta</h1><button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button></p>
-            <form id="crearPregunta">
-                <p>
-                    <!-- <label for="tipoPregunta">Modalidad:</label> -->
-                    <select id='tipoPregunta'>
-                        <option hidden selected value="placeholderModalidad">Escoge modalidad</option>
-                        <option value="Diabetes">Diabetes</option>
-                        <option value="RV" selected='yes'>Riesgo Vascular</option>
-                        <option value="ACOs">ACOs</option>
-                    </select>
-                    <!-- <label for="respuestaCorrecta">Respuesta correcta: </label> -->
-                    <select id='respuestaCorrecta'>
-                        <option hidden selected value="placeholderRespuesta">Escoge respuesta correcta</option>
-                        <option value=1>a)</option>
-                        <option value=2>b)</option>
-                        <option value=3>c)</option>
-                        <option value=4>d)</option>
-                    </select>
-                </p>
-                <div class="groupInput">
-                    <textarea id='enunciado' type="text" required></textarea>
-                    <span class="bar"></span>
-                    <label for="enunciado">Enunciado </label>
-                </div>
-                <div class="groupInput">
-                    <textarea id='respuesta1' type="text" required></textarea>
-                    <span class="bar"></span>
-                    <label for="respuesta1">Respuesta 1 </label>
-                </div>
-                <div class="groupInput">
-                    <textarea id='respuesta2' type="text" required></textarea>
-                    <span class="bar"></span>
-                    <label for="respuesta2">Respuesta 2 </label>
-                </div>
-                <div class="groupInput">
-                    <textarea id='respuesta3' type="text" required></textarea>
-                    <span class="bar"></span>
-                    <label for="respuesta3">Respuesta 3 </label>
-                </div>
-                <div class="groupInput">
-                    <textarea id='respuesta4' type="text" required></textarea>
-                    <span class="bar"></span>
-                    <label for="respuesta4">Respuesta 4 </label>
-                </div>
-                <p><button type="reset">Borrar todo</button></p>
-                <p><button type="button" onclick="guardarPregunta()">Submit</button></p>
-            </form>
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Nueva Pregunta</h1>
+                <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            </div>
+            <div class="contenedorAdmin contenedorFlotante">
+                <form id="crearPregunta" class="formularioPregunta">
+                    <p>
+                        <!-- <label for="tipoPregunta">Modalidad:</label> -->
+                        <select id='tipoPregunta'>
+                            <option hidden selected value="placeholderModalidad">Escoge modalidad</option>
+                            <option value="Diabetes">Diabetes</option>
+                            <option value="RV" selected='yes'>Riesgo Vascular</option>
+                            <option value="ACOs">ACOs</option>
+                        </select>
+                        <!-- <label for="respuestaCorrecta">Respuesta correcta: </label> -->
+                        <select id='respuestaCorrecta'>
+                            <option hidden selected value="placeholderRespuesta">Escoge respuesta correcta</option>
+                            <option value=1>a)</option>
+                            <option value=2>b)</option>
+                            <option value=3>c)</option>
+                            <option value=4>d)</option>
+                        </select>
+                    </p>
+                    <div class="groupInput">
+                        <textarea id='enunciado' type="text" required></textarea>
+                        <span class="bar"></span>
+                        <label for="enunciado">Enunciado </label>
+                    </div>
+                    <div class="groupInput">
+                        <textarea id='respuesta1' type="text" required></textarea>
+                        <span class="bar"></span>
+                        <label for="respuesta1">Respuesta 1 </label>
+                    </div>
+                    <div class="groupInput">
+                        <textarea id='respuesta2' type="text" required></textarea>
+                        <span class="bar"></span>
+                        <label for="respuesta2">Respuesta 2 </label>
+                    </div>
+                    <div class="groupInput">
+                        <textarea id='respuesta3' type="text" required></textarea>
+                        <span class="bar"></span>
+                        <label for="respuesta3">Respuesta 3 </label>
+                    </div>
+                    <div class="groupInput">
+                        <textarea id='respuesta4' type="text" required></textarea>
+                        <span class="bar"></span>
+                        <label for="respuesta4">Respuesta 4 </label>
+                    </div>
+                    <div class="contenedorOpcionesFormulario">
+                        <button type="reset">Borrar todo</button>
+                        <button type="button" onclick="guardarPregunta()">Guardar pregunta</button>
+                    </div>   
+                </form>
+            </div>  
         </div>
-        <div id = 'menuEditarPregunta' class='seccion oculto'> <!--EDICION DE PREGUNTAS-->
-            <p><h1>Editar Pregunta</h1><button class="botonRetroceso" onclick="cambiarPantalla('menuBancoPreguntas')">Volver</button></p>
-            <form id="editarPregunta">
-                <p>
-                    <label for="tipoPreguntaE">Escoge la modalidad</label>
-                    <select id='tipoPreguntaE'>
-                        <option id="ODiabetes" value="Diabetes">Diabetes</option>
-                        <option id="ORV" value="RV">Riesgo Vascular</option>
-                        <option id="OACOs" value="ACOs">ACOs</option>
-                    </select>
-                    <label for="respuestaCorrectaE">Marca la respuesta correcta</label>
-                    <select id='respuestaCorrectaE'>
-                        <option id="O1" value=1>a)</option>
-                        <option id="O2" value=2>b)</option>
-                        <option id="O3" value=3>c)</option>
-                        <option id="O4" value=4>d)</option>
-                    </select>
-                </p>
-                <label for="enunciadoE"><h2>Pregunta</h2></label>
-                <p><textarea id='enunciadoE' type="text" placeholder="Escribe la pregunta"></textarea></p>
-
-                <label for="respuesta1E"><h3>Respuesta 1</h3></label>
-                <p><textarea class='inputPregunta' id='respuesta1E' type="text" placeholder="Respuesta 1"></textarea></p>
-
-                <label for="respuesta2E"><h3>Respuesta 2</h3></label>
-                <p><textarea class='inputPregunta' id='respuesta2E' type="text" placeholder="Respuesta 2"></textarea></p>
-
-                <label for="respuesta3E"><h3>Respuesta 3</h3></label>
-                <p><textarea class='inputPregunta' id='respuesta3E' type="text" placeholder="Respuesta 3"></textarea></p>
-
-                <label for="respuesta4E"><h3>Respuesta 4</h3></label>
-                <p><textarea class='inputPregunta' id='respuesta4E' type="text" placeholder="Respuesta 4"></textarea></p>
-
-                <p><button type="reset">Borrar todo</button></p>
-            </form>
-            <p><button id = 'botonEditar' onclick="editarPregunta()">Guardar cambios</button></p>
+        <div id='menuEditarPregunta' class='seccion oculto'><!--EDITAR PREGUNTAS-->
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Editar Pregunta</h1>
+                <button class="botonRetroceso" onclick="cambiarPantalla('menuBancoPreguntas')">Volver</button>
+            </div>
+            <div class="contenedorAdmin contenedorFlotante">
+                <form id="editarPregunta" class="formularioPregunta">
+                    <p>
+                        <!-- <label for="tipoPregunta">Modalidad:</label> -->
+                        <select id='tipoPreguntaE'>
+                            <option id="ODiabetes" value="Diabetes">Diabetes</option>
+                            <option id="ORV" value="RV" selected='yes'>Riesgo Vascular</option>
+                            <option id="OACOs" value="ACOs">ACOs</option>
+                        </select>
+                        <!-- <label for="respuestaCorrecta">Respuesta correcta: </label> -->
+                        <select id='respuestaCorrectaE'>
+                            <option id="O1" value=1>a)</option>
+                            <option id="O2" value=2>b)</option>
+                            <option id="O3" value=3>c)</option>
+                            <option id="O4" value=4>d)</option>
+                        </select>
+                    </p>
+                    <div class="groupInput">
+                        <textarea id='enunciadoE' type="text" required></textarea>
+                        <span class="bar"></span>
+                        <label for="enunciadoE">Enunciado </label>
+                    </div>
+                    <div class="groupInput">
+                        <textarea id='respuesta1E' type="text" required></textarea>
+                        <span class="bar"></span>
+                        <label for="respuesta1E">Respuesta 1 </label>
+                    </div>
+                    <div class="groupInput">
+                        <textarea id='respuesta2E' type="text" required></textarea>
+                        <span class="bar"></span>
+                        <label for="respuesta2E">Respuesta 2 </label>
+                    </div>
+                    <div class="groupInput">
+                        <textarea id='respuesta3E' type="text" required></textarea>
+                        <span class="bar"></span>
+                        <label for="respuesta3E">Respuesta 3 </label>
+                    </div>
+                    <div class="groupInput">
+                        <textarea id='respuesta4E' type="text" required></textarea>
+                        <span class="bar"></span>
+                        <label for="respuesta4E">Respuesta 4 </label>
+                    </div>
+                    <div class="contenedorOpcionesFormulario">
+                        <button type="reset">Borrar todo</button>
+                        <button type="button" id="botonEditar" onclick="editarPregunta()">Guardar pregunta</button>
+                    </div>
+                </form>
+            </div>
         </div>
         <div id = 'menuBancoPreguntas' class='seccion oculto'> <!--BANCO DE PREGUNTAS-->
             <div class="headerAdmin contenedorFlotante">
@@ -325,52 +349,62 @@
             <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
         </div>
         <div id ='menuCrearTest' class='seccion oculto'> <!--MENU CREACION TEST-->
-            <h1>Nuevo Test</h1>
-            <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
-            <button onclick="crearTest()">Generar test</button>
-            <p>Escoge la modalidad a la que pertenece el test</p>
-            <select id='tipoTest' onchange="fillSurtidor()">
-                <option id ='placeholderCrearTest' hidden selected value="prueba">Escoge modalidad</option>
-                <option value="Diabetes">Diabetes</option>
-                <option value="RV">Riesgo Vascular</option>
-                <option value="ACOs">ACOs</option>
-            </select>
-            <p>Selecciona el periodo en el que será realizado:</p>
-            <select name="periodo" id="periodoTestCreado">
-                <option id ='placeholderCrearTest' hidden selected value=NULL>Escoge periodo</option>
-                <option value="1">Enero</option>
-                <option value="2">Febrero</option>
-                <option value="3">Marzo</option>
-                <option value="4">Abril</option>
-                <option value="5">Mayo</option>
-                <option value="6">Junio</option>
-                <option value="7">Julio</option>
-                <option value="8">Agosto</option>
-                <option value="9">Septiembre</option>
-                <option value="10">Octubre</option>
-                <option value="11">Noviembre</option>
-                <option value="12">Diciembre</option>
-            </select>
-            <section id='depositoPreguntas'>
-                <h2>Preguntas para el test</h2>
-                <table>
-                    <thead>
-                        <th>Numero Pregunta</th>
-                        <th>Enunciado</th>
-                    </thead>
-                    <tbody id = 'cuerpoDepositoPreguntas'></tbody>
-                </table>
-            </section>
-            <section id='surtidorPreguntas'>
-                <h2>Todas las preguntas</h2>
-                <table>
-                    <thead>
-                        <th>Pregunta</th>
-                        <th>Enunciado</th>
-                    </thead>
-                    <tbody id = 'cuerpoSurtidorPreguntas'></tbody>
-                </table>
-            </section>
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Nuevo Test</h1>
+                <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            </div>
+            <div class="contenedorFlotante contenedorCrearTest">
+                <div class="contenedorOpcionesFormulario">
+                    <p>Escoge la modalidad a la que pertenece el test</p>
+                    <select id='tipoTest' onchange="fillSurtidor()">
+                        <option id='placeholderCrearTest' hidden selected value="prueba">Escoge modalidad</option>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="RV">Riesgo Vascular</option>
+                        <option value="ACOs">ACOs</option>
+                    </select>
+                    <button onclick="crearTest()">Generar test</button>
+                    <p>Selecciona el periodo en el que será realizado:</p>
+                    <select name="periodo" id="periodoTestCreado">
+                        <option id='placeholderCrearTest' hidden selected value=NULL>Escoge periodo</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+                <div class="contenedorPreguntasCrearTest">
+                    <section id='surtidorPreguntas'>
+                        <h2>Todas las preguntas</h2>
+                        <table>
+                            <thead>
+                                <th>Pregunta</th>
+                                <th>Enunciado</th>
+                            </thead>
+                            <tbody id='cuerpoSurtidorPreguntas'></tbody>
+                        </table>
+                    </section>
+                    <section id='depositoPreguntas'>
+                        <h2>Preguntas para el test</h2>
+                        <table>
+                            <thead>
+                                <th>Numero Pregunta</th>
+                                <th>Enunciado</th>
+                            </thead>
+                            <tbody id='cuerpoDepositoPreguntas'></tbody>
+                        </table>
+                    </section>
+                    
+                </div>      
+            </div>
+            
             
         </div>
         <div id ='menuRegistrarEnfermero' class='seccion oculto'> <!--REGISTRO DE ENFERMERO-->
@@ -600,7 +634,7 @@
         <div id='menuEditarPaciente' class='seccion oculto'>
             <!--REGISTRO DE PACIENTE-->
             <div class="headerAdmin contenedorFlotante">
-                <h1>Registrar paciente</h1>
+                <h1>Modificar datos paciente</h1>
                 <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
             </div>
             <form id="formularioEditarPaciente" class="formulario contenedorFlotante">
@@ -1014,7 +1048,7 @@
                             <span class="bar"></span>
                             <label for="rangoHabitualMin">Mínimo </label>
                         </div>
-                        <button type="button" onclick="addUnidad()">Añadir unidad y rango</button>
+                        <button class="botonMantenimientoCita" type="button" onclick="addUnidad()">Añadir unidad y rango</button>
                         <ul id="listaUnidadesVariable" aria-label="Unidades"></ul>
                         <button type="button" onclick="crearVariable()">Crear variable</button>
                     </form>
@@ -1032,7 +1066,7 @@
                             <span class="bar"></span>
                             <label for="prActMed">Principio activo </label>
                         </div>
-                        <button onclick="buscarMedicamento()">Buscar medicamento</button>
+                        <button class="botonMantenimientoCita" onclick="buscarMedicamento()">Buscar medicamento</button>
                     </div>
                     <div id="medicamentosEncontrados">
                         <h2>Medicamentos encontrados</h2>

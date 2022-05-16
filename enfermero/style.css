@@ -669,3 +669,29 @@ button.botonRetroceso:hover {
     margin-top:21px;
 }
 
+
+.botonMantenimientoCita {
+    margin-top: 10px;
+}
+
+
+.formularioPregunta,
+.formularioPregunta .groupInput {
+    width: 100%;
+}
+
+.contenedorCreacionTest {
+    display:flex;
+}
+
+.contenedorPreguntasCrearTest {
+    display: flex;
+    
+}
+.contenedorPreguntasCrearTest > section {
+    margin-top: 20px;
+    flex-grow: 1;
+    min-height: 30vh;
+    padding: 5vw;
+    border-left: 5px solid #000000;
+}
