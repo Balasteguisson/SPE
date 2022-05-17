@@ -65,7 +65,7 @@ app.post('/api/login', (req, res) => {
             if (user == users[i].Usuario && password == users[i].Password) {
                 let contenidoToken = {
                     usuario: users[i].Usuario,
-                    expira : Date.now() + (60 * 60 * 1000) //expira en una hora
+                    expira: Date.now() + (60 * 60 * 1000) //expira en una hora
                 }
                 token = jwt.encode(contenidoToken, clave);
 
@@ -104,7 +104,6 @@ app.use("/api", (req, res, next) => {
         res.status(301).status("Token expirado");
         return;
     }
-    console.log("token correcto");
     next();
 })
 
@@ -509,8 +508,8 @@ app.get("/api/admin/:id/getPatPreviasPaciente/:idPaciente", (req, res) => {
 
 app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req, res) => {
     let fechaHoy = new Date();
-    fechaHoy = fechaHoy.toISOString().substring(0, 10);
-    let petTratamiento = `SELECT * FROM tratamiento WHERE IdPaciente = '${req.params.idPaciente}' AND "${fechaHoy}" BETWEEN FechaInicio AND FechaFin`
+    fechaHoy = moment(fechaHoy).format("YYYY-MM-DD");
+    let petTratamiento = `SELECT * FROM tratamiento WHERE IdPaciente = '${req.params.idPaciente}' AND "${fechaHoy}" BETWEEN FechaInicio AND FechaFin`;
     baseDatos.query(petTratamiento, (err, respuesta) => {
         if (err) {
             res.status(502).json('Fallo en la bbdd.' + err);
@@ -523,6 +522,7 @@ app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req, res) => {
                 listaFarmacos.push(idFarmaco);
             }
             listaFarmacos = listaFarmacos.join(",")
+            console.log(listaFarmacos);
             let petFarmaco = `SELECT Nombre, PrincipioActivo FROM farmacos WHERE IDFarmaco IN (${listaFarmacos})`
             baseDatos.query(petFarmaco, (err, nombres) => {
                 if (err) {
@@ -735,7 +735,7 @@ app.post(`/api/admin/:id/crearCita`, (req, res) => {
     baseDatos.query(petBBDD, (err, respuesta) => {
         console.log(respuesta);
         err ? (res.status(502).json("Error en BBDD" + err)) : (res.status(201).json("Cita creada"))
-        
+
     })
 })
 
@@ -1047,9 +1047,13 @@ app.put('/api/enfermero/:id/actualizarTratamiento/:idPaciente/:idFarmaco/:idCita
     let idFarmaco = req.params.idFarmaco
     let idCita = req.params.idCita
     let datos = req.body
-    console.log(datos);
     let petBBDD = `UPDATE tratamiento SET IDFarmaco = '${datos.medicamento}', FechaInicio = '${datos.fechaInicio}', FechaFin = '${datos.fechaFin}', IntervaloTomas = '${datos.intervalo}', Cantidad = '${datos.cantidad}', Anotaciones = '${datos.indicaciones}', IDCita ='${idCita}' WHERE IdPaciente = '${idPaciente}' AND IDFarmaco = '${idMedicamentoActual}'`;
     let respuesta = await actualizarTratamiento(petBBDD)
+    if (respuesta.affectedRows == 0) { 
+        petBBDD = `INSERT INTO tratamiento (IDTratamiento, IdPaciente, IDFarmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, IDCita) VALUES (NULL, '${idPaciente}', '${idFarmaco}', '${datos.fechaInicio}', '${datos.fechaFin}', '${datos.intervalo}', '${datos.cantidad}', '${datos.indicaciones}', '${idCita}')`;
+        respuesta = await actualizarTratamiento(petBBDD)
+        console.log(respuesta);
+    }
 
     res.status(201).json(respuesta);
 })
@@ -1112,9 +1116,10 @@ app.get('/api/enfermero/:id/solicitarPrescripcion/:idCita', async (req, res) => 
 
         //Procesado de tratamientos para mandar los principios activos por separado
         let idMedTomados = tratPac.map(trat => trat.IDFarmaco);
-        let medPac = await medicamentos(idMedTomados);
+        var medPac = [];
+        if (idMedTomados.length > 0) medPac = await medicamentos(idMedTomados);
 
-        
+
         //Procesamos la informacion obtenida para enviarla al sistema experto
         let emb = embPac.length > 0 ? 1 : 0;
         let lact = lactPac.length > 0 ? 1 : 0;
@@ -1157,7 +1162,7 @@ datosPaciente = (idPaciente) => {
 
 tratamientos = (idPaciente) => {
     let fechaHoy = new Date();
-    fechaHoy = fechaHoy.toISOString().substring(0, 10);
+    fechaHoy = moment(fechaHoy).format('YYYY-MM-DD');
     let petTratamiento = `SELECT * FROM tratamiento WHERE IdPaciente = '${idPaciente}' AND "${fechaHoy}" BETWEEN FechaInicio AND FechaFin`
     return new Promise((resolve, reject) => {
         baseDatos.query(petTratamiento, (err, tratamiento) => {
@@ -1293,7 +1298,7 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
     let medicamentoActual;
     let tratamientoPrincipal;
     //el siguiente bucle busca en los tratamientos del paciente el que coincida con uno de los principios activos que puede usar para su enfermedad
-    for (let a = 0; a < medAct.length; a++){
+    for (let a = 0; a < medAct.length; a++) {
         let medicamento = medAct[a];
         let prActs = medicamento.PrincipioActivo.split(' + ');
 
@@ -1318,7 +1323,7 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
             tratamientoPrincipal = tratamiento;
         }
     }
-    idMedicamentoActual = medicamentoActual.IDFarmaco;
+    idMedicamentoActual = medicamentoActual?.IDFarmaco;
     // una vez se tiene el principio activo y el medicamento, se sigue en la pauta de prescripcion
     let tratamientoRecomendado;
 
@@ -1331,9 +1336,9 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
     }
     let resultado = { actualizacionTratamiento: null, salida: false };
     let principioBuscado;
-    medicamentoActual.PrincipioActivo.includes("insulina") ? principioBuscado = "insulina" : principioBuscado = medicamentoActual.PrincipioActivo;
+    medicamentoActual?.PrincipioActivo.includes("insulina") ? principioBuscado = "insulina" : principioBuscado = medicamentoActual?.PrincipioActivo;
     if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 1) { //TRATAMIENTO EN METFORMINA
-        resultado = setMetformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        resultado = await setMetformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
             resultado = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
@@ -1345,7 +1350,7 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         }
         if (resultado.salida != true) {
-            resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos }); 
+            resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
             console.log(resultado);
         }
     } else if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 2) { //TRATAMIENTO EN SULFONILUREAS
@@ -1355,7 +1360,7 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
         }
         if (resultado.salida != true) {
             resultado = setGlimepirida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-        } 
+        }
         if (resultado.salida != true) {
             resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
             console.log(resultado);
@@ -1376,6 +1381,25 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
         }
     } else if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 5) {
         resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+    } else if (regla1[enfPrin] == 1 && regla3[principioBuscado] == undefined) {
+        resultado = await setMetformina({ dosis: tratamientoPrincipal?.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        console.log(resultado);
+        if (resultado.salida != true) {
+            resultado = setGliclazida({ dosis: tratamientoPrincipal?.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        }
+        if (resultado.salida != true) {
+            resultado = setGlipizida({ dosis: tratamientoPrincipal?.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        }
+
+        if (resultado.salida != true) {
+            resultado = setGlimepirida({ dosis: tratamientoPrincipal?.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+        }
+        if (resultado.salida != true) {
+            resultado = await setInsulina({ dosis: tratamientoPrincipal?.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
+            console.log(resultado);
+        } 
+    
+
     } else if (regla1[enfPrin] == 2 && regla3[principioBuscado] == 6) { //TRATAMIENTO EN SIMVASTATINA
         resultado = setSimvastatina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos })
         console.log(resultado);
@@ -1430,18 +1454,55 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
         }
     }
     return datosTratamiento;
+
 }
 
 
-function setMetformina({ dosis, varMed, medicamento, riesgos }) {
+async function setMetformina({ dosis, varMed, medicamento, riesgos }) {
     if (riesgos.emb === 1 || riesgos.lact === 1) { return { actualizarTratamiento: null, salida: false } }
     let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
-    if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
+    if (alergias.includes("metformina")) return { actualizarTratamiento: null, salida: false }
     //ahora se lee las dos medidas de GBC tomadas en el dia de la cita, por lo tanto deberia buscarse
     //en varMed dos medidas de GBC con la fecha del mismo dia de la cita y se saca la media de ambas
     var fecha = new Date();
     let fechaCita = moment(fecha).format("YYYY-MM-DD");
+    let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
+        medicamento,
+        indicaciones: "",
+        dosis,
+        frecuencia: "",
+        fechaInicio: "",
+        fechaFin: ""
+    }
+    if (!dosis) {
+        let posiblesMedicamentos = await buscarMedicamento("metformina");
+        let medicamento;
+        for (let i = 0; i < posiblesMedicamentos.length; i++) { 
+            if (posiblesMedicamentos[i].PrincipioActivo.toLowerCase() == "metformina" && posiblesMedicamentos[i].dosis == "425 mg") {
+                medicamento = posiblesMedicamentos[i];
+                break;
+            }
+        }
+        if (medicamento == undefined) {
+            for (let i = 0; i < posiblesMedicamentos.length; i++) {
+                if (posiblesMedicamentos[i].PrincipioActivo.toLowerCase() == "metformina") {
+                    medicamento = posiblesMedicamentos[i];
+                    break;
+                }
+            }
+        }
+        let medicamentoDevuelto = [{ IDFarmaco: medicamento.IDFarmaco, Nombre: medicamento.Nombre, PrincipioActivo: medicamento.PrincipioActivo, RiesgoEmbarazo: medicamento.RiesgoEmbarazo, RiesgoLactancia: medicamento.RiesgoLactancia }];
+        actualizacionTratamiento = {
+            medicamento: medicamentoDevuelto,
+            indicaciones: "Tomar 425 mg cada día. \nRealizar control en una semana. Orientar al paciente sobre la diabetes.",
+            dosis: "425 mg",
+            frecuencia: "24",
+            fechaInicio: fechaCita,
+            fechaFin: new Date(moment(fecha).add(7, "days").format("YYYY-MM-DD"))
+        }
+        return { actualizarTratamiento: actualizacionTratamiento, salida: true }
 
+    }
 
     let GBCsHoy = [];
     let hba1cHoy = varMed.filter(med => med.Tipo == 6 && moment(med.Fecha).format("YYYY-MM-DD") == fechaCita);
@@ -1453,24 +1514,17 @@ function setMetformina({ dosis, varMed, medicamento, riesgos }) {
         }
     }
     let dosisReturn;
-    let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
-        medicamento,
-        indicaciones: "",
-        dosis,
-        frecuencia: "",
-        fechaInicio : "",
-        fechaFin: ""
-    }
     
+
     if (GBCsHoy.length == 0 && hba1cHoy.length == 0) return { actualizarTratamiento: null, salida: true } //si no hay tomadas medidas, se devuelve null para que se muestre el tratamiento actual en el cliente
     if (hba1cHoy.length > 0) {
-        let valor = hba1cHoy[hba1cHoy.length -1].Valor;
+        let valor = hba1cHoy[hba1cHoy.length - 1].Valor;
         if (valor < 7.0) {
             dosisReturn = dosis;
             actualizacionTratamiento.dosis = dosisReturn;
-            actualizacionTratamiento.medicamento = [ medicamento ];
-            actualizacionTratamiento.fechaInicio = new Date (moment(fecha).format("YYYY-MM-DD"));
-            actualizacionTratamiento.fechaFin = new Date (moment(fecha).add(6, "months").format("YYYY-MM-DD"));
+            actualizacionTratamiento.medicamento = [medicamento];
+            actualizacionTratamiento.fechaInicio = new Date(moment(fecha).format("YYYY-MM-DD"));
+            actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(6, "months").format("YYYY-MM-DD"));
             actualizacionTratamiento.indicaciones += "Revisión de HbA1c en 6 meses" // no se modificará nada mas
             return actualizacionTratamiento;
         } else {
@@ -1484,7 +1538,7 @@ function setMetformina({ dosis, varMed, medicamento, riesgos }) {
     }
 
 
-    
+
     let GBCMedia = (GBCsHoy[0] + GBCsHoy[1]) / 2 || GBCsHoy[0];
     // transformar GBCMedia a entero
     GBCMedia = Math.round(GBCMedia);
@@ -1792,7 +1846,7 @@ function setGlimepirida({ dosis, varMed, medicamento, riesgos }) {
     return salida;
 }
 
-async function setInsulina({ dosis, varMed, medicamento, riesgos }) { 
+async function setInsulina({ dosis, varMed, medicamento, riesgos }) {
 
     let actualizarTratamiento = { //este sera el objeto devuelto por la funcion
         medicamento,
@@ -1802,6 +1856,26 @@ async function setInsulina({ dosis, varMed, medicamento, riesgos }) {
         fechaInicio: "",
         fechaFin: ""
     }
+    if (!dosis) {
+        let posiblesMedicamentos = await buscarMedicamento("insulina");
+        let medicamento = posiblesMedicamentos[0];
+        console.log(medicamento);
+        let dosis = riesgos.peso * 0.2;
+        // transformar dosis a string y cambiar "." por ","
+        let dosisString = dosis.toString();
+        dosisString = dosisString.replace(".", ",");
+        let medicamentoDevuelto = [{ IDFarmaco: medicamento.IDFarmaco, Nombre: medicamento.Nombre, PrincipioActivo: medicamento.PrincipioActivo, RiesgoEmbarazo: medicamento.RiesgoEmbarazo, RiesgoLactancia: medicamento.RiesgoLactancia }];
+        actualizacionTratamiento = {
+            medicamento: medicamentoDevuelto,
+            indicaciones: `Hay que cambiar el tratamiento y empezar a usar insulina. \nLa siguiente revisión será en cuatro días. \nRemitir a médico para revisión de tratamiento. \nTomar ${(dosis * (2 / 3)).toFixed(2)} UI antes de desayunar y ${(dosis * (1 / 3)).toFixed(2)} UI antes de cenar.`,
+            dosis: `${dosisString} UI`,
+            frecuencia: 12,
+            fechaInicio: fechaCita,
+            fechaFin: new Date(moment(fechaCita).add(4, "days").format("YYYY-MM-DD"))
+        }
+        return { actualizarTratamiento: actualizacionTratamiento, salida: true }
+
+    }
     if (!medicamento.PrincipioActivo.includes("insulina")) { //es decir en caso de que su tratamiento actual no sea insulina
         let opciones = await buscarMedicamento("insulina isofana")
         let dosis = riesgos.peso * 0.2;
@@ -1810,7 +1884,7 @@ async function setInsulina({ dosis, varMed, medicamento, riesgos }) {
         dosisString = dosisString.replace(".", ",");
         actualizarTratamiento = {
             medicamento: opciones,
-            indicaciones: `Hay que cambiar el tratamiento y empezar a usar insulina. \nLa siguiente revisión será en cuatro días. \nRemitir a médico para revisión de tratamiento. \nTomar ${(dosis*(2/3)).toFixed(2)} UI antes de desayunar y ${(dosis * (1/3)).toFixed(2)} UI antes de cenar.`,
+            indicaciones: `Hay que cambiar el tratamiento y empezar a usar insulina. \nLa siguiente revisión será en cuatro días. \nRemitir a médico para revisión de tratamiento. \nTomar ${(dosis * (2 / 3)).toFixed(2)} UI antes de desayunar y ${(dosis * (1 / 3)).toFixed(2)} UI antes de cenar.`,
             dosis: `${dosisString} UI`,
             frecuencia: 12,
             fechaInicio: new Date(moment().format("YYYY-MM-DD")),
@@ -1819,7 +1893,7 @@ async function setInsulina({ dosis, varMed, medicamento, riesgos }) {
         salida = true;
         return { actualizarTratamiento, salida };
     }
-    return {actualizarTratamiento: null, salida: true}
+    return { actualizarTratamiento: null, salida: true }
 }
 
 
@@ -1838,7 +1912,7 @@ function setSimvastatina({ dosis, varMed, medicamento, riesgos }) {
     }
 
     let medidas = verPreviasLDL(varMed); //devuelve si las mediciones de LDL son buenas, nulas o malas, 3 es si es demasiado baja
-    
+
     let actual = medidas.actual;
     let previa1 = medidas.previa1;
     if (previa1 === 0) {
@@ -1877,18 +1951,18 @@ function setSimvastatina({ dosis, varMed, medicamento, riesgos }) {
         dosis = dosis.substring(0, dosis.length - 2);
         if (dosis == "40") {
             actualizarTratamiento.dosis = "40 mg";
-        } else if (dosis == 20) { 
+        } else if (dosis == 20) {
             actualizarTratamiento.dosis = "15 mg";
             actualizarTratamiento.indicaciones = "El LDL es demasiado bajo, hay que reducir la dosis, se ha reducido a 15 mg/día, confirmar que es correcto. \nSi menciona efectos secundarios se debe derivar al médico de familia."
         }
     }
-    
+
     return { actualizarTratamiento: actualizarTratamiento, salida: true }
-    
+
 
 }
 
-async function setEnalapril({ dosis, varMed, medicamento, riesgos }) { 
+async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     let idPaciente = varMed[1].IDPaciente;
     let varMedicas = await allVarMed(idPaciente);
     if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
@@ -1898,17 +1972,17 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
     var fecha = new Date();
 
 
-    
+
     // en las siguientes variables se almacenan los estados de las medidas para saber si estan bien o mal
     let actual = 0; //0 para no hay datos, 1 para mal, 2 para bien
-    let previa1 = 0; 
+    let previa1 = 0;
     let previa2 = 0;
     let previa3 = 0;
-    
+
 
     // let varMed = await allVarMed()
     let previas = verPreviasTension(varMedicas);
-    
+
     let dosisReturn;
     let actualizacionTratamiento = { //este sera el objeto devuelto por la funcion
         medicamento,
@@ -1952,7 +2026,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     }
-    if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 2) { 
+    if (actual === 2 && previa1 === 2 && previa2 === 2 && previa3 === 2) {
         dosisReturn = dosis; // se mantiene la dosis
         actualizacionTratamiento.medicamento = [medicamento];
         actualizacionTratamiento.indicaciones = "Derivación anual a médico de familia. \nMantener dosis y tomar una vez al día. \nSolicitar analíticas y ECG.";
@@ -2000,7 +2074,7 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         else if (dosis == 10) {
             dosisReturn = "5 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 5mg/día, revisar si es correcto.";
-        }else if (dosis == 5) {
+        } else if (dosis == 5) {
             dosisReturn = "5 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión.\nYa no se puede reducir más la dosis. Derivar a médico de familia para revisar el tratamiento.";
         }
@@ -2011,14 +2085,14 @@ async function setEnalapril({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     }
-    
+
 
     let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
     console.log("return");
     return salida;
-    
+
 }
-async function setRamipril({ dosis, varMed, medicamento, riesgos }) { 
+async function setRamipril({ dosis, varMed, medicamento, riesgos }) {
     let idPaciente = varMed[1].IDPaciente;
     let varMedicas = await allVarMed(idPaciente);
     if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
@@ -2270,7 +2344,7 @@ async function setClortalidona({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento.";
         if (dosis == "50") {
             dosisReturn = "25 mg";
-        } else if (dosis == "25") { 
+        } else if (dosis == "25") {
             dosisReturn = "12,5 mg";
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión, reducir la dosis o derivar a médico de familia para revisar el tratamiento. \nSe ha ajustado la dosis a 12,5mg/día, revisar si es correcto.";
         } else if (dosis == "12,5") {
@@ -2278,7 +2352,7 @@ async function setClortalidona({ dosis, varMed, medicamento, riesgos }) {
             actualizacionTratamiento.indicaciones = "Se ha detectado hipotensión.\nYa no se puede reducir más la dosis. Derivar a médico de familia para revisar el tratamiento.";
         }
         actualizacionTratamiento.medicamento = [medicamento];
-        
+
         actualizacionTratamiento.fechaInicio = fecha;
         actualizacionTratamiento.fechaFin = new Date(moment(fecha).add(15, "days").format("YYYY-MM-DD"));
         actualizacionTratamiento.frecuencia = "24";
@@ -2296,9 +2370,9 @@ async function setAmlodipino({ dosis, varMed, medicamento, riesgos }) {
     if (riesgos.emb === 1 || riesgos.lact === 1) return { actualizarTratamiento: null, salida: false }
     let alergias = (riesgos.alerg).map(alergia => alergia.Alergeno.toLowerCase())
     if (alergias.includes(medicamento.PrincipioActivo.toLowerCase())) return { actualizarTratamiento: null, salida: false }
-    
+
     var fecha = new Date();
-    
+
     let idPaciente = varMed[1].IDPaciente;
     let varMedicas = await allVarMed(idPaciente);
 
@@ -2419,8 +2493,8 @@ async function setAmlodipino({ dosis, varMed, medicamento, riesgos }) {
         actualizacionTratamiento.frecuencia = "24";
         actualizacionTratamiento.dosis = dosisReturn;
     }
-    
-    
+
+
     let salida = { actualizarTratamiento: actualizacionTratamiento, salida: true };
     console.log("return");
     return salida;
@@ -2491,14 +2565,14 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
             let sizePastilla = nombreMedicamento.substring(nombreMedicamento.indexOf(" ")).trim();
             sizePastilla = sizePastilla.substring(0, sizePastilla.indexOf(" ")).trim();
 
-            let fraccionPastilla = sizePastilla/4;
+            let fraccionPastilla = sizePastilla / 4;
             let variacionMax;
             let variacionMin;
             let DTSsuperior;
             let DTSinferior;
             let porcentajeCambio;
             let incremento;
-            if (medidas.actuales>=1.6 && medidas.actuales <= 1.7) {
+            if (medidas.actuales >= 1.6 && medidas.actuales <= 1.7) {
                 variacionMax = 1.1;
                 variacionMin = 1.05;
                 incremento = Math.abs(1.7 - medidas.actuales) < Math.abs(1.6 - medidas.actuales);
@@ -2536,10 +2610,10 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
                 }
 
                 let dtsEsperado = fraccionesPastilla * fraccionPastilla;
-                porcentajeCambio = (dtsEsperado / dts)*100 - 100;
+                porcentajeCambio = (dtsEsperado / dts) * 100 - 100;
 
                 console.log("IRN: " + medidas.actuales);
-                console.log("DTS ESPERADO: " + dtsEsperado +"mg");
+                console.log("DTS ESPERADO: " + dtsEsperado + "mg");
                 console.log("% CAMBIO: " + porcentajeCambio);
                 console.log("variacionesMaxYMin: " + variacionMax + '-' + variacionMin);
                 console.log("fraccionesMaxYMin: " + fraccionesMaximas + '-' + fraccionesMinimas + " / fracción resultante:" + (dtsEsperado / dts));
@@ -2553,7 +2627,7 @@ async function setACO1({ dosis, varMed, medicamento, riesgos }) {
                 console.log("trozos/dia: " + trozosDia + ", resto: " + resto);
                 // actualizacionTratamiento.indicaciones += `\n\nSe recomienda tomar ${trozosDia} cuartos de pastilla cada día y quedan ${resto} cuartos de pastilla para distribuir a lo largo de la semana.`;
                 actualizacionTratamiento.indicaciones += `\n\nSe recomienda tomar ${Math.trunc(trozosDia / 4)} pastillas al día y quedan ${resto + (trozosDia % 4)} cuartos para distribuir a lo largo de la semana.`;
-                
+
             }
             actualizacionTratamiento.dosis = `${dosisFloat} mg`;
 
@@ -2573,7 +2647,7 @@ async function setACO2({ dosis, varMed, medicamento, riesgos }) {
 
 
     if (varMed.length === 0) return { actualizarTratamiento: null, salida: true } // si no hay medidas tomadas, no se sigue
-    
+
     let actualizacionTratamiento = {
         medicamento: [],
         indicaciones: "",
@@ -2710,7 +2784,7 @@ function verPreviasTension(varMed) {
     varMed.sort(function (a, b) { //se ordenan las var med de mayor a menor por su cita
         return b.Cita - a.Cita;
     });
-    
+
     for (let a = 0; a < varMed.length; a++) { //se guardan las citas
         if (varMed[a].Tipo === 2 || varMed[a].Tipo === 3) {
             citas.push(varMed[a].Cita);
@@ -2723,29 +2797,29 @@ function verPreviasTension(varMed) {
     citaPrevia1 = citasUnicas[1];
     citaPrevia2 = citasUnicas[2];
     citaPrevia3 = citasUnicas[3];
-    for (let a = 0; a < varMed.length; a++) { 
-        if (varMed[a].Cita === citaActual) { 
+    for (let a = 0; a < varMed.length; a++) {
+        if (varMed[a].Cita === citaActual) {
             if (varMed[a].Tipo === 2) {
                 actualS = varMed[a].Valor;
             } else if (varMed[a].Tipo === 3) {
                 actualD = varMed[a].Valor;
             }
         }
-        if (varMed[a].Cita === citaPrevia1 ) {
+        if (varMed[a].Cita === citaPrevia1) {
             if (varMed[a].Tipo === 2) {
-                previas1S =varMed[a].Valor;
+                previas1S = varMed[a].Valor;
             } else if (varMed[a].Tipo === 3) {
                 previas1D = varMed[a].Valor;
             }
         }
-        if (varMed[a].Cita === citaPrevia2) { 
+        if (varMed[a].Cita === citaPrevia2) {
             if (varMed[a].Tipo === 2) {
                 previas2S = varMed[a].Valor;
             } else if (varMed[a].Tipo === 3) {
                 previas2D = varMed[a].Valor;
             }
         }
-        if (varMed[a].Cita === citaPrevia3) { 
+        if (varMed[a].Cita === citaPrevia3) {
             if (varMed[a].Tipo === 2) {
                 previas3S = varMed[a].Valor;
             } else if (varMed[a].Tipo === 3) {
@@ -2759,7 +2833,7 @@ function verPreviasTension(varMed) {
         actual = 2;
     } else if (actualS == undefined && actualD == undefined) {
         actual = 0;
-    } else if (actualS < 90 && actualD < 60) { 
+    } else if (actualS < 90 && actualD < 60) {
         actual = 3;
     }
 
@@ -2857,7 +2931,7 @@ function verPreviasLDL(varMed) {
         previa1 = 3;
     }
 
-    if (previas2 < 160 ) {
+    if (previas2 < 160) {
         previa2 = 2;
     } else if (previas2 > 160) {
         previa2 = 1;
@@ -2867,11 +2941,11 @@ function verPreviasLDL(varMed) {
         previa2 = 3;
     }
 
-    if (previas3 < 160 ) {
+    if (previas3 < 160) {
         previa3 = 2;
-    } else if (previas3 > 160 ) {
+    } else if (previas3 > 160) {
         previa3 = 1;
-    } else if (previas3 === undefined ) {
+    } else if (previas3 === undefined) {
         previa3 = 0;
     } else if (previas3 < 50) {
         previa3 = 3;

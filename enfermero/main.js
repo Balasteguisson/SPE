@@ -1,7 +1,6 @@
 //Cliente del enfermero
 document.getElementById('user').value = ''; //Se inician los campos en vacio
-document.getElementById('password').value = '' 
-
+document.getElementById('password').value = ''
 
 //Parametros de estado del cliente
 let pantallaActual = 'login';
@@ -101,9 +100,13 @@ const peticionREST = async (url,parametros) => {
 
 //permite obtener la fecha simplemente llamando a la funcion fecha()
 function fecha(){
-    let fecha = new Date();
-    let fechaFormato = fecha.toISOString().substring(0,10);
-    return fechaFormato;
+    let today = new Date();
+    // let fechaFormato = fecha.toLocaleDateString().substring(0, 10);
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd;
+    return today;
 }
 
 function cambiarPantalla(destino){
@@ -1332,13 +1335,12 @@ async function getCitas(dni) {
     ///////////////////////////////////////////////////////////
 
     //SE AÑADEN LAS CITAS A LA TABLA FORMADA EN EL PASO ANTERIOR
-    let horario = document.getElementById('horarioEnfermero')
     citasHoy = [] //aqui se almacenan las citas pendientes del enfermero, es decir, las que se han de mostrar en el horario
     let pacientes = respuesta[1] //datos de los pacientes citados
     let fechaHoy = fecha();
     for (let a = 0; a < citas.length; a++){
         let cita = citas[a]
-        if(cita.FechaHora.substring(0,10) == fechaHoy && date.getHours()<=cita.FechaHora.substring(11,13)){
+        if (cita.FechaHora.substring(0, 10) == fechaHoy && date.getHours() <= cita.FechaHora.substring(11, 13)) {
             citasHoy.push(cita)
         }
     }
@@ -1372,7 +1374,7 @@ async function getCitas(dni) {
             }
         }
         let td = `<td id='cita${cita.IDCita}' onClick='verCita(${cita.IDCita})' class='celdaCita tipo${cita.Online}'><div id="datosPacienteCita">${paciente.Nombre} ${paciente.Apellidos}</div><div id='tipoConsulta'>${cita.TipoRevision}    ${cita.FechaHora.substring(11,16)}</div></td>`
-        let idFila = cita.FechaHora.substring(11,13)
+        let idFila = cita.FechaHora.substring(11, 13)
         let nFila = idFila - hora;
         let idColumna = cita.FechaHora.substring(14,16);
         let nColumna;
