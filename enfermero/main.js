@@ -1428,6 +1428,7 @@ async function cargarTest({tipo}){
         method: "GET"
     }
     let contestacion = await peticionREST(url, peticion)
+    console.log(contestacion);
     return contestacion
 }
 
@@ -1618,7 +1619,6 @@ async function verTest0(){
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`;
     let test = await cargarTest({ tipo: "Diabetes" })
-    console.log(test);
     if(test != 403 && test != 404){
         tipoTestActual = "Diabetes"
         periodoTestActual = periodo
@@ -1651,7 +1651,7 @@ async function verTest1(){
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
     let test = await cargarTest({periodo:periodo,tipo: "ACOs"})
-    if(test != "testRealizado"){
+    if (test != 403 && test != 404){
         tipoTestActual = "ACOs"
         periodoTestActual = periodo
         let idTest = test.IDTest
@@ -1667,8 +1667,10 @@ async function verTest1(){
         cargarPregunta()
         setTimer()
         cambiarPantalla("pantallaTest")
-    }else if(test == "testRealizado"){
+    } else if (test == 403) {
         alert("Ya has hecho este test, debes esperar al siguiente");
+    } else if (test == 404) {
+        alert("No hay test para este periodo")
     }
 }
 
@@ -1680,7 +1682,7 @@ async function verTest2(){
     let hoy = new Date()
     let periodo = `${hoy.getMonth()}-${hoy.getFullYear()}`
     let test = await cargarTest({periodo:periodo,tipo: "RV"})
-    if(test != "testRealizado"){
+    if (test != 403 && test != 404){
         tipoTestActual = "RV"
         periodoTestActual = periodo
         let idTest = test.IDTest
@@ -1696,8 +1698,10 @@ async function verTest2(){
         cargarPregunta()
         setTimer()
         cambiarPantalla("pantallaTest")
-    }else if(test == "testRealizado"){
+    } else if (test == 403) {
         alert("Ya has hecho este test, debes esperar al siguiente");
+    } else if (test == 404) {
+        alert("No hay test para este periodo")
     }
 }
 

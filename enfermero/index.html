@@ -921,20 +921,20 @@
             </div>
         </div>
         <div id='pantallaReviewTest' class='seccion oculto'> <!--PANTALLA REVIEW TEST FINALIZADO-->
-            <h1>Test Finalizado</h1>
-            <section id="resultados">
-                <p id="testRealizado"></p>
-                <p id="resultadoTestRealizado"></p>
-                <p id="tiempoRestanteTestRealizado"></p>
-            </section>
-            <section id="preguntasMalas">
-                <ul id="listaPreguntasIncorrectas"></ul>
-            </section>
-            <section id="navegacion">
-                <p>
-                    <button onclick="cambiarPantalla('menuEnfermero')">Terminar Test</button>
-                </p>
-            </section>
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Test Finalizado</h1>
+                <button onclick="cambiarPantalla('menuEnfermero')">Terminar Test</button>
+            </div>
+            <div class="contenedorFlotante">
+                <section id="resultados">
+                    <p>Test realizado: <span id="testRealizado"></span></p>
+                    <p id="resultadoTestRealizado"></p>
+                    <p id="tiempoRestanteTestRealizado"></p>
+                </section>
+                <section id="preguntasMalas">
+                    <ul id="listaPreguntasIncorrectas"></ul>
+                </section>
+            </div>
         </div>
         <div id='menuCita' class='seccion oculto contenedorCita'> <!--PANTALLA CITA-->
             <div id="citaDatosPaciente" class="contenedorIzquierdo contenedorFlotante"><!--Info del paciente-->
