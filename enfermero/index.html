@@ -884,22 +884,40 @@
             </form>
         </div>
         <div id='pantallaTest' class='seccion oculto'><!--PANTALLA PARA MOSTRAR PREGUNTAS TEST-->
-            <div id='encabezadoTest' class="encabezadoTest">
+            <div id='encabezadoTest' class="headerAdmin contenedorFlotante">
                 <h1 id="nombreTest"></h1>
                 <h2 id="periodoTest"></h2>
                 <p id="preguntaActual"></p>
-                <div>Tiempo restante: <p id="testTimer"></p></div>
+                <div>Tiempo restante: <span id="testTimer"></span></div>
             </div>
-            <div id='preguntaActual' class="`preguntaTest">
+        
+            <div id='preguntaActual' class="`preguntaTest contenedorFlotante">
                 <h3 id="enunciadoPregunta" class="enunciadoPregunta"></h3>
-                <p class="respuestaTest"><input type="radio" value="1" name="respuestas" id="respuesta1T"><label for="respuesta1T" id="contenidoR1T"></label></p>
+                <div class="groupInput enunciadoPregunta">
+                    <input type="radio" value="1" name="respuestas" id="respuesta1T">
+                    <label for="respuesta1T" id="contenidoR1T"></label>
+                </div>
+                <div class="groupInput enunciadoPregunta">
+                    <input type="radio" value="2" name="respuestas" id="respuesta2T">
+                    <label for="respuesta2T" id="contenidoR2T"></label>
+                </div>
+                <div class="groupInput enunciadoPregunta">
+                    <input type="radio" value="3" name="respuestas" id="respuesta3T">
+                    <label for="respuesta3T" id="contenidoR3T"></label>
+                </div>
+                <div class="groupInput enunciadoPregunta">
+                    <input type="radio" value="4" name="respuestas" id="respuesta4T">
+                    <label for="respuesta4T" id="contenidoR4T"></label>
+                </div>
+                <!-- <p class="respuestaTest"><input type="radio" value="1" name="respuestas" id="respuesta1T"><label for="respuesta1T" id="contenidoR1T"></label></p>
                 <p class="respuestaTest"><input type="radio" value="2" name="respuestas" id="respuesta2T"><label for="respuesta2T" id="contenidoR2T"></label></p>
                 <p class="respuestaTest"><input type="radio" value="3" name="respuestas" id="respuesta3T"><label for="respuesta3T" id="contenidoR3T"></label></p>
-                <p class="respuestaTest"><input type="radio" value="4" name="respuestas" id="respuesta4T"><label for="respuesta4T" id="contenidoR4T"></label></p>
+                <p class="respuestaTest"><input type="radio" value="4" name="respuestas" id="respuesta4T"><label for="respuesta4T" id="contenidoR4T"></label></p> -->
             </div>
-            <div id='navegacionTest' class="navegacionTest">
-                <p><button onclick="preguntaAnterior()">Pregunta Previa</button> <button id="botonSiguientePregunta" onclick="siguientePregunta()">Pregunta Siguiente</button><button id="botonTerminarTest" onclick="terminarTest()">Terminar Test</button></p>
-                <p><button id="botonAbandonarTest" onclick="verMenuEnfermeroHTML()">Abandonar test</button></p>
+            <div id='navegacionTest' class="navegacionTest contenedorOpcionesFormulario contenedorFlotante">
+                <button onclick="preguntaAnterior()">Pregunta Previa</button>
+                <button id="botonSiguientePregunta" onclick="siguientePregunta()">Pregunta Siguiente</button><button id="botonTerminarTest" onclick="terminarTest()">Terminar Test</button>
+                <button id="botonAbandonarTest" onclick="verMenuEnfermeroHTML()">Abandonar test</button>
             </div>
         </div>
         <div id='pantallaReviewTest' class='seccion oculto'> <!--PANTALLA REVIEW TEST FINALIZADO-->

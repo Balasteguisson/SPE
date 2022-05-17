@@ -1528,11 +1528,13 @@ async function enviarResultadosTest(){
 }
 
 function cargarPregunta(){
-    let pregunta = preguntasActivas[preguntaActual-1].Pregunta
+    let pregunta = preguntasActivas[preguntaActual - 1].Pregunta
+    console.log(pregunta);
     let resp1 = preguntasActivas[preguntaActual-1].Respuesta1
     let resp2 = preguntasActivas[preguntaActual-1].Respuesta2
     let resp3 = preguntasActivas[preguntaActual-1].Respuesta3
-    let resp4 = preguntasActivas[preguntaActual-1].Respuesta4
+    let resp4 = preguntasActivas[preguntaActual - 1].Respuesta4
+    console.log(resp1);
     document.getElementById("preguntaActual").innerHTML = `Pregunta ${preguntaActual}/${preguntasActivas.length}`
     document.getElementById("enunciadoPregunta").innerHTML = pregunta
     document.getElementById("contenidoR1T").innerHTML = resp1
@@ -1591,7 +1593,6 @@ function setTimer(){
             segundosRestantes = `0${segundosRestantes}`; 
         }
         document.getElementById('testTimer').innerHTML = `${minutosRestantes}:${segundosRestantes}`;
-        console.log(`${minutosRestantes}:${segundosRestantes}`)
         if(tiempoRestante<0){
             clearInterval(temporizador)
             tiempoRestanteTest = "00:00"
@@ -1624,7 +1625,8 @@ async function verTest0(){
         let idTest = test.IDTest
         idTestActual = idTest
         //a continuacion se obtienen los ids de las preguntas que aparecen en el test 
-        preguntasActivas = await cargarPreguntas({idTest:idTest})
+        preguntasActivas = await cargarPreguntas({ idTest: idTest })
+        console.log(preguntasActivas);
         document.getElementById("nombreTest").innerHTML = "Diabetes";
         document.getElementById("periodoTest").innerHTML = periodo;
         contestaciones = new Array(preguntasActivas.length)
@@ -1642,7 +1644,7 @@ async function verTest0(){
 }
 
 async function verTest1(){
-    //lleva al test de diabetes
+    //lleva al test de ACOs
     //primero se obtiene el test del ciclo actual
     preguntasActivas = []
     preguntaActual = 1
@@ -1671,7 +1673,7 @@ async function verTest1(){
 }
 
 async function verTest2(){
-    //lleva al test de diabetes
+    //lleva al test de RV
     //primero se obtiene el test del ciclo actual
     preguntasActivas = []
     preguntaActual = 1
