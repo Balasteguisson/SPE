@@ -1238,13 +1238,16 @@ async function crearCita(){
             'Content-Type' : 'application/json'
         }
     }
+    
     let respuesta = await peticionREST(url, petServer)
-    if(respuesta ==="Cita creada"){
+    if (respuesta === "Cita creada") {
         alert("Cita creada")
         document.getElementById('formularioCita').reset()
-    }else{
-        alert("No se ha podido crear la cita")
+
+    } else if (respuesta === 400) {
+        alert("Esa hora ya esta ocupada, prueba otra")
     }
+    
 }
 //RELLENAR MONITOR RENDIMIENTO
 //Insertar ciclos en el select

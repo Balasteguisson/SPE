@@ -522,7 +522,6 @@ app.get("/api/admin/:id/getTratamientosPaciente/:idPaciente", (req, res) => {
                 listaFarmacos.push(idFarmaco);
             }
             listaFarmacos = listaFarmacos.join(",")
-            console.log(listaFarmacos);
             let petFarmaco = `SELECT Nombre, PrincipioActivo FROM farmacos WHERE IDFarmaco IN (${listaFarmacos})`
             baseDatos.query(petFarmaco, (err, nombres) => {
                 if (err) {
@@ -717,7 +716,7 @@ app.get(`/api/admin/:id/getPacientesEnfermeros`, (req, res) => {
     })
 })
 
-app.post(`/api/admin/:id/crearCita`, (req, res) => {
+app.post(`/api/admin/:id/crearCita`, async (req, res) => {
     let paciente = req.body.paciente
     let enfermero = req.body.enfermero
     let tipoRevision = req.body.tipo
@@ -730,16 +729,59 @@ app.post(`/api/admin/:id/crearCita`, (req, res) => {
     fechaHora = `${fechaHora.substring(0, 10)} ${fechaHora.substring(11)}`
 
     presencialidad == "presencial" ? (presencialidad = 0) : (presencialidad = 1)
+
+    let citas = await comprobarCitas({ enfermero: enfermero, fechaHora: fechaHora })
+    console.log("tiene ya cita??" + citas);
+    console.log(!citas);
+    if (!citas) {
+        res.status(400).json("Esa hora ya esta ocupada")
+        return;
+    }
     //se genera la peticion de la bbdd 
     let petBBDD = `INSERT INTO Cita (IDCita, IdPaciente, IDEnfermero, TipoRevision, Online, Sintomas, Signos, FechaHora, Realizada) VALUES (NULL, '${paciente}', '${enfermero}', '${tipoRevision}', '${presencialidad}', '', '', '${fechaHora}', '0');`
     baseDatos.query(petBBDD, (err, respuesta) => {
-        console.log(respuesta);
         err ? (res.status(502).json("Error en BBDD" + err)) : (res.status(201).json("Cita creada"))
 
     })
 })
 
+async function comprobarCitas({ enfermero, fechaHora }) {
+    //fechaHora se refiere a estos datos de la cita que se quiere crear
+    let dia = moment(fechaHora).format("YYYY-MM-DD");
+    let petBBDD = `SELECT * FROM cita WHERE IDEnfermero='${enfermero}' AND FechaHora LIKE '%${dia}%'`
+    let citas = await peticionBBDD(petBBDD);
+    let franjaHora; 
+    let minutos = moment(fechaHora).format("mm");
+    if (minutos < 15) franjaHora = 0;
+    else if (minutos >= 15 && minutos < 30) franjaHora = 1;
+    else if (minutos >= 30 && minutos < 45) franjaHora = 2;
+    else franjaHora = 3;
+    console.log("horaCita solicitada: " + franjaHora);
+    for (let i = 0; i < citas.length; i++) { 
+        let horaCita = moment(citas[i].FechaHora).format("HH");
+        let franjaHoraCita;
+        let minutosCita = moment(citas[i].FechaHora).format("mm");
+        if (minutosCita < 15) franjaHoraCita = 0;
+        else if (minutosCita >= 15 && minutosCita < 30) franjaHoraCita = 1;
+        else if (minutosCita >= 30 && minutosCita < 45) franjaHoraCita = 2;
+        else franjaHoraCita = 3;
+        console.log("horaCita comprobada: " + franjaHoraCita);
+        console.log(franjaHora == franjaHoraCita);
+        if (horaCita == moment(fechaHora).format("HH") && franjaHora == franjaHoraCita) {
+            return false;
+        }
+    }
+    return true;
+}
 
+peticionBBDD = (peticion) => {
+    return new Promise((resolve, reject) => {
+        baseDatos.query(peticion, (err, respuesta) => {
+            if (err) return reject(err);
+            return resolve(respuesta);
+        })
+    })
+}
 
 app.get('/api/enfermero/getIDEnfermero/:dni', (req, res) => {
     let petBBDD = `SELECT ID FROM Enfermero WHERE DNI ='${req.params.dni}'`
@@ -757,7 +799,6 @@ app.get("/api/enfermero/:id/getTest/:tipo", (req, res) => {
     let tipo = req.params.tipo
     let idEnfermero = req.params.id
     let periodo = moment().format('MM-YYYY')
-    console.log(periodo);
     let petBBDD = `SELECT * FROM Test WHERE (Tipo = '${tipo}') AND (Periodo = '${periodo}')`
     baseDatos.query(petBBDD, (err, respuesta) => {
         if (err) {
@@ -765,7 +806,6 @@ app.get("/api/enfermero/:id/getTest/:tipo", (req, res) => {
         } else if (respuesta.length == 0) {
             res.status(404).json("testNotFound")
         } else {
-            console.log(respuesta);
             let idTest = respuesta[respuesta.length - 1].IDTest
             let petBBDD2 = `SELECT * FROM EnfermeroTest WHERE (IDTest = '${idTest}') AND (IDEnfermero = '${idEnfermero}')`
             baseDatos.query(petBBDD2, (err, testRealizados) => {
@@ -1052,7 +1092,6 @@ app.put('/api/enfermero/:id/actualizarTratamiento/:idPaciente/:idFarmaco/:idCita
     if (respuesta.affectedRows == 0) { 
         petBBDD = `INSERT INTO tratamiento (IDTratamiento, IdPaciente, IDFarmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, IDCita) VALUES (NULL, '${idPaciente}', '${idFarmaco}', '${datos.fechaInicio}', '${datos.fechaFin}', '${datos.intervalo}', '${datos.cantidad}', '${datos.indicaciones}', '${idCita}')`;
         respuesta = await actualizarTratamiento(petBBDD)
-        console.log(respuesta);
     }
 
     res.status(201).json(respuesta);
@@ -1351,7 +1390,6 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
         }
         if (resultado.salida != true) {
             resultado = await setInsulina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
-            console.log(resultado);
         }
     } else if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 2) { //TRATAMIENTO EN SULFONILUREAS
         resultado = setGliclazida({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
