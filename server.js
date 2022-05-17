@@ -1102,9 +1102,18 @@ actualizarTratamiento = (peticion) => {
 }
 
 app.get('/api/enfermero/:id/getMedicionesPaciente/:idPaciente/:idCita', async (req, res) => {
+    console.log("peticion recibida");
     let idPaciente = req.params.idPaciente
     let idCita = req.params.idCita
-    let petBBDD = `SELECT * FROM variableFisica WHERE IdPaciente = '${idPaciente}' AND Cita = '${idCita}'`;
+    let petBBDD;
+    if (idCita == "uno") {
+        petBBDD = `SELECT * FROM variableFisica WHERE IdPaciente = '${idPaciente}'`;
+
+    } else {
+        petBBDD = `SELECT * FROM variableFisica WHERE IdPaciente = '${idPaciente}' AND Cita = '${idCita}'`;
+
+    }
+
     let petBBDD2 = `SELECT * FROM tiposvariables`
     let respuesta = await medicionesPaciente(petBBDD)
     let respuesta2 = await medicionesPaciente(petBBDD2)

@@ -7,6 +7,7 @@
         <link rel="shortcut icon" href="#" />
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
     <body>
         <div id = 'login' class='seccion visible'><!--LOGIN-->
@@ -1144,6 +1145,9 @@
                 <button class="botonMantenimientoCita" id="botonVolverGraficas">Volver</button>
             </div>
             <div class="contenedorFlotante">
+                <div id="contenedorGrafica">
+                    <canvas id="graficaPaciente"></canvas>
+                </div>
             </div>
         </div>
         <script src="main.js"></script>

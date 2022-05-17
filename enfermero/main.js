@@ -1,3 +1,4 @@
+
 //Cliente del enfermero
 document.getElementById('user').value = ''; //Se inician los campos en vacio
 document.getElementById('password').value = ''
@@ -2012,14 +2013,81 @@ async function citaGuardarCambios() {
 }
 
 async function verGraficasPaciente(){
-    console.log("cargando graficas")
     document.getElementById('botonVolverGraficas').setAttribute('onclick', `verCita('${idCitaActual}')`)
     await getTiposVariables({ select:'variableFisicaGrafica'})
-
-
     cambiarPantalla('graficasPaciente')
 }
 
+document.getElementById('variableFisicaGrafica').addEventListener('change', () => { cargarGraficasPaciente() })
+async function cargarGraficasPaciente() { 
+    let variable = document.getElementById('variableFisicaGrafica').value;
+    let url = `/api/enfermero/${dniEnfermeroActual}/getMedicionesPaciente/${idPacienteCita}/uno?token=${crendenciales}`;
+    let peticion = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    let respuesta = await peticionREST(url, peticion);
+    let medidas = respuesta.mediciones;
+    let tipos = respuesta.tipos;
+    let nTipos = tipos.length;
+
+    medidas.sort(function (a, b) {
+        return a.Cita - b.Cita;
+    });
+
+    var etiquetas = [];
+    for (let a = 0; a < medidas.length; a++) { //se guardan las citas
+        etiquetas.push(medidas[a].Cita);
+    }
+    let etiquetasUnicas = etiquetas.filter(function (value, index, self) { // se obtienen las citas unicas
+        return self.indexOf(value) === index;
+    });
+    let valores = [];
+    for (let a = 0; a < nTipos; a++) {
+        valores.push([]);
+    }
+    let idCita;
+    for (let a = 0; a < medidas.length; a++) {
+        console.log(idCita);
+        for (let b = 0; b < nTipos; b++) {
+            if (medidas[a].Tipo == tipos[b].IDVariable && medidas[a].Cita != idCita) {
+                valores[b].push(medidas[a].Valor);
+            } else if (medidas[a].Tipo == tipos[b].IDVariable && medidas[a].Cita == idCita) {
+                valores[b][valores[b].length - 1] = (valores[b][valores[b].length - 1] + medidas[a].Valor) / 2;
+            }
+        }
+        idCita = medidas[a].Cita;
+        console.log(idCita);
+    }
+    
+    let valoresGrafica = valores[variable - 1];
+    let etiquetasGrafica = etiquetasUnicas.map((e) => { return `Cita ${e}` })
+    console.log(etiquetasGrafica);
+    console.log(valoresGrafica);
+    
+    let data = {
+        labels: etiquetasGrafica,
+        datasets: [{
+            label: tipos[variable - 1].Nombre,
+            data: valoresGrafica,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255,99,132,1)',
+            borderWidth: 1
+        }]
+    };
+    let config = {
+        type: 'line',
+        data: data,
+        options: {}
+    }
+    let grafica = new Chart(
+        document.getElementById('graficaPaciente'),
+        config
+    );
+    return respuesta;
+}
 
 async function actualizarTratamiento() {
     //esta funcion obtiene los datos que se muestran en el menu de tratamiento y los envia al servidor para que se guarden en la base de datos
