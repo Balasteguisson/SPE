@@ -1794,7 +1794,7 @@ async function verCita(idCita){
     solicitarPrescripcion(idCitaActual);
     cargarMedicionesPaciente(idPacienteCita);
     cambiarPantalla('menuCita')
-    getTiposVariables();
+    getTiposVariables({select: 'tipoVariable'});
 }
 
 async function cargarMedicionesPaciente(idPaciente) {
@@ -2011,9 +2011,15 @@ async function citaGuardarCambios() {
     }
 }
 
-function verGraficasPaciente(){
+async function verGraficasPaciente(){
     console.log("cargando graficas")
+    document.getElementById('botonVolverGraficas').setAttribute('onclick', `verCita('${idCitaActual}')`)
+    await getTiposVariables({ select:'variableFisicaGrafica'})
+
+
+    cambiarPantalla('graficasPaciente')
 }
+
 
 async function actualizarTratamiento() {
     //esta funcion obtiene los datos que se muestran en el menu de tratamiento y los envia al servidor para que se guarden en la base de datos
@@ -2135,7 +2141,7 @@ async function crearVariable(){
 }
 
 var unidades = []
-async function getTiposVariables(){
+async function getTiposVariables({select}){
     let url = `/api/enfermero/:id/getTiposVariables?token=${crendenciales}`
     let peticion = {
         method : "GET"
@@ -2143,7 +2149,7 @@ async function getTiposVariables(){
     let respuesta = await peticionREST(url, peticion)
     let tipos = respuesta[0]
     unidades = respuesta[1]
-    let selectTipo = document.getElementById('tipoVariable')
+    let selectTipo = document.getElementById(`${select}`)
     selectTipo.innerHTML = '<option hidden selected value="placeholderVariable">Escoge un parámetro</option>'
     for (let a = 0; a < tipos.length; a++) {
         let option = document.createElement('option')

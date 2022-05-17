@@ -22,9 +22,6 @@
                     <span class="bar"></span>
                     <label for="password" id="labelPassword">Contraseña: </label>
                 </div>
-                
-                <!-- <p><input type="text" class='inputLog' id='user' placeholder="Usuario" /></p> -->
-                <!-- <p><input type="password" class='inputLog' id='password' placeholder="Contraseña"></p> -->
                 <p id="errorLogin" style="display: none;">*Usuario o contraseña incorrecto*</p>
                 <p><button onclick="log()" class="botonAvance">Entrar</button></p>
             </div>
@@ -1136,6 +1133,17 @@
                         <button onclick="registrarMedicamento()">Registrar medicamento</button>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div id="graficasPaciente" class='seccion oculto'>
+            <div class="headerAdmin contenedorFlotante">
+                <h2>Seguimiento de variables físicas del paciente</h2>
+                <select name="variableFisicaGrafica" id="variableFisicaGrafica">
+                    <option hidden selected value="placeholderModalidad">Escoge variable</option>
+                </select>
+                <button class="botonMantenimientoCita" id="botonVolverGraficas">Volver</button>
+            </div>
+            <div class="contenedorFlotante">
             </div>
         </div>
         <script src="main.js"></script>
