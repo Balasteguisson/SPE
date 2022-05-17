@@ -731,8 +731,6 @@ app.post(`/api/admin/:id/crearCita`, async (req, res) => {
     presencialidad == "presencial" ? (presencialidad = 0) : (presencialidad = 1)
 
     let citas = await comprobarCitas({ enfermero: enfermero, fechaHora: fechaHora })
-    console.log("tiene ya cita??" + citas);
-    console.log(!citas);
     if (!citas) {
         res.status(400).json("Esa hora ya esta ocupada")
         return;
@@ -756,7 +754,6 @@ async function comprobarCitas({ enfermero, fechaHora }) {
     else if (minutos >= 15 && minutos < 30) franjaHora = 1;
     else if (minutos >= 30 && minutos < 45) franjaHora = 2;
     else franjaHora = 3;
-    console.log("horaCita solicitada: " + franjaHora);
     for (let i = 0; i < citas.length; i++) { 
         let horaCita = moment(citas[i].FechaHora).format("HH");
         let franjaHoraCita;
@@ -765,8 +762,6 @@ async function comprobarCitas({ enfermero, fechaHora }) {
         else if (minutosCita >= 15 && minutosCita < 30) franjaHoraCita = 1;
         else if (minutosCita >= 30 && minutosCita < 45) franjaHoraCita = 2;
         else franjaHoraCita = 3;
-        console.log("horaCita comprobada: " + franjaHoraCita);
-        console.log(franjaHora == franjaHoraCita);
         if (horaCita == moment(fechaHora).format("HH") && franjaHora == franjaHoraCita) {
             return false;
         }
