@@ -321,30 +321,34 @@
             
         </div>
         <div id = 'menuMonitorRendimiento' class='seccion oculto'> <!--MONITOR RENDIMIENTO-->
-            <h1>Resultados de los enfermeros</h1>
-            <p>
-                Selecciona el ciclo que quieres ver:
-                <select name="cicloVisible" id="cicloVisible">
-                    <option value=""></option><!--Se debe rellenar desde JS-->
-                </select>
-            </p>
-            <table>
-                <thead>
-                    <th>Enfermero</th>
-                    <th>Test Diabetes</th>
-                    <th>Test ACOs</th>
-                    <th>Test Riesgo Vascular</th>
-                </thead>
-                <tbody>
-                    <tr> <!-- Borrar este TR entero!!!-->
-                        <td>Enfermero 1</td>
-                        <td><progress max='100' value='70'>50%</progress></td>
-                        <td><progress max='100' value='70'>30%</progress></td>
-                        <td><progress max='100' value='70'>60%</progress></td>
-                    </tr>
-                </tbody>
-            </table>
-            <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            <div class="headerAdmin contenedorFlotante">
+                <h1>Resultados de los enfermeros</h1>
+                    <select name="cicloVisible" id="cicloVisible">
+                        <option id='placeholderMRendimiento' hidden selected value="prueba">Escoge modalidad</option>
+                        <!--Se debe rellenar desde JS-->
+                    </select>
+                <button class="botonRetroceso" onclick="cambiarPantalla('menuAdmin')">Volver</button>
+            </div>
+            <div class="contenedorFlotante contenedorTabla">
+                <table class="listaPersonas">
+                    <thead>
+                        <th>Enfermero</th>
+                        <th>Test Diabetes</th>
+                        <th>Test ACOs</th>
+                        <th>Test Riesgo Vascular</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <!-- Borrar este TR entero!!!-->
+                            <td>Enfermero 1</td>
+                            <td><progress max='100' value='70'>50%</progress></td>
+                            <td><progress max='100' value='70'>30%</progress></td>
+                            <td><progress max='100' value='70'>60%</progress></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
         </div>
         <div id ='menuCrearTest' class='seccion oculto'> <!--MENU CREACION TEST-->
             <div class="headerAdmin contenedorFlotante">
