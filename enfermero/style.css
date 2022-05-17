@@ -715,25 +715,22 @@ button.botonRetroceso:hover {
 
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (max-width: 768px) {
     /* Tablets en modo horizontal */
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (max-width: 600px) {
     /*  tablets en modo vertical */
 }
 
-@media screen and (min-width: 480px) {
+@media screen and (max-width: 480px) {
     /* smartphones */
-    #login {
-        height: 100%;
-        align-items: center;
-    }
     
     .formularioLogin {
         flex-direction: column;
         align-items: center;
         height: fit-content;
+        width: 100vw;
 
     }
 }
