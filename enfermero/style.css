@@ -73,11 +73,11 @@
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
     display: flex;
     max-width: 100%;
-    margin: 20px;
+    margin: 10px 0;
     overflow: hidden;
     width: 100%;
     max-height: 7em;
-    min-width: 200px;
+    /* min-width: 200px; */
 }
 
 .test-info {
@@ -267,10 +267,11 @@ body {
     padding: 0 5vw;
 }
 
-textarea{
+textarea {
     font-family: Ubuntu, "times new roman", times, roman, serif;
 }
-input{
+
+input {
     font-family: Ubuntu, "times new roman", times, roman, serif;
 }
 
@@ -313,6 +314,7 @@ input{
 .bodyAdmin {
     display: flex;
 }
+
 .bodyEnfermero {
     display: flex;
 }
@@ -594,13 +596,14 @@ button.botonRetroceso:hover {
     flex-direction: row;
     margin: 1vw -3vw;
 }
+
 .contenedorEnfermero {
     display: flex;
     flex-direction: column;
     margin: 1vw -3vw;
 }
 
-.contenedorIzquierdo{
+.contenedorIzquierdo {
     flex-grow: 1;
     margin-right: 1.25%;
     flex: 50%;
@@ -612,7 +615,7 @@ button.botonRetroceso:hover {
     flex: 50%;
 }
 
-.contenedorDerecho{
+.contenedorDerecho {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -639,34 +642,39 @@ button.botonRetroceso:hover {
     padding: 2% 5% 2% 5%;
 }
 
-.contenedorTabla{
+.contenedorTabla {
     overflow-y: scroll;
     max-height: 65vh;
 }
-.listaPersonas{
+
+.listaPersonas {
     border-collapse: collapse;
     width: 100%;
 }
-.listaPersonas th,td{
+
+.listaPersonas th,
+td {
     text-align: center;
     padding: 8px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.listaPersonas tr{
+
+.listaPersonas tr {
     border-bottom: 1px solid #4a4cbd;
 }
+
 .listaPersonas tr:nth-child(even) {
     background-color: #7cf8be;
 }
 
-#menuDarCita .formulario{
+#menuDarCita .formulario {
     align-self: center;
 }
 
-#citaSintomasSignos{
-    margin-top:21px;
+#citaSintomasSignos {
+    margin-top: 21px;
 }
 
 
@@ -681,26 +689,28 @@ button.botonRetroceso:hover {
 }
 
 .contenedorCreacionTest {
-    display:flex;
+    display: flex;
 }
 
 .contenedorPreguntasCrearTest {
     display: flex;
-    
+
 }
-.contenedorPreguntasCrearTest > section {
+
+.contenedorPreguntasCrearTest>section {
     margin-top: 20px;
     flex-grow: 1;
     min-height: 30vh;
     padding: 2vw 2vw 2vw 2vw;
     border-left: 5px solid #000000;
 }
-.contenedorPreguntasCrearTest table{
+
+.contenedorPreguntasCrearTest table {
     width: 100%;
-    
+
 }
 
-.contenedorPreguntasCrearTest th{
+.contenedorPreguntasCrearTest th {
     border-bottom: 4px solid #000000;
 }
 
@@ -710,13 +720,63 @@ button.botonRetroceso:hover {
 }
 
 
-@media screen and (min-width: 1024px) { 
+@media screen and (min-width: 1024px) {
     /* Escritorio */
 
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 810px) {
+
     /* Tablets en modo horizontal */
+    .bodyEnfermero {
+        flex-direction: column-reverse;
+    }
+
+    .bodyEnfermero>div {
+        margin: 5px 0;
+    }
+
+    .celdaCita {
+        transition: all 250ms;
+        border-radius: 10px;
+        font-size: 1.5vw;
+    }
+
+    .celdaCita:hover {
+        font-size: 1.4vw;
+    }
+
+
+    .contenedorCita {
+        flex-direction: column;
+    }
+    .contenedorCita > div {
+        margin: 5px 0;
+    }
+
+    .bodyMantenimientoCita {
+        flex-direction: column;
+    }
+    .bodyMantenimientoCita > div {
+        margin: 5px 0;
+    }
+
+    .contenedorCrearTest  button{
+        max-height: fit-content;
+        padding: 0;
+    }
+
+    .contenedorCrearTest select {
+        max-height: 2.5vh;
+    }
+
+    .contenedorCrearTest .contenedorOpcionesFormulario{
+        font-size: 14px;
+        align-items: center;
+    }
+    .contenedorCrearTest .contenedorOpcionesFormulario button{
+        margin: 0 10px;
+    }
 }
 
 @media screen and (max-width: 600px) {
@@ -725,13 +785,8 @@ button.botonRetroceso:hover {
 
 @media screen and (max-width: 480px) {
     /* smartphones */
-    
-    .formularioLogin {
-        flex-direction: column;
-        align-items: center;
-        height: fit-content;
-        width: 100vw;
 
+    .formularioLogin {
+        width: 100vw;
     }
 }
-    
