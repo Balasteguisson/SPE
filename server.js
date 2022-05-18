@@ -3,7 +3,6 @@
 var express = require("express");
 const mysql = require('mysql')
 var morgan = require('morgan');
-var cors = require('cors');
 var moment = require('moment');
 var jwt = require('jwt-simple');
 
@@ -15,10 +14,7 @@ var app = express();
 app.use('/enfermero', express.static('enfermero'));
 app.use(express.json());
 app.use(morgan('dev'));
-const WL = ["http://localhost:8080", "https://cima.aemps.es/cima/rest/medicamento"]
-app.use(cors(
-    { origin: WL }
-));
+
 
 
 //Ajustes
@@ -42,7 +38,6 @@ baseDatos.connect(function (err) {
         console.error('Fallo en la conexión a la BBDD', err);
         process.exit();
     }
-    // console.log('Base de datos conectada');
 
 })
 
@@ -70,7 +65,6 @@ app.post('/api/login', (req, res) => {
                 token = jwt.encode(contenidoToken, clave);
 
                 let datos = { usuario: users[i].Usuario, token: token, id: users[i].ID, permisos: users[i].Tipo };
-                // console.log(datos); debug
                 res.status(201).json(datos);
                 return;
             }
@@ -120,25 +114,6 @@ app.get('/api/enfermero/:id', function (req, res) {
     })
 })
 
-//CITAS PENDIENTES DEL ENFERMERO
-// app.get('/api/enfermero/:dni/citas', function (req, res){
-//     var dniEnfermero = req.params.dni;
-//     var idEnfermero;
-//     var petId = `SELECT * FROM Enfermero WHERE DNI = "${dniEnfermero}"`;
-//     baseDatos.query(petId, (err, datos)=> {
-//         if(err){
-//             res.status(404).json('Peticion BBDD fallida');
-//         }
-//         idEnfermero = datos[0].ID;
-//         var petDatos = `SELECT * FROM Cita WHERE (IDEnfermero =${idEnfermero}) AND (Realizada = 0)`;
-//         baseDatos.query(petDatos, (err,datos)=>{
-//             if(err){
-//                 res.status(404).json('Peticion BBDD fallida');
-//             }
-//             res.status(201).json(datos);
-//         })
-//     })
-// })
 
 
 
@@ -147,7 +122,6 @@ app.get('/api/enfermero/:id', function (req, res) {
 
 //RESULTADO DE LOS TEST- MENU ENFERMERO
 app.get('/api/enfermero/:dni/resultados', function (req, res) {
-    //tengo que ver como hago para que se muestren solamente los test del ciclo actual
     var dniEnfermero = req.params.dni;
     var idEnfermero;
     var petId = `SELECT * FROM Enfermero WHERE DNI = "${dniEnfermero}"`;
@@ -171,8 +145,6 @@ app.post("/api/enfermero/:id/addPregunta", function (req, res) {
     var id = req.params.id;
     var datos = req.body;
     var addPregunta = `INSERT INTO Preguntas (IDPregunta, Tipo, Pregunta, FechaCreacion, Respuesta1, Respuesta2, Respuesta3, Respuesta4, RespuestaCorrecta) VALUES (NULL, "${datos.tipo}", "${datos.pregunta}", "${datos.fechaCreacion}", "${datos.respuesta1}", "${datos.respuesta2}", "${datos.respuesta3}", "${datos.respuesta4}", "${datos.respuestaCorrecta}");`
-    // console.log(datos);
-    // console.log(addPregunta);
     if (datos.tipo == '' || datos.pregunta == '' || datos.fechaCreacion == '' || datos.respuestaCorrecta == '') {
         res.status(400).json('Introduce bien los datos');
         return;
@@ -185,6 +157,7 @@ app.post("/api/enfermero/:id/addPregunta", function (req, res) {
         res.status(201).json('Entrada añadida a la BBDD');
     });
 });
+
 //RELLENADO BANCO PREGUNTAS
 app.get("/api/admin/:id/getPreguntas", (req, res) => {
     var peticion = "SELECT * FROM Preguntas";
@@ -1380,6 +1353,9 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
     let resultado = { actualizacionTratamiento: null, salida: false };
     let principioBuscado;
     medicamentoActual?.PrincipioActivo.includes("insulina") ? principioBuscado = "insulina" : principioBuscado = medicamentoActual?.PrincipioActivo;
+
+    //MOTOR DE INFERENCIA
+
     if (regla1[enfPrin] == 1 && regla3[principioBuscado] == 1) { //TRATAMIENTO EN METFORMINA
         resultado = await setMetformina({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
         if (resultado.salida != true) {
@@ -1470,7 +1446,6 @@ async function prescripcion({ enfPrin, edad, peso, sexo, emb, lact, tratAct, enf
         resultado = await setACO2({ dosis: tratamientoPrincipal.Cantidad, varMed: varMed, medicamento: medicamentoActual, riesgos: riesgos });
     }
     tratamientoRecomendado = resultado.actualizarTratamiento;
-    //motor de inferencia
     if (resultado.salida == false) {
         throw "ErrorTratamiento";
     }

@@ -88,14 +88,11 @@ class Medicamento {
 //FUNCIONES MAS REUSABLES
 //funcion para evitar anidar FETCH y hacer codigo spaguetti
 const peticionREST = async (url,parametros) => {
-    // console.log('peticion enviada')
     const respuesta = await fetch(url,parametros);
     if (respuesta.ok){
         const data = await respuesta.json();
-        // console.log('respuesta recibida y emitida')
         return data;
     }
-    // console.log('lanzando error');
     return respuesta.status;
 }
 
