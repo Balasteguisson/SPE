@@ -1065,9 +1065,10 @@ async function verMenuEditarPaciente(idPaciente) {
             fechaInicio = fechaInicio.substring(0,10)
             embarazo.Activo == 1? 
             (activo ="Activo", liLista =`<li id="LI${embarazo.IDEmbarazo}"> ${activo} - Desde ${fechaInicio}<button type = "button" onclick="borrarEmbarazoBBDD('${embarazo.IDEmbarazo}')">❌</button></li>`):
-            (activo = "No Activo", liLista = `<li id="LI${embarazo.IDEmbarazo}"> ${activo} - Desde ${fechaInicio} Hasta ${(embarazo.FechaFin).substring(0,10)}<button type = "button" onclick="borrarEmbarazoBBDD('${embarazo.IDEmbarazo}')">❌</button></li>`)
+                (activo = "No Activo", liLista = `<li id="LI${embarazo.IDEmbarazo}"> ${activo} - Desde ${fechaInicio} Hasta ${(embarazo.FechaFin).substring(0, 10)}<button type = "button" onclick="borrarEmbarazoBBDD('${embarazo.IDEmbarazo}')">❌</button></li>`)
             listaEmb.innerHTML += liLista;
         }
+        console.log(lactanciaPaciente[0].Activa);
         document.getElementById("lactanciaE").value = lactanciaPaciente[0].Activa;
 
     }else if(data.Sexo =="M"){
