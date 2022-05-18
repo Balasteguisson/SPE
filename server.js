@@ -928,6 +928,7 @@ app.get("/api/enfermero/:id/getTiposVariables", (req, res) => {
 })
 
 app.post('/api/enfermero/:id/guardarMedidasPaciente/:idPaciente', (req, res) => {
+    //EN DESUSO, SE PUEDE BORRAR
     let idPaciente = req.params.idPaciente
     let mediciones = req.body
     let idParametros = mediciones.ids
