@@ -340,6 +340,7 @@ app.put("/api/admin/:id/editarEnfermero/:dniEnfermero", (req, res) => {
 
 //REGISTRO ADMINISTRADOR
 app.post("/api/admin/:id/registrarAdmin", (req, res) => {
+    //EN DESUSO
     let datos = req.body;
     let petBBDD1 = `INSERT INTO Usuarios ("ID", "Usuario", "Password", "Tipo") VALUES (NULL, 'admin2', 'admin2', 'administrador')`;
 

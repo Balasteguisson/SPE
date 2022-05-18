@@ -1116,20 +1116,26 @@
                             <div class="groupInput">
                                 <input type="text" name="dosisSeleccion" id="dosisSeleccion" required>
                                 <span class="bar"></span>
-                                <label for="dosisSeleccion">Nombre </label>
+                                <label for="dosisSeleccion">Dosis </label>
                             </div>
                             <div class="groupInput">
                                 <input type="text" name="nRegistroSeleccion" id="nRegistroSeleccion" required>
                                 <span class="bar"></span>
-                                <label for="nRegistroSeleccion">Nombre </label>
+                                <label for="nRegistroSeleccion">Nº de Registro</label>
                             </div>
                             <p>Consulte la ficha técnica para rellenar los dos siguientes campos: <a href="" id="linkFT" target="_blank" rel="noreferrer noopener">Ficha Técnica</a></p>
                             <section>
                                 <p>Riesgos maternidad: </p>
-                                <p>
-                                    <label for="rEmbarazo">Riesgo para embarazo: </label><input type="checkbox" name="rEmbarazo" id="rEmbarazo">
-                                    <label for="rLactancia">Riesgo para lactante: </label><input type="checkbox" name="rLactancia" id="rLactancia">
-                                </p>
+                                <div class="groupInput">
+                                    <input type="checkbox" name="rEmbarazo" id="rEmbarazo">
+                                    <span class="bar"></span>
+                                    <label for="rEmbarazo">Riesgo para embarazo:</label>
+                                </div>
+                                <div class="groupInput">
+                                    <input type="checkbox" name="rLactancia" id="rLactancia">
+                                    <span class="bar"></span>
+                                    <label for="rLactancia">Riesgo para lactante:</label>
+                                </div>
                             </section>
                         </form>
                         <p><img id="imgCajaSeleccion"><img id="imgFormaSeleccion"></p>
