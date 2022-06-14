@@ -1323,7 +1323,13 @@ async function getCitas(dni) {
     let intDia  = date.getDate(); let intMes = date.getUTCMonth() + 1; let stringDia =  dias[date.getUTCDay()]
     for(let a = 0; a<12; a++){
         let casillaHora = document.getElementById(`ch${a}`);
-        let hora = `${date.getHours()+a}:00`
+        let hora;
+        console.log(date.getHours()+a)
+        if (date.getHours()+a >=24){
+            hora = `${date.getHours()+a - 24}:00`
+        }else{
+            hora = `${date.getHours()+a}:00`
+        }
         casillaHora.innerHTML = hora
     }
     for(let a  = 0; a<=3; a++){
