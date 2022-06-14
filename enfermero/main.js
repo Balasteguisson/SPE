@@ -2491,13 +2491,17 @@ async function solicitarPrescripcion(idCitaActual) {
                 let option = document.createElement("option");
                 option.value = respuesta.medicamento[i].IDFarmaco;
                 option.text = respuesta.medicamento[i].Nombre;
+                console.log(option);
                 desplegable.appendChild(option);
                 desplegable.value = respuesta.medicamento.IDFarmaco;
             }
-            if (respuesta.medicamento.length === 1) { 
-                document.getElementById("medicamentoSeleccionado").options[0].removeAttribute("selected");
-                let option = document.getElementById("medicamentoSeleccionado").options[1];
-                option.selected = true;
+            if (respuesta.medicamento.length === undefined) { 
+                let option = document.createElement("option");
+                option.value = respuesta.medicamento.IDFarmaco;
+                option.text = respuesta.medicamento.Nombre;
+                console.log(option);
+                desplegable.appendChild(option);
+                desplegable.value = respuesta.medicamento.IDFarmaco;
 
             }
             document.getElementById("posologiaMedicamento").value = respuesta.dosis;

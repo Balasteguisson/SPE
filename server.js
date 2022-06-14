@@ -1057,12 +1057,12 @@ app.put('/api/enfermero/:id/actualizarTratamiento/:idPaciente/:idFarmaco/:idCita
     let idFarmaco = req.params.idFarmaco
     let idCita = req.params.idCita
     let datos = req.body
-    let petBBDD = `UPDATE tratamiento SET IDFarmaco = '${datos.medicamento}', FechaInicio = '${datos.fechaInicio}', FechaFin = '${datos.fechaFin}', IntervaloTomas = '${datos.intervalo}', Cantidad = '${datos.cantidad}', Anotaciones = '${datos.indicaciones}', IDCita ='${idCita}' WHERE IdPaciente = '${idPaciente}' AND IDFarmaco = '${idMedicamentoActual}'`;
+    let petBBDD = `DELETE tratamiento WHERE IdPaciente = '${idPaciente}' AND IDFarmaco = '${idFarmaco}'`;
+    console.log(petBBDD);
     let respuesta = await actualizarTratamiento(petBBDD)
-    if (respuesta.affectedRows == 0) { 
-        petBBDD = `INSERT INTO tratamiento (IDTratamiento, IdPaciente, IDFarmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, IDCita) VALUES (NULL, '${idPaciente}', '${idFarmaco}', '${datos.fechaInicio}', '${datos.fechaFin}', '${datos.intervalo}', '${datos.cantidad}', '${datos.indicaciones}', '${idCita}')`;
-        respuesta = await actualizarTratamiento(petBBDD)
-    }
+    
+    petBBDD = `INSERT INTO tratamiento (IDTratamiento, IdPaciente, IDFarmaco, FechaInicio, FechaFin, IntervaloTomas, Cantidad, Anotaciones, IDCita) VALUES (NULL, '${idPaciente}', '${idFarmaco}', '${datos.fechaInicio}', '${datos.fechaFin}', '${datos.intervalo}', '${datos.cantidad}', '${datos.indicaciones}', '${idCita}')`;
+    respuesta = await actualizarTratamiento(petBBDD)
 
     res.status(201).json(respuesta);
 })
