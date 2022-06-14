@@ -1057,7 +1057,7 @@ app.put('/api/enfermero/:id/actualizarTratamiento/:idPaciente/:idFarmaco/:idCita
     let idFarmaco = req.params.idFarmaco
     let idCita = req.params.idCita
     let datos = req.body
-    let petBBDD = `DELETE tratamiento WHERE IdPaciente = '${idPaciente}' AND IDFarmaco = '${idFarmaco}'`;
+    let petBBDD = `DELETE FROM tratamiento WHERE IdPaciente = '${idPaciente}' AND IDFarmaco = '${idFarmaco}'`;
     console.log(petBBDD);
     let respuesta = await actualizarTratamiento(petBBDD)
     

@@ -2488,22 +2488,20 @@ async function solicitarPrescripcion(idCitaActual) {
             let desplegable = document.getElementById("medicamentoSeleccionado");
             desplegable.innerHTML = "<option hidden selected value='placeHolderMedicamento'>Escoge un medicamento</option>";
             for (let i = 0; i < respuesta.medicamento.length; i++) {
+                console.log("entrando a for")
                 let option = document.createElement("option");
                 option.value = respuesta.medicamento[i].IDFarmaco;
                 option.text = respuesta.medicamento[i].Nombre;
-                console.log(option);
                 desplegable.appendChild(option);
                 desplegable.value = respuesta.medicamento.IDFarmaco;
             }
-            if (respuesta.medicamento.length === undefined) { 
-                let option = document.createElement("option");
-                option.value = respuesta.medicamento.IDFarmaco;
-                option.text = respuesta.medicamento.Nombre;
-                console.log(option);
-                desplegable.appendChild(option);
-                desplegable.value = respuesta.medicamento.IDFarmaco;
-
+            if (respuesta.medicamento.length === 1) { 
+                console.log("entrando a if")
+                document.getElementById("medicamentoSeleccionado").options[0].removeAttribute("selected");
+                let option = document.getElementById("medicamentoSeleccionado").options[1];
+                option.selected = true;
             }
+            console.log(respuesta)
             document.getElementById("posologiaMedicamento").value = respuesta.dosis;
             document.getElementById("intervaloTomas").value = `${respuesta.frecuencia} horas`;
             document.getElementById("recomendacionesMedicamento").innerHTML = respuesta.indicaciones;
