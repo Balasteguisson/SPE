@@ -796,7 +796,9 @@ td {
 }
 
 #cantidadVariable {
-    max-width: 50px;
+    max-width: -moz-available;
+    max-width: -webkit-fill-available;
+    min-width: 0;
 }
 
 @media screen and (max-width: 600px) {
