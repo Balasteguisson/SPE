@@ -1324,9 +1324,8 @@ async function getCitas(dni) {
     for(let a = 0; a<12; a++){
         let casillaHora = document.getElementById(`ch${a}`);
         let hora;
-        console.log(date.getHours()+a)
         if (date.getHours()+a >=24){
-            hora = `${date.getHours()+a - 24}:00`
+            hora = `0${date.getHours()+a - 24}:00`
         }else{
             hora = `${date.getHours()+a}:00`
         }
@@ -1375,6 +1374,7 @@ async function getCitas(dni) {
 
     for (let a = 0; a < citasHoy.length; a++) {
         let cita = citasHoy[a]
+        console.log(cita)
         let paciente;
         for (let b = 0; b < pacientes.length; b++) {
             if(cita.IdPaciente == pacientes[b].NIdentidad){
